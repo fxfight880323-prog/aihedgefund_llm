@@ -1,0 +1,39 @@
+# TEMPLATE: Custom Strategy YAML
+# ============================================================================
+#
+# Copy this file and build your own strategy ("pod").
+# A strategy bundles alpha models with a blend policy and capital slice.
+#
+# The fund builder picks up any YAML in this directory automatically.
+
+name: my_strategy              # unique identifier
+display_name: My Strategy      # human-facing name
+weight: 1.0                    # capital slice (relative, normalized at fund level)
+
+models:
+  # List the alpha models you want in this strategy.
+  # Each must be registered in src/signals/__init__.py
+  #
+  # Built-in models:
+  #   - pead      (quant: post-earnings announcement drift)
+  #   - buffett   (LLM: Warren Buffett persona)
+  #
+  # Add your own models in src/signals/ and register them.
+
+  - name: buffett              # model name (must match registry key)
+    weight: 1.0                # blend weight (how much this model's view counts)
+    # params:                  # optional constructor kwargs
+    #   signal_window_days: 4
+
+  # - name: my_momentum        # your custom model
+  #   weight: 0.5
+  #   params:
+  #     lookback_days: 252
+
+  # - name: my_value_screen    # another custom model
+  #   weight: 0.8
+
+blend:
+  method: conviction_weighted  # how to combine model views
+  gross_target: 1.0            # desired sum of |weights|
+  market_neutral: false        # demean convictions (dollar-neutral sleeve)

@@ -1,0 +1,14 @@
+# Earnings drift — systematic quant pod.
+# PEAD model only; the model IS the strategy.
+
+name: earnings-drift
+display_name: Earnings Drift
+models:
+  - name: pead
+    weight: 1.0
+    params:
+      signal_window_days: 4
+blend:
+  method: conviction_weighted
+  gross_target: 0.8
+  market_neutral: true

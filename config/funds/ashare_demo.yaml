@@ -1,0 +1,23 @@
+# A-share demo fund — single value pod over a small China A-share universe.
+# Pair this with examples/ashare_demo.py and the 妙想 (MX) data client.
+
+name: A股价值基金 Demo
+capital: 1000000        # RMB 1,000,000
+rebalance: weekly
+benchmark: 000300.SH    # 沪深300
+
+strategies:
+  - name: value
+    display_name: A股量化价值 Pod
+    weight: 1.0
+    models:
+      - name: ashare_value
+        weight: 1.0
+    blend:
+      method: conviction_weighted
+      gross_target: 1.0
+      market_neutral: false
+
+risk:
+  max_position_pct: 0.20      # 20% per name — A-shares are concentrated books
+  max_gross_exposure: 1.0     # unlevered

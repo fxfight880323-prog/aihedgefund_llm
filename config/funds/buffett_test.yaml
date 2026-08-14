@@ -1,0 +1,21 @@
+# Test mandate: single Buffett agent on a small equity universe.
+name: Buffett Test Fund
+capital: 100000
+rebalance: weekly
+benchmark: SPY
+
+strategies:
+  - name: value
+    display_name: Buffett Value Pod
+    weight: 1.0
+    models:
+      - name: buffett
+        weight: 1.0
+    blend:
+      method: conviction_weighted
+      gross_target: 1.0
+      market_neutral: false
+
+risk:
+  max_position_pct: 0.10
+  max_gross_exposure: 1.5

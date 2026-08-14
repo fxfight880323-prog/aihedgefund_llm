@@ -1,0 +1,28 @@
+# Agent MCP configs contain API keys
+.kimi-code/
+.zcode/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.venv-*/
+
+# Local data / cache
+*.log
+.cache/
+.pytest_cache/
+pytest-cache-files-*/
+
+# Local environment (may hold keys)
+.env
+
+# scratch / probe artifacts (dm_quant probe outputs, manual dumps)
+dm_manual_*.txt
+dm_*_first_row.json
+dm_first_row.json
+
+# OS
+.DS_Store
+Thumbs.db

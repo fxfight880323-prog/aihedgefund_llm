@@ -1,0 +1,13 @@
+# Fundamental long/short — flagship discretionary pod.
+# All agents rank the universe; the sleeve is market-neutral:
+# long the names the desk likes most, short the least liked.
+
+name: fundamental-ls
+display_name: Fundamental L/S
+models:
+  - name: buffett
+    weight: 1.0
+blend:
+  method: conviction_weighted
+  gross_target: 1.0
+  market_neutral: true

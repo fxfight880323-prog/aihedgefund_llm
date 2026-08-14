@@ -1,0 +1,22 @@
+# A-share quant value strategy — Buffett-style fundamental screen for China A-shares.
+# Pure-quant (no LLM): scores ROE / margins / PE / PB / growth from the 妙想 data client.
+
+name: ashare-value
+display_name: A股量化价值
+models:
+  - name: ashare_value
+    weight: 1.0
+    params:
+      quality_weight: 0.5
+      valuation_weight: 0.35
+      growth_weight: 0.15
+      pe_good: 15.0
+      pe_bad: 40.0
+      pb_good: 2.0
+      pb_bad: 8.0
+      roe_good: 15.0
+      roe_bad: 5.0
+blend:
+  method: conviction_weighted
+  gross_target: 1.0
+  market_neutral: false

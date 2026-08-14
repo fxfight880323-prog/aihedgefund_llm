@@ -1,0 +1,42 @@
+[project]
+name = "ai-fund-framework"
+version = "0.1.0"
+description = "A LangGraph-powered AI investment fund framework with pluggable alpha models, data sources, and risk management."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+dependencies = [
+    "langgraph>=0.2.0",
+    "langchain>=0.3.0",
+    "langchain-core>=0.3.0",
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "python-dotenv>=1.0",
+    "langchain-openai>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+llm = [
+    "langchain-anthropic>=0.1.0",
+    "langchain-openai>=0.1.0",
+    "langchain-community>=0.1.0",
+]
+
+[project.scripts]
+ai-fund = "src.workflow.runner:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

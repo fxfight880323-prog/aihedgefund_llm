@@ -1,0 +1,43 @@
+# Example Fund Mandate — a two-strategy fund
+#
+# The mandate is the DESK: strategies, staff, risk, capital.
+# It never names tickers — those are provided at run time.
+#
+# Run: python -m src.workflow.runner config/funds/example_fund.yaml --tickers AAPL,MSFT
+
+name: Alpha One
+capital: 100000
+rebalance: weekly
+benchmark: SPY
+
+strategies:
+  # Strategy 1: Value — LLM agents reasoning over fundamentals
+  - name: value
+    display_name: Value Pod
+    weight: 0.6
+    models:
+      - name: buffett
+        weight: 1.0
+    blend:
+      method: conviction_weighted
+      gross_target: 1.0
+      market_neutral: false
+
+  # Strategy 2: Quant — post-earnings drift signal
+  - name: quant
+    display_name: Quant Pod
+    weight: 0.4
+    models:
+      - name: pead
+        weight: 1.0
+        params:
+          signal_window_days: 4
+    blend:
+      method: conviction_weighted
+      gross_target: 0.8
+      market_neutral: true
+
+# Master risk limits applied to the netted book
+risk:
+  max_position_pct: 0.10    # max 10% of equity per ticker
+  max_gross_exposure: 1.5   # max 150% gross (1.0 = unlevered)
