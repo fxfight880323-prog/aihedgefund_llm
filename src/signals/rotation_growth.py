@@ -1,0 +1,342 @@
+"""有锐度的均衡 — 章宏帆轮动策略 alpha model (L1/L2/L3-G5/L5)。
+
+实现 spec (zhang-hongfan-strategy-spec.md) 的可代码化核心：
+
+  L1 资产分类器   每只候选归入 A 景气成长 / B 周期成长 / C 新兴成长
+                  ——类决定估值逻辑、跟踪 KPI 与卖出规则
+  L2 环节稀缺度   先选环节后选股：S1 供给刚性 / S2 需求锁定 / S3 价值份额
+                  通胀 / S4 涨价阶段 / S5 成本传导地位，各 0-2 分
+  L3-G5 泡沫检验  涨幅分解 return = ΔEPS + ΔPE，ΔPE 主导 → 信念减半
+  L5 领先指标     AI 周期仪表盘（可配置，默认中性），≥2/3 领先指标转熊
+                  → A 类信念减半
+
+类与环节信息通过 Signal.metadata 流向组合构造器
+（src/portfolio/balanced_sharpness.py，L4），由后者完成方向权重、
+类配比与单票上限。
+
+数据代理与扩展点（诚实标注）：
+  - 渗透率 5% 临界点 → 营收增速 + 加速度代理（真实渗透率数据源待接）
+  - G1 跨市场证伪（美股 analog）→ 扩展点，见 TODO
+  - G4 两波状态机（现货 KPI → 利润持续性 KPI）→ 扩展点，见 TODO
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.core.interfaces import QuantModel
+from src.core.models import Signal
+
+# ---------------------------------------------------------------------------
+# 默认环节表 — 2026-05 快照 [param]（YAML link_map 可整体覆盖）
+# S = [S1供给刚性, S2需求锁定, S3价值份额, S4涨价阶段, S5成本传导] 各0-2
+# ---------------------------------------------------------------------------
+
+DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
+    "光模块/光通信": {
+        "s_scores": [2, 2, 2, 1, 2],   # 9/10 — 稀缺度第一
+        "keywords": ["光模块", "光通信", "光器件", "光缆", "硅光"],
+    },
+    "PCB材料": {
+        "s_scores": [2, 1, 1, 2, 2],   # 8/10 — 日系垄断上游，涨价早段
+        "keywords": ["覆铜板", "CCL", "PCB", "铜箔", "电子布", "印制电路"],
+    },
+    "CPU+光芯片": {
+        "s_scores": [2, 2, 1, 1, 2],   # 8/10
+        "keywords": ["光芯片", "CPU", "处理器", "微电子"],
+    },
+    "国产算力": {
+        "s_scores": [1, 2, 1, 1, 2],   # 7/10
+        "keywords": ["算力", "GPU", "AI芯片", "图形处理", "智能芯片"],
+    },
+    "半导体设备": {
+        "s_scores": [1, 1, 1, 1, 2],   # 6/10 — 长周期可见性
+        # 注意：不放裸"设备"关键词（避免误吸"医学影像设备"等非半导体行业）
+        "keywords": ["半导体设备", "刻蚀", "薄膜沉积", "清洗设备",
+                     "离子注入", "光刻"],
+    },
+    "存储": {
+        "s_scores": [2, 2, 1, 1, 0],   # 6/10 — 涨价中段；模组是成本承受方
+        "keywords": ["存储", "内存", "闪存", "DRAM", "NAND", "模组"],
+    },
+}
+
+_LINK_FACTORS = ("S1_supply_rigidity", "S2_demand_lockin",
+                 "S3_value_share", "S4_price_stage", "S5_passthrough")
+
+# L5 领先指标（3 领先 + 3 验证）；bearish/neutral/bullish
+_DEFAULT_DASHBOARD = {
+    "frontier_models": "neutral",   # 1 前沿模型迭代
+    "frontier_arr": "neutral",      # 2 前沿实验室 ARR 斜率
+    "cloud_roi": "neutral",         # 3 云收入 vs 算力 ROI
+    "h100_rental": "neutral",       # V1
+    "lta_deposits": "neutral",      # V2
+    "token_mom": "neutral",         # V3
+}
+_LEADING = ("frontier_models", "frontier_arr", "cloud_roi")
+
+
+class RotationGrowthModel(QuantModel):
+    """章宏帆法 alpha model：分类 → 环节打分 → 类则估值 → G5/L5 修正。"""
+
+    def __init__(
+        self,
+        link_map: dict[str, dict] | None = None,
+        # L1 分类阈值 [param]
+        boom_growth: float = 0.50,        # A 类：高增长（渗透率代理）
+        emerging_growth: float = 1.50,    # C 类：极端增长
+        emerging_max_gm: float = 15.0,    # C 类：无利润上限（毛利率%）
+        b_class_max_gm: float = 50.0,     # B 类：周期性毛利率上限（高于此
+                                          # = 结构性优质，归 OFF 而非周期）
+        off_theme_roe: float = 15.0,      # 自下而上 sleeve 门槛
+        off_theme_gm: float = 30.0,
+        # 类则估值 [param]
+        b_class_pe_ceiling: float = 20.0, # B 类 PE 上限（消费电子核心口径）
+        upside_hurdle: float = 0.30,      # A 类 3 年空间代理门槛
+        # G5 / L5 [param]
+        g5_pe_dominance: float = 0.30,    # ΔPE 主导判定阈值
+        ai_dashboard: dict[str, str] | None = None,
+        lookback_years: float = 3.0,
+        **kwargs,
+    ):
+        self._link_map = link_map or DEFAULT_LINK_MAP
+        self._boom_growth = boom_growth
+        self._emerging_growth = emerging_growth
+        self._emerging_max_gm = emerging_max_gm
+        self._b_class_max_gm = b_class_max_gm
+        self._off_theme_roe = off_theme_roe
+        self._off_theme_gm = off_theme_gm
+        self._pe_ceiling = b_class_pe_ceiling
+        self._upside_hurdle = upside_hurdle
+        self._g5_threshold = g5_pe_dominance
+        dash = dict(_DEFAULT_DASHBOARD)
+        dash.update(ai_dashboard or {})
+        self._dashboard = dash
+        self._lookback_years = lookback_years
+        self._series_cache: dict[str, tuple[str, dict]] = {}
+
+    @property
+    def name(self) -> str:
+        return "rotation_growth"
+
+    # ------------------------------------------------------------------
+
+    def predict(self, ticker: str, date: str, data_client: Any) -> Signal:
+        series = self._load_series(ticker, date, data_client)
+        rev_yoy = series["rev_yoy"]
+        gm = series["gm"]
+        if not rev_yoy:
+            return self._abstain(ticker, date, "no revenue history")
+
+        growth = rev_yoy[0]
+        accel = len(rev_yoy) >= 2 and rev_yoy[0] > rev_yoy[1]
+        gm_now, gm_prev = (gm[0] if len(gm) > 0 else None,
+                           gm[1] if len(gm) > 1 else None)
+        gm_recovering = (gm_now is not None and gm_prev is not None
+                         and gm_now > gm_prev)
+
+        link, s_scores = self._match_link(ticker, series)
+        link_score = sum(s_scores) if s_scores else None
+        link_norm = (link_score / 10.0) if link_score is not None else 0.0
+
+        # ---- L1 分类（顺序：C 极端无利 → A 高增加速 → B 周期回升）----
+        if (growth >= self._emerging_growth
+                and (gm_now is None or gm_now < self._emerging_max_gm)):
+            asset_class = "C"
+        elif growth >= self._boom_growth and accel:
+            asset_class = "A"
+        elif (gm_recovering and 0 < growth < self._boom_growth
+                and (gm_now is not None and gm_now < self._b_class_max_gm)):
+            asset_class = "B"
+        elif (series["roe"] is not None and series["roe"] >= self._off_theme_roe
+                and gm_now is not None and gm_now >= self._off_theme_gm):
+            asset_class = "OFF"   # 自下而上备选（非主题强基本面）
+        else:
+            return self._abstain(
+                ticker, date,
+                f"not investable under framework: growth={growth:+.0%}, "
+                f"accel={accel}, gm_recovering={gm_recovering}",
+            )
+
+        # ---- 类则估值 + 信念 ----
+        g5 = self._g5_decomposition(series)
+        g5_penalty = 0.5 if g5.get("pe_dominant") else 1.0
+
+        if asset_class == "A":
+            # 忽略静态 PE：增长质量 × 环节稀缺度；3 年空间代理 vs 门槛
+            upside_proxy = growth * (1 + (gm_now or 0) / 100.0)
+            if upside_proxy < self._upside_hurdle:
+                value = 0.15  # 空间不足 → 极低参与
+            else:
+                value = min(1.0, 0.30 + 0.50 * link_norm
+                            + 0.20 * min(growth, 1.0))
+        elif asset_class == "B":
+            pe = series["pe"]
+            if pe is not None and pe > self._pe_ceiling:
+                # 估值上限强制：超限 → 减仓/轮出信号（负信念）
+                value = -0.5
+            else:
+                value = min(0.8, 0.30 + 0.40 * link_norm
+                            + (0.20 if gm_recovering else 0.0))
+        elif asset_class == "C":
+            value = min(0.30, 0.20 + 0.10 * link_norm)  # 小仓位参与
+        else:  # OFF：自下而上 sleeve，小幅参与
+            value = min(0.40, 0.20
+                        + 0.10 * min((series["roe"] or 0) / 30.0, 1.0))
+
+        value *= g5_penalty
+
+        # ---- L5 regime：≥2/3 领先指标转熊 → A 类减半 ----
+        regime = "neutral"
+        bearish = sum(1 for k in _LEADING
+                      if self._dashboard.get(k) == "bearish")
+        if bearish >= 2:
+            regime = "de-risk"
+            if asset_class == "A":
+                value *= 0.5
+
+        return Signal(
+            model_name=self.name,
+            ticker=ticker,
+            date=date,
+            value=round(max(-1.0, min(1.0, value)), 4),
+            reasoning=self._reasoning(asset_class, link, link_score, growth,
+                                      accel, gm_recovering, series, g5, regime),
+            components={
+                "link_score": link_score if link_score is not None else 0.0,
+                "growth": round(growth, 4),
+                "valuation": round(value / g5_penalty, 4),
+                "g5_penalty": g5_penalty,
+            },
+            metadata={
+                "asset_class": asset_class,
+                "link": link,
+                "s_scores": dict(zip(_LINK_FACTORS, s_scores)) if s_scores else {},
+                "link_score": link_score,
+                "g5": g5,
+                "regime": regime,
+                "dashboard": self._dashboard,
+                # 扩展点
+                "g1_cross_market": None,   # TODO: 美股 analog 证伪
+                "g4_two_wave": None,       # TODO: 现货KPI→利润持续性KPI
+            },
+        )
+
+    # ------------------------------------------------------------------
+    # 环节匹配（L2）：优先级 = S 分降序，首个关键词命中即归属
+    # ------------------------------------------------------------------
+
+    def _match_link(self, ticker: str, series: dict) -> tuple[str | None, list[int] | None]:
+        text = " ".join(filter(None, [
+            series.get("name") or "", series.get("sector") or "",
+            series.get("industry") or "", ticker,
+        ]))
+        ordered = sorted(
+            self._link_map.items(),
+            key=lambda kv: -sum(kv[1].get("s_scores", [0])),
+        )
+        for link_name, cfg in ordered:
+            kws = cfg.get("keywords") or []
+            if isinstance(kws, str):
+                kws = [kws]
+            if any(kw.lower() in text.lower() for kw in kws):
+                return link_name, list(cfg.get("s_scores", [0] * 5))
+        return None, None
+
+    # ------------------------------------------------------------------
+    # G5-lite：涨幅分解 return = ΔEPS + ΔPE（数据可得窗口内）
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _g5_decomposition(series: dict) -> dict[str, Any]:
+        ni = [v for v in series.get("net_income_series") or [] if v]
+        pe = [v for v in series.get("pe_series") or [] if v]
+        if len(ni) < 2 or len(pe) < 2 or ni[-1] == 0 or pe[-1] == 0:
+            return {"available": False}
+        eps_growth = ni[0] / abs(ni[-1]) - 1.0 if ni[-1] else 0.0
+        pe_change = pe[0] / pe[-1] - 1.0
+        pe_dominant = (pe_change > 0.30 and abs(pe_change) > abs(eps_growth))
+        return {
+            "available": True,
+            "eps_growth": round(eps_growth, 4),
+            "pe_change": round(pe_change, 4),
+            "pe_dominant": pe_dominant,
+        }
+
+    # ------------------------------------------------------------------
+    # 数据加载（point-in-time）
+    # ------------------------------------------------------------------
+
+    def _load_series(self, ticker: str, date: str, data_client: Any) -> dict:
+        cached_date, cached = self._series_cache.get(ticker, ("", {}))
+        if cached and cached_date >= date:
+            return cached
+
+        from datetime import datetime, timedelta
+        as_of = datetime.strptime(date[:10], "%Y-%m-%d").date()
+        start = (as_of - timedelta(days=int(365 * self._lookback_years))).isoformat()
+
+        rows = []
+        facts = {}
+        try:
+            rows = [
+                r for r in (data_client.get_financial_metrics(
+                    ticker, date, limit=12) or [])
+                if isinstance(r, dict)
+                and str(r.get("date") or "")[:10] <= date[:10]
+            ]
+        except Exception:
+            rows = []
+        try:
+            facts = data_client.get_company_facts(ticker) or {}
+        except Exception:
+            facts = {}
+
+        revs = [self._safe_float(r.get("revenue")) for r in rows]
+        revs = [v for v in revs if v is not None]
+        rev_yoy = []
+        if len(revs) >= 5:
+            for i in range(len(revs) - 4):
+                base = revs[i + 4]
+                if base and base > 0:
+                    rev_yoy.append(revs[i] / base - 1.0)
+
+        gm = [self._safe_float(r.get("gross_margin")) for r in rows]
+        gm = [v for v in gm if v is not None]
+        ni_series = [self._safe_float(r.get("net_income")) for r in rows]
+        pe_series = [self._safe_float(r.get("pe_ratio")) for r in rows]
+
+        series = {
+            "rev_yoy": rev_yoy, "gm": gm,
+            "net_income_series": [v for v in ni_series if v is not None],
+            "pe_series": [v for v in pe_series if v is not None],
+            "pe": pe_series[0] if pe_series and pe_series[0] else None,
+            "roe": next((self._safe_float(r.get("roe")) for r in rows
+                         if self._safe_float(r.get("roe")) is not None), None),
+            "name": facts.get("name"), "sector": facts.get("sector"),
+            "industry": facts.get("industry"),
+        }
+        self._series_cache[ticker] = (date, series)
+        return series
+
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _reasoning(cls_, link, link_score, growth, accel, gm_rec, series,
+                   g5, regime) -> str:
+        pe = series.get("pe")
+        g5_s = (f"G5: ΔEPS={g5['eps_growth']:+.0%} ΔPE={g5['pe_change']:+.0%}"
+                f"{' [PE主导→信念减半]' if g5.get('pe_dominant') else ''}"
+                ) if g5.get("available") else "G5: n/a"
+        return (
+            f"[{cls_}] growth={growth:+.0%}(accel={accel}) "
+            f"gm_cycle={'↑' if gm_rec else '→'} PE={pe} "
+            f"link={link}({link_score if link_score is not None else '-'}/10) "
+            f"{g5_s} regime={regime}"
+        )
+
+    def _abstain(self, ticker: str, date: str, why: str) -> Signal:
+        return Signal(
+            model_name=self.name, ticker=ticker, date=date, value=0.0,
+            reasoning=why, metadata={"abstained": True},
+        )

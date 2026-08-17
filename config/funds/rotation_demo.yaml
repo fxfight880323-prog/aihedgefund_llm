@@ -1,0 +1,30 @@
+# 有锐度的均衡 · 轮动 Demo 基金
+# 单票上限对齐 spec："top-10 names ≈ 5% each"
+
+name: 有锐度的均衡 Demo
+capital: 1000000
+rebalance: weekly
+benchmark: 000688.SH
+
+strategies:
+  - name: rotation-growth
+    display_name: 轮动 Pod
+    weight: 1.0
+    models:
+      - name: rotation_growth
+        weight: 1.0
+    blend:
+      method: balanced_sharpness
+      gross_target: 0.90
+      market_neutral: false
+      params:
+        top_direction_weight: 0.16
+        tail_direction_weight: 0.07
+        max_directions: 6
+        class_mix: {A: 0.55, B: 0.30, C: 0.05}
+        per_name_cap: 0.05
+        off_theme_sleeve: 0.10
+
+risk:
+  max_position_pct: 0.05    # spec: top-10 单票 ≈5%
+  max_gross_exposure: 0.90  # 10% 现金底仓

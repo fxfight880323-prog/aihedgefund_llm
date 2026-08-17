@@ -22,6 +22,7 @@ from src.signals.ashare_value import AshareValueModel
 from src.signals.bsadf import BSADFModel
 from src.signals.tech_confluence import TechConfluenceModel
 from src.signals.growth_loop import GrowthLoopAgent
+from src.signals.rotation_growth import RotationGrowthModel
 
 # Register built-in models
 ALPHA_MODEL_REGISTRY["pead"] = PEADModel
@@ -30,6 +31,7 @@ ALPHA_MODEL_REGISTRY["ashare_value"] = AshareValueModel
 ALPHA_MODEL_REGISTRY["bsadf"] = BSADFModel
 ALPHA_MODEL_REGISTRY["tech_confluence"] = TechConfluenceModel
 ALPHA_MODEL_REGISTRY["growth_loop"] = GrowthLoopAgent
+ALPHA_MODEL_REGISTRY["rotation_growth"] = RotationGrowthModel
 
 # ---- ADD YOUR MODELS HERE ----
 # from src.signals.my_momentum import MyMomentumModel
@@ -52,4 +54,5 @@ __all__ = [
     "BSADFModel",
     "TechConfluenceModel",
     "GrowthLoopAgent",
+    "RotationGrowthModel",
 ]

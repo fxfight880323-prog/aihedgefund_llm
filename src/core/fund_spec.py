@@ -67,9 +67,31 @@ class BlendPolicySpec(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    method: Literal["conviction_weighted"] = "conviction_weighted"
+    method: str = Field(
+        default="conviction_weighted",
+        description="key into BLEND_POLICY_REGISTRY, e.g. "
+                    "'conviction_weighted', 'balanced_sharpness'",
+    )
     gross_target: float = Field(default=1.0, gt=0)
     market_neutral: bool = Field(default=False)
+    params: dict[str, Any] = Field(
+        default_factory=dict,
+        description="constructor kwargs for the blend policy",
+    )
+
+    @field_validator("method")
+    @classmethod
+    def _known_blend_method(cls, v: str) -> str:
+        from src.core.registry import BLEND_POLICY_REGISTRY
+        # 惰性导入触发注册（src.signals → 各模型/策略模块）。
+        import src.signals  # noqa: F401
+        import src.portfolio  # noqa: F401
+        if v not in BLEND_POLICY_REGISTRY:
+            raise ValueError(
+                f"Unknown blend policy '{v}'. "
+                f"Available: {sorted(BLEND_POLICY_REGISTRY.keys())}"
+            )
+        return v
 
 
 class StrategySpec(BaseModel):

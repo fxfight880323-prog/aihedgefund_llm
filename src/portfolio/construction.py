@@ -19,8 +19,10 @@ from __future__ import annotations
 
 from src.core.models import Signal, BlendResult
 from src.core.interfaces import BlendPolicy
+from src.core.registry import register_blend_policy
 
 
+@register_blend_policy("conviction_weighted")
 class ConvictionWeightedBlend(BlendPolicy):
     """Conviction-weighted blending — the default portfolio policy.
 

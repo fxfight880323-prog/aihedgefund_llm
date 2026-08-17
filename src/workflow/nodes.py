@@ -14,8 +14,11 @@ from typing import Any
 from src.core.models import Signal, Order, OrderSide, Fill
 from src.core.fund_spec import FundSpec
 from src.core.interfaces import LLMAgent
-from src.core.registry import ALPHA_MODEL_REGISTRY, get_alpha_model
-from src.portfolio.construction import ConvictionWeightedBlend
+from src.core.registry import (
+    ALPHA_MODEL_REGISTRY,
+    BLEND_POLICY_REGISTRY,
+    get_alpha_model,
+)
 from src.risk.limits import HardLimits
 from src.workflow.state import FundState
 
@@ -125,8 +128,13 @@ def blend_signals(state: FundState) -> dict[str, Any]:
         model_names = {m.name for m in strategy.models}
         strat_signals = [s for s in signals if s.model_name in model_names]
 
-        # Blend
-        blender = ConvictionWeightedBlend()
+        # Blend — policy comes from the registry (YAML `blend.method`)
+        import src.signals  # noqa: F401 — ensure policies are registered
+        import src.portfolio  # noqa: F401
+
+        blender = BLEND_POLICY_REGISTRY[strategy.blend.method](
+            **strategy.blend.params
+        )
         model_weights = strategy.model_weights
         blend = blender.blend(
             strat_signals,
