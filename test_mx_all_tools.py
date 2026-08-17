@@ -17,7 +17,7 @@ import json
 import requests
 
 URL = "https://mxapi.eastmoney.com/mxds/mcp"
-KEY = "EM_KEY_REDACTED"
+KEY = os.environ.get("EM_API_KEY")
 
 
 def call_tool(name: str, query: str):

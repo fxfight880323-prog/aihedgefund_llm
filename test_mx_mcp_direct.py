@@ -13,7 +13,7 @@ import sys
 import requests
 
 URL = "https://mxapi.eastmoney.com/mxds/mcp"
-API_KEY = os.environ.get("EM_API_KEY", "EM_KEY_REDACTED")
+API_KEY = os.environ.get("EM_API_KEY")
 
 session = requests.Session()
 session.trust_env = False  # avoid system proxy

@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Use the known-working key so this runs even before a .env is set up.
-os.environ.setdefault("EM_API_KEY", "EM_KEY_REDACTED")
+pass  # EM_API_KEY 来自 .env / 环境
 
 from src.core.interfaces import DataClient
 from src.data.mx_mcp_client import (
