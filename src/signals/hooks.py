@@ -262,21 +262,29 @@ def _get_price_window(
 
 
 def _revenue_yoy_series(metrics: list[dict]) -> list[float]:
-    """季度营收 YoY 增速序列（newest-first）。
+    """营收 YoY 增速序列（newest-first，同期对齐）。
 
-    metrics 为 newest-first 季度行；YoY[i] = rev[i] / rev[i+4] - 1。
-    若行数不足 5（无法构成 ≥1 个完整 YoY），返回 []。
+    妙想报表是**年内累计值**（一季报=3个月/中报=6个月/三季报=9个月/
+    年报=12个月），位置对齐 rev[i]/rev[i+4] 在混合周期下会严重失真
+    （如 一季报 vs 上年年报 = -75%）。必须同季对上季：一季报 vs 上年
+    一季报。日频估值行（月份非 03/06/09/12 锚点）自然排除。
     """
-    revs = [_num(m.get("revenue")) for m in metrics]
-    revs = [r for r in revs if r is not None]
-    if len(revs) < 5:
-        return []
+    rev_by_qp: dict[tuple[int, int], float] = {}
+    for m in metrics:  # newest-first
+        d = str(m.get("date") or "")[:10]
+        if len(d) != 10 or not d[:4].isdigit():
+            continue
+        q = {"03": 1, "06": 2, "09": 3, "12": 4}.get(d[5:7])
+        if q is None:
+            continue
+        v = _num(m.get("revenue"))
+        if v is not None and v != 0:
+            rev_by_qp.setdefault((int(d[:4]), q), v)
     yoy: list[float] = []
-    for i in range(len(revs) - 4):
-        base = revs[i + 4]
-        if not base or base <= 0:
-            return []
-        yoy.append(revs[i] / base - 1.0)
+    for (y, q), v in sorted(rev_by_qp.items(), reverse=True):
+        prev = rev_by_qp.get((y - 1, q))
+        if prev and prev > 0:
+            yoy.append(v / prev - 1.0)
     return yoy
 
 

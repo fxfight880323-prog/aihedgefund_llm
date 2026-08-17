@@ -39,7 +39,7 @@ DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
     },
     "PCB材料": {
         "s_scores": [2, 1, 1, 2, 2],   # 8/10 — 日系垄断上游，涨价早段
-        "keywords": ["覆铜板", "CCL", "PCB", "铜箔", "电子布", "印制电路"],
+        "keywords": ["覆铜板", "CCL", "PCB", "铜箔", "电子布", "印制电路", "生益"],
     },
     "CPU+光芯片": {
         "s_scores": [2, 2, 1, 1, 2],   # 8/10
@@ -47,13 +47,17 @@ DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
     },
     "国产算力": {
         "s_scores": [1, 2, 1, 1, 2],   # 7/10
-        "keywords": ["算力", "GPU", "AI芯片", "图形处理", "智能芯片"],
+        "keywords": ["算力", "GPU", "AI芯片", "图形处理", "智能芯片", "芯原", "IP授权", "芯片设计服务"],
     },
     "半导体设备": {
         "s_scores": [1, 1, 1, 1, 2],   # 6/10 — 长周期可见性
         # 注意：不放裸"设备"关键词（避免误吸"医学影像设备"等非半导体行业）
         "keywords": ["半导体设备", "刻蚀", "薄膜沉积", "清洗设备",
                      "离子注入", "光刻"],
+    },
+    "半导体材料": {
+        "s_scores": [2, 1, 1, 1, 2],   # 6/10 — 硅片/电子材料，上游价格制定者
+        "keywords": ["硅片", "半导体材料", "电子化学", "靶材", "光刻胶"],
     },
     "存储": {
         "s_scores": [2, 2, 1, 1, 0],   # 6/10 — 涨价中段；模组是成本承受方
@@ -175,6 +179,13 @@ class RotationGrowthModel(QuantModel):
             if pe is not None and pe > self._pe_ceiling:
                 # 估值上限强制：超限 → 减仓/轮出信号（负信念）
                 value = -0.5
+            elif pe is not None and pe <= 0:
+                # 负 PE = 亏损：周期成熟类不容亏（spec B 类是"成熟大公司
+                # +周期+新曲线"），直接 abstain 处理由 OFF/其他类判定
+                return self._abstain(
+                    ticker, date,
+                    f"[B] loss-making (PE={pe:.0f}) — cyclical-mature "
+                    f"class requires profitability")
             else:
                 value = min(0.8, 0.30 + 0.40 * link_norm
                             + (0.20 if gm_recovering else 0.0))
@@ -281,7 +292,7 @@ class RotationGrowthModel(QuantModel):
         try:
             rows = [
                 r for r in (data_client.get_financial_metrics(
-                    ticker, date, limit=12) or [])
+                    ticker, date, limit=60) or [])
                 if isinstance(r, dict)
                 and str(r.get("date") or "")[:10] <= date[:10]
             ]
@@ -292,27 +303,52 @@ class RotationGrowthModel(QuantModel):
         except Exception:
             facts = {}
 
-        revs = [self._safe_float(r.get("revenue")) for r in rows]
-        revs = [v for v in revs if v is not None]
-        rev_yoy = []
-        if len(revs) >= 5:
-            for i in range(len(revs) - 4):
-                base = revs[i + 4]
-                if base and base > 0:
-                    rev_yoy.append(revs[i] / base - 1.0)
+        # 妙想报表是年内累计值（一季报=3个月/中报=6个月/…），YoY 必须
+        # 同期对齐（一季报 vs 上年一季报）；日频估值行按月份锚点排除。
+        def _qkey(row):
+            d = str(row.get("date") or "")[:10]
+            if len(d) != 10 or not d[:4].isdigit():
+                return None
+            return (int(d[:4]),
+                    {"03": 1, "06": 2, "09": 3, "12": 4}.get(d[5:7]))
 
-        gm = [self._safe_float(r.get("gross_margin")) for r in rows]
-        gm = [v for v in gm if v is not None]
-        ni_series = [self._safe_float(r.get("net_income")) for r in rows]
+        rev_by_qp: dict[tuple, float] = {}
+        ni_by_qp: dict[tuple, float] = {}
+        gm = []
+        roe = None
+        for r in rows:  # rows 已 newest-first
+            qk = _qkey(r)
+            if qk is None:
+                continue
+            for target, field in ((rev_by_qp, "revenue"),
+                                  (ni_by_qp, "net_income")):
+                v = self._safe_float(r.get(field))
+                if v is not None and v != 0:
+                    target.setdefault(qk, v)
+            gmv = self._safe_float(r.get("gross_margin"))
+            if gmv is not None:
+                gm.append(gmv)
+            if roe is None:
+                rv = self._safe_float(r.get("roe"))
+                if rv is not None:
+                    roe = rv
+
+        rev_yoy = []
+        for (y, q), v in sorted(rev_by_qp.items(), reverse=True):
+            prev = rev_by_qp.get((y - 1, q))
+            if prev and prev > 0:
+                rev_yoy.append(v / prev - 1.0)
+
         pe_series = [self._safe_float(r.get("pe_ratio")) for r in rows]
+        pe_series = [v for v in pe_series if v is not None]
 
         series = {
             "rev_yoy": rev_yoy, "gm": gm,
-            "net_income_series": [v for v in ni_series if v is not None],
-            "pe_series": [v for v in pe_series if v is not None],
+            "net_income_series": [v for _, v in sorted(ni_by_qp.items(),
+                                                       reverse=True)],
+            "pe_series": pe_series,
             "pe": pe_series[0] if pe_series and pe_series[0] else None,
-            "roe": next((self._safe_float(r.get("roe")) for r in rows
-                         if self._safe_float(r.get("roe")) is not None), None),
+            "roe": roe,
             "name": facts.get("name"), "sector": facts.get("sector"),
             "industry": facts.get("industry"),
         }

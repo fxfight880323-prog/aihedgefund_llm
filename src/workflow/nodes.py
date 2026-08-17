@@ -46,7 +46,13 @@ def fetch_data(state: FundState) -> dict[str, Any]:
     for ticker in universe:
         try:
             prices = data_client.get_prices(ticker, start, as_of)
-            bars = [p for p in prices if p.get("time", "")[:10] <= as_of]
+            # 只取有有效收盘价的 bar：盘中运行时当日 bar 的收盘价可能
+            # 为空（未收盘），应回退到最近一根已收盘 bar。
+            bars = [
+                p for p in prices
+                if p.get("time", "")[:10] <= as_of
+                and isinstance(p.get("close"), (int, float)) and p["close"]
+            ]
             if bars:
                 marks[ticker] = max(bars, key=lambda p: p.get("time", ""))["close"]
             else:
