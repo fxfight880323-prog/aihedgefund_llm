@@ -15,6 +15,9 @@ __pycache__/
 .pytest_cache/
 pytest-cache-files-*/
 
+# BSADF Monte-Carlo critical-value cache (regenerated on demand)
+src/signals/_bsadf_cache/
+
 # Local environment (may hold keys)
 .env
 

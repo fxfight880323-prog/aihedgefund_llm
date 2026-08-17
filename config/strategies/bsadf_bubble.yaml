@@ -1,0 +1,34 @@
+# BSADF bubble-timing strategy — ride-the-bubble + panic-bottom detection.
+# Phillips-Shi-Yu (2015) explosive-root test on log prices, with a v3 phase
+# machine (CALM→IGNITION→RIDING→FADING→BURST) and v1 fear detection.
+#
+# Conviction:
+#   RIDING/IGNITION → +1.0  (ride the inflating bubble)
+#   FADING          → +0.5→0 (BSADF rolling off peak, still long)
+#   BURST/PROBE_EXIT→ -1.0  (bubble cracking, exit / crash ahead)
+#   FEAR (BSADF<CV05)→ +0.5 (contrarian bullish at panic bottoms)
+#   CALM            →  0.0  (abstain)
+
+name: bsadf-bubble
+display_name: BSADF 泡沫择时
+models:
+  - name: bsadf
+    weight: 1.0
+    params:
+      window: 160              # trailing window (trading days)
+      # min_win: 50            # None ⇒ PSY rule (0.01 + 1.8/√T); set int to fix
+      n_sim: 2000              # Monte-Carlo paths for critical values
+      seed: 42
+      ride_bubble: true        # false ⇒ avoid-the-bubble (v1 style, bearish on bubble)
+      fear_strength: 0.5       # conviction when BSADF < CV05 (panic bottom)
+      lookback_years: 3.0
+      # v3 exit params (param_sweep optimum):
+      fade_threshold: 0.10
+      fade_full: 0.20
+      trailing_stop: 0.15
+      probe_days: 5
+      probe_min_ret: -0.03
+blend:
+  method: conviction_weighted
+  gross_target: 1.0
+  market_neutral: false

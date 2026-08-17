@@ -48,6 +48,7 @@ MODEL     =  an alpha model → Signal          (conviction in [-1,+1] + thesis)
 3. **One interface for every analyst** — implement `AlphaModel.predict()` and it plugs in
 4. **Fail loud** — infrastructure failures raise; only genuine "no data" returns empty
 5. **Conviction requests, risk disposes** — analysts propose, risk disposes
+6. **Data completeness is guaranteed by construction** — fetch required fields aggressively (multi-query + cache-bypass retry), declare any genuinely unavailable field as an explicit DATA GAP in the packet, and never let a declared gap silently kill an analysis: the analyst constructs tagged [EST]/[HEUR] estimates and continues. An analysis may only fail on logic, never on a silently missing field. (See `src/workflow/growth_loop_graph.py` — 数据完整性原则.)
 
 ---
 

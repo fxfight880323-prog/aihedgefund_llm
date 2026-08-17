@@ -19,11 +19,17 @@ from src.core.interfaces import AlphaModel, QuantModel, LLMAgent
 from src.signals.pead import PEADModel
 from src.signals.buffett import BuffettAgent
 from src.signals.ashare_value import AshareValueModel
+from src.signals.bsadf import BSADFModel
+from src.signals.tech_confluence import TechConfluenceModel
+from src.signals.growth_loop import GrowthLoopAgent
 
 # Register built-in models
 ALPHA_MODEL_REGISTRY["pead"] = PEADModel
 ALPHA_MODEL_REGISTRY["buffett"] = BuffettAgent
 ALPHA_MODEL_REGISTRY["ashare_value"] = AshareValueModel
+ALPHA_MODEL_REGISTRY["bsadf"] = BSADFModel
+ALPHA_MODEL_REGISTRY["tech_confluence"] = TechConfluenceModel
+ALPHA_MODEL_REGISTRY["growth_loop"] = GrowthLoopAgent
 
 # ---- ADD YOUR MODELS HERE ----
 # from src.signals.my_momentum import MyMomentumModel
@@ -43,4 +49,7 @@ __all__ = [
     "PEADModel",
     "BuffettAgent",
     "AshareValueModel",
+    "BSADFModel",
+    "TechConfluenceModel",
+    "GrowthLoopAgent",
 ]

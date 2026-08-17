@@ -1,0 +1,22 @@
+# GOAL→HOOK→LOOP 成长股决策引擎策略。
+# HOOK 层（数值化筛选 H1/H2/H3/H6）→ LOOP 层（L1-L7 LLM 门控深研 +
+# L8 确定性信念）。KILL=abstain；L7 强空头 ≥7/10 输出做空候选信号。
+#
+# GOAL 层参数即 params（剧本 PROMPT G-1 的字段）：
+
+name: growth-loop
+display_name: 成长股 GOAL-HOOK-LOOP
+models:
+  - name: growth_loop
+    weight: 1.0
+    params:
+      target_return: 0.15        # 年化目标收益（L6 门槛）
+      horizon_years: 3           # 最短持有意图（年）
+      min_revenue_growth: 0.20   # 最低营收增速（L1/L2 门槛）
+      max_loop_backs: 2          # 每阶段最大回环次数，第3次自动 KILL
+      strong_short_value: -0.5   # L7 强空头 (≥7/10) 的信念值
+      # hooks: [H1, H2, H6]      # 可选：只启用部分数值 hook
+blend:
+  method: conviction_weighted
+  gross_target: 1.0
+  market_neutral: false

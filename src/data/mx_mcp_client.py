@@ -44,10 +44,10 @@ from src.data.cache import DiskCache
 
 MX_MCP_URL = "https://mxapi.eastmoney.com/mxds/mcp"
 
-# Hardcoded fallback API key (hardcore mode): used when neither a constructor
-# arg, the EM_API_KEY env var, nor a .env file supplies one. Lets every 妙想
-# call work out of the box without manual configuration.
-DEFAULT_EM_API_KEY = "EM_KEY_REDACTED"
+# Fallback API key: only from the environment / .env (EM_API_KEY). 密钥不进
+# 源码——把你的妙想 key 放进项目根目录的 .env 文件即可（该文件被
+# .gitignore 忽略，不会进入版本库）。
+DEFAULT_EM_API_KEY = os.environ.get("EM_API_KEY") or None
 
 # Canonical tool names exposed by the 妙想 MCP server.
 TOOL_ASHARE = "mx_ashare_finance_data"            # A股

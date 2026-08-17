@@ -48,8 +48,10 @@ class ZhipuLLMClient:
         model: str | None = None,
         base_url: str | None = None,
         temperature: float | None = None,
+        trust_env: bool | None = None,
         **kwargs: Any,
     ):
+        import httpx
         from langchain_openai import ChatOpenAI
 
         self.api_key = api_key or _require_env("ZHIPU_API_KEY")
@@ -63,12 +65,24 @@ class ZhipuLLMClient:
             else float(os.environ.get("ZHIPU_TEMPERATURE", self.DEFAULT_TEMPERATURE))
         )
 
+        # bigmodel.cn 是国内 API，直连即可。默认绕过系统代理（Windows 注册表
+        # 代理可能指向未运行的本地代理如 Clash，会阻断连接）——与
+        # MXMCPClient 的 trust_env=False 同一模式。设 ZHIPU_TRUST_ENV=1
+        # 可恢复走代理（企业网络等场景）。
+        if trust_env is None:
+            trust_env = os.environ.get("ZHIPU_TRUST_ENV", "").strip() == "1"
+        client_kwargs = dict(kwargs)
+        if not trust_env and "http_client" not in client_kwargs:
+            client_kwargs["http_client"] = httpx.Client(
+                trust_env=False, timeout=120.0
+            )
+
         self._chat = ChatOpenAI(
             api_key=self.api_key,
             base_url=self.base_url,
             model=self.model,
             temperature=self.temperature,
-            **kwargs,
+            **client_kwargs,
         )
 
     def complete(self, system_prompt: str, user_prompt: str) -> str:

@@ -65,7 +65,7 @@ class MXDataClient:
         sheets = self.client.query(
             tool_for_ticker(ticker),
             f"{ticker} 从 {start_date} 到 {end_date} 每个交易日的"
-            f"开盘价、最高价、最低价、收盘价、成交量",
+            f"开盘价、最高价、最低价、收盘价、成交量、成交额",
         )
         bars: list[dict[str, Any]] = []
         for sheet in sheets:
@@ -76,8 +76,10 @@ class MXDataClient:
             lows = _row_by_date(indexed, _is_low)
             closes = _row_by_date(indexed, _is_close)
             vols = _row_by_date(indexed, _is_volume)
+            amounts = _row_by_date(indexed, _is_amount)
             dates = sorted(
-                set(closes) | set(opens) | set(highs) | set(lows) | set(vols)
+                set(closes) | set(opens) | set(highs) | set(lows)
+                | set(vols) | set(amounts)
             )
             for d in dates:
                 # Skip non-date header columns (e.g. the ticker column).
@@ -91,6 +93,7 @@ class MXDataClient:
                         "low": parse_cn_number(lows.get(d, "")),
                         "close": parse_cn_number(closes.get(d, "")),
                         "volume": parse_cn_number(vols.get(d, "")),
+                        "amount": parse_cn_number(amounts.get(d, "")),
                     }
                 )
         bars.sort(key=lambda b: b["time"])
@@ -230,6 +233,88 @@ class MXDataClient:
             return None
         return {"ticker": ticker, "series": series}
 
+    # ------------------------------------------------------------------
+    # Optional capability beyond the DataClient protocol: L1 深研需要的
+    # 主营构成 / 客户集中度。growth_loop 的 build_data_packet 通过
+    # hasattr 探测调用；其他 data client 可不实现。
+    # ------------------------------------------------------------------
+
+    def get_segment_breakdown(self, ticker: str) -> str | None:
+        """主营构成文本块：各产品/业务收入、占比、毛利率 + 前五大客户占比。"""
+        try:
+            sheets = self.client.query(
+                tool_for_ticker(ticker),
+                f"{ticker} 最新报告期主营构成：各产品/业务板块的营业收入、"
+                f"收入占比、毛利率，以及前五大客户合计收入占比",
+            )
+        except Exception:
+            return None
+        lines: list[str] = []
+        for sheet in sheets:
+            cols = [c for c in sheet.get("columns", [])]
+            if "证券代码" in cols or len(cols) < 2:
+                # key/value 型 sheet（如前五大客户占比）
+                for row in sheet.get("items", []):
+                    if row and len(row) >= 2 and row[1] not in (None, ""):
+                        lines.append(f"  {row[0]}: {row[1]}")
+                continue
+            lines.append(f"  [{' | '.join(str(c) for c in cols[:4])}]")
+            for row in sheet.get("items", [])[:12]:
+                if row:
+                    lines.append("  " + " | ".join(str(c) for c in row[:4]))
+        return "\n".join(lines) if lines else None
+
+    # ------------------------------------------------------------------
+    # 数据完整性原则的取数层落地：L3/L5/L6 必需的利润表/现金流/
+    # 资产负债表明细。带绕缓存重试；仍取不到的字段由 build_data_packet
+    # 显式声明为 DATA GAP（禁止静默缺失）。
+    # ------------------------------------------------------------------
+
+    def get_financial_detail(self, ticker: str) -> str | None:
+        """财务明细文本块（季度序列 + 快照）— L3/L5/L6 的核心输入。
+
+        序列: 营业利润、研发/销售/管理费用、经营现金流净额、资本开支
+        快照: 总股本、总市值、货币资金、有息负债、股份支付费用
+        """
+        tool = tool_for_ticker(ticker)
+        q_series = (
+            f"{ticker} 最近8个报告期的营业利润、研发费用、销售费用、"
+            f"管理费用、经营活动产生的现金流量净额、购建固定资产、"
+            f"无形资产和其他长期资产支付的现金"
+        )
+        q_snapshot = (
+            f"{ticker} 最新的总股本、总市值、货币资金、短期借款、"
+            f"长期借款、股份支付费用"
+        )
+
+        lines: list[str] = []
+        for label, q in (("SERIES", q_series), ("SNAPSHOT", q_snapshot)):
+            sheets = []
+            for attempt in (1, 2):  # 完整性原则：空响应绕缓存重试一次
+                try:
+                    sheets = self.client.query(tool, q, use_cache=(attempt == 1))
+                except Exception:
+                    sheets = []
+                if sheets:
+                    break
+            if not sheets:
+                lines.append(f"  [{label}] FETCH-UNAVAILABLE")
+                continue
+            lines.append(f"  [{label}]")
+            for sheet in sheets:
+                for metric, by_col in sheet_to_indexed(sheet).items():
+                    pairs = sorted(
+                        ((c, v) for c, v in by_col.items()
+                         if v not in (None, "") and _looks_like_date(c)),
+                        key=lambda cv: _normalize_date(cv[0]),
+                        reverse=True,
+                    )
+                    if not pairs:
+                        continue
+                    shown = " | ".join(f"{c}={v}" for c, v in pairs[:8])
+                    lines.append(f"    {metric}: {shown}")
+        return "\n".join(lines) if len(lines) > 2 else None
+
 
 # ---------------------------------------------------------------------------
 # Internal parsing helpers
@@ -254,6 +339,10 @@ def _is_close(label: str) -> bool:
 
 def _is_volume(label: str) -> bool:
     return "成交量" in label or "手数" in label
+
+
+def _is_amount(label: str) -> bool:
+    return "成交额" in label or "成交金额" in label
 
 
 _DATE_RES = (

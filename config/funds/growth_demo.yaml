@@ -1,0 +1,29 @@
+# 成长股 GOAL→HOOK→LOOP Demo 基金。
+# 风险限额对齐剧本 GOAL 层："Max single position 8% at cost"。
+
+name: 成长股决策引擎 Demo
+capital: 1000000
+rebalance: weekly
+benchmark: 000688.SH
+
+strategies:
+  - name: growth-loop
+    display_name: GOAL-HOOK-LOOP Pod
+    weight: 1.0
+    models:
+      - name: growth_loop
+        weight: 1.0
+        params:
+          target_return: 0.15
+          horizon_years: 3
+          min_revenue_growth: 0.20
+          max_loop_backs: 2
+          strong_short_value: -0.5
+    blend:
+      method: conviction_weighted
+      gross_target: 1.0
+      market_neutral: false
+
+risk:
+  max_position_pct: 0.08      # 剧本 GOAL: "8% at cost"
+  max_gross_exposure: 1.0     # unlevered

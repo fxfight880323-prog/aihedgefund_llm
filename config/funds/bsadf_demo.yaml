@@ -1,0 +1,30 @@
+# BSADF bubble-timing demo fund — single bubble-timing pod over a small
+# A-share universe. Pair with examples/bsadf_demo.py and MXDataClient.
+
+name: BSADF 泡沫择时基金 Demo
+capital: 1000000        # RMB 1,000,000
+rebalance: weekly
+benchmark: 000688.SH    # 科创50
+
+strategies:
+  - name: bsadf_confluence
+    display_name: BSADF+共振 Pod
+    weight: 1.0
+    models:
+      - name: bsadf
+        weight: 0.7
+        params:
+          window: 160
+          n_sim: 2000
+          ride_bubble: true
+          fear_strength: 0.5
+      - name: tech_confluence
+        weight: 0.3
+    blend:
+      method: conviction_weighted
+      gross_target: 1.0
+      market_neutral: false
+
+risk:
+  max_position_pct: 0.25      # concentrated timing book
+  max_gross_exposure: 1.0     # unlevered
