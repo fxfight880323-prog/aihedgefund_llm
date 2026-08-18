@@ -33,6 +33,10 @@ class BalancedSharpnessBlend(BlendPolicy):
         class_mix: dict[str, float] | None = None,  # A/B/C 配比上限
         per_name_cap: float = 0.05,           # 单票上限 [stated≈5%]
         off_theme_sleeve: float = 0.10,       # 自下而上非主题 sleeve
+        max_names_per_direction: int | None = None,  # 每方向只保留信念最高的
+        # N 只（spec："买赢的环节里的龙头"，30-40只/6方向 ≈ 5-6只/方向）
+        scale_to_target: bool = False,        # 满仓模式：不足 gross_target
+        # 时按比例放大（仍受单票/类配比上限约束）
         **kwargs,
     ):
         self._top_w = top_direction_weight
@@ -41,6 +45,8 @@ class BalancedSharpnessBlend(BlendPolicy):
         self._class_mix = class_mix or {"A": 0.55, "B": 0.30, "C": 0.05}
         self._cap = per_name_cap
         self._off_theme = off_theme_sleeve
+        self._max_names = max_names_per_direction
+        self._scale_to_target = scale_to_target
 
     def blend(
         self,
@@ -77,12 +83,16 @@ class BalancedSharpnessBlend(BlendPolicy):
             else:
                 off_theme.append(t)
 
-        # ---- 方向稀缺度排名 → 单调权重 ----
+        # ---- 方向稀缺度排名 → 单调权重；每方向只留信念最高的 N 只 ----
         dirs = []
         for link, members in by_link.items():
             scores = [views[t]["link_score"] for t in members
                       if views[t]["link_score"] is not None]
             score = sum(scores) / len(scores) if scores else 0.0
+            if self._max_names:
+                members = sorted(
+                    members, key=lambda t: -views[t]["value"]
+                )[: self._max_names]
             dirs.append({"link": link, "members": members, "score": score})
         dirs.sort(key=lambda d: -d["score"])
         dirs = dirs[: self._max_dirs]
@@ -120,6 +130,15 @@ class BalancedSharpnessBlend(BlendPolicy):
             scale = budget / gross
             weights = {t: w * scale if w > 0 else 0.0
                        for t, w in weights.items()}
+
+        # ---- 满仓模式：不足 gross_target 时按比例放大到目标（先放大，
+        # 再受类配比/单票上限约束——顺序错了会把类配比顶破）----
+        if self._scale_to_target:
+            gross = sum(w for w in weights.values() if w > 0)
+            if 0 < gross < gross_target:
+                scale = gross_target / gross
+                weights = {t: w * scale if w > 0 else 0.0
+                           for t, w in weights.items()}
 
         # ---- 类配比上限（溢出即现金，不再分配）----
         for cls, cap in self._class_mix.items():

@@ -35,7 +35,8 @@ from src.core.models import Signal
 DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
     "光模块/光通信": {
         "s_scores": [2, 2, 2, 1, 2],   # 9/10 — 稀缺度第一
-        "keywords": ["光模块", "光通信", "光器件", "光缆", "硅光"],
+        "keywords": ["光模块", "光通信", "光器件", "光缆", "硅光",
+                    "光学光电子", "光纤"],
     },
     "PCB材料": {
         "s_scores": [2, 1, 1, 2, 2],   # 8/10 — 日系垄断上游，涨价早段
@@ -43,11 +44,12 @@ DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
     },
     "CPU+光芯片": {
         "s_scores": [2, 2, 1, 1, 2],   # 8/10
-        "keywords": ["光芯片", "CPU", "处理器", "微电子"],
+        "keywords": ["光芯片", "CPU", "处理器", "模拟芯片设计"],
     },
     "国产算力": {
         "s_scores": [1, 2, 1, 1, 2],   # 7/10
-        "keywords": ["算力", "GPU", "AI芯片", "图形处理", "智能芯片", "芯原", "IP授权", "芯片设计服务"],
+        "keywords": ["算力", "GPU", "AI芯片", "图形处理", "智能芯片", "芯原",
+                    "IP授权", "数字芯片设计", "集成电路设计"],
     },
     "半导体设备": {
         "s_scores": [1, 1, 1, 1, 2],   # 6/10 — 长周期可见性
@@ -61,7 +63,7 @@ DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
     },
     "存储": {
         "s_scores": [2, 2, 1, 1, 0],   # 6/10 — 涨价中段；模组是成本承受方
-        "keywords": ["存储", "内存", "闪存", "DRAM", "NAND", "模组"],
+        "keywords": ["存储", "内存", "闪存", "DRAM", "NAND", "存储器"],
     },
 }
 
@@ -78,6 +80,15 @@ _DEFAULT_DASHBOARD = {
     "token_mom": "neutral",         # V3
 }
 _LEADING = ("frontier_models", "frontier_arr", "cloud_roi")
+
+
+def _band(x: float | None, low: float, high: float) -> float:
+    """把 x 映射到 [0,1]（low→0, high→1）；None → 0.5（不惩罚未知）。"""
+    if x is None:
+        return 0.5
+    if high <= low:
+        return 0.5
+    return max(0.0, min(1.0, (x - low) / (high - low)))
 
 
 class RotationGrowthModel(QuantModel):
@@ -97,6 +108,20 @@ class RotationGrowthModel(QuantModel):
         # 类则估值 [param]
         b_class_pe_ceiling: float = 20.0, # B 类 PE 上限（消费电子核心口径）
         upside_hurdle: float = 0.30,      # A 类 3 年空间代理门槛
+        # 质量 [param] — 章宏帆实际持仓全是各环节高质量龙头（旭创/北方
+        # 华创/中芯/圣邦…），重视质量甚于增速尖点：
+        #   信念 = 增速×环节 × 质量乘数；高质量龙头豁免"加速"一刀切；
+        #   OFF sleeve 限科技域；ST 过滤
+        min_roe_for_a: float = 8.0,       # A 类 ROE 硬门槛（大市值豁免至 5）
+        good_gm: float = 45.0,            # 毛利率质量带（≥45 = 设计/IP 型优）
+        bad_gm: float = 20.0,
+        good_roe: float = 20.0,
+        leader_mcap_tier2: float = 200.0, # 龙头度市值档（亿元）
+        leader_mcap_tier1: float = 500.0,
+        require_profit: bool = True,      # A 类要求正利润（PE>0）
+        quality_lane: bool = True,        # 高质量龙头允许增速回落仍入 A
+        st_filter: bool = True,           # ST/*ST 直接 abstain
+        off_theme_scope: list[str] | None = None,  # OFF sleeve 行业域关键词
         # G5 / L5 [param]
         g5_pe_dominance: float = 0.30,    # ΔPE 主导判定阈值
         ai_dashboard: dict[str, str] | None = None,
@@ -111,6 +136,16 @@ class RotationGrowthModel(QuantModel):
         self._off_theme_roe = off_theme_roe
         self._off_theme_gm = off_theme_gm
         self._pe_ceiling = b_class_pe_ceiling
+        self._min_roe_a = min_roe_for_a
+        self._good_gm, self._bad_gm = good_gm, bad_gm
+        self._good_roe = good_roe
+        self._mc_t2, self._mc_t1 = leader_mcap_tier2, leader_mcap_tier1
+        self._require_profit = require_profit
+        self._quality_lane = quality_lane
+        self._st_filter = st_filter
+        self._off_scope = off_theme_scope if off_theme_scope is not None else [
+            "电子", "通信", "计算机", "半导体", "软件", "芯片", "光电",
+            "数据中心", "人工智能", "元器件", "光学", "军工"]
         self._upside_hurdle = upside_hurdle
         self._g5_threshold = g5_pe_dominance
         dash = dict(_DEFAULT_DASHBOARD)
@@ -143,18 +178,78 @@ class RotationGrowthModel(QuantModel):
         link_score = sum(s_scores) if s_scores else None
         link_norm = (link_score / 10.0) if link_score is not None else 0.0
 
-        # ---- L1 分类（顺序：C 极端无利 → A 高增加速 → B 周期回升）----
+        # 全局科技域门：无环节匹配且行业在域外 → abstain（任何类）。
+        # 环节匹配的名字天然在域内（环节表本身是数字经济链）。
+        if link is None:
+            scope_text = " ".join(filter(None, [
+                series.get("sector") or "", series.get("industry") or ""]))
+            if scope_text and not any(
+                    k in scope_text for k in self._off_scope):
+                return self._abstain(
+                    ticker, date,
+                    f"out of digital-economy scope: {scope_text[:40]}")
+
+        # ---- 质量分（Q）：章宏帆持仓全是环节内高质量龙头 ----
+        roe = series["roe"]
+        pe = series["pe"]
+        mcap = series.get("market_cap")          # 亿元
+        name_text = str(series.get("name") or "") + ticker
+        if self._st_filter and ("ST" in name_text.upper()):
+            return self._abstain(ticker, date, "ST/*ST filtered")
+
+        q_gm = _band(gm_now, self._bad_gm, self._good_gm)
+        q_roe = _band(roe, 0.0, self._good_roe)
+        is_leader = (mcap is not None and mcap >= self._mc_t2)
+        is_big_leader = (mcap is not None and mcap >= self._mc_t1)
+        profitable = (pe is None) or (pe > 0)    # PE 未知不惩罚
+        quality_mult = 0.55 + 0.25 * q_gm + 0.15 * q_roe \
+            + (0.15 if is_big_leader else 0.10 if is_leader else 0.0) \
+            + (0.05 if profitable else -0.25)
+        quality_mult = max(0.30, min(1.15, quality_mult))
+
+        # ---- L1 分类（C 极端/低质 → A 高增(含质量豁免通道) → B 周期 → OFF）----
+        low_quality_growth = (roe is not None and roe < 5) or not profitable
         if (growth >= self._emerging_growth
-                and (gm_now is None or gm_now < self._emerging_max_gm)):
+                and ((gm_now is not None and gm_now < self._emerging_max_gm)
+                     or low_quality_growth)):
             asset_class = "C"
         elif growth >= self._boom_growth and accel:
+            # A 类质量门槛：ROE≥8（大市值龙头豁免至 5）+ 正利润
+            roe_gate = roe is None or roe >= (
+                5.0 if is_leader else self._min_roe_a)
+            if self._require_profit and not profitable:
+                return self._abstain(
+                    ticker, date,
+                    f"[A] loss-making high-growth downgraded: "
+                    f"growth={growth:+.0%} but PE={pe} — fails quality "
+                    f"gate (spec: boom leaders are profitable)")
+            if not roe_gate:
+                # 高增速低 ROE → 降级 C 小仓位（他的书里这类是摩尔线程们）
+                asset_class = "C"
+            else:
+                asset_class = "A"
+        elif (self._quality_lane and len(rev_yoy) >= 2 and not accel
+              and growth >= self._boom_growth * 0.6
+              and roe is not None and roe >= 15 and gm_now is not None
+              and gm_now >= 30 and is_leader):
+            # 质量豁免通道：龙头(市值≥200亿)+ROE≥15+毛利≥30，增速从顶点
+            # 自然回落但仍 ≥30% → 仍入 A（打 0.85 折）——旭创/北方华创类
             asset_class = "A"
+            quality_mult *= 0.85
         elif (gm_recovering and 0 < growth < self._boom_growth
                 and (gm_now is not None and gm_now < self._b_class_max_gm)):
             asset_class = "B"
-        elif (series["roe"] is not None and series["roe"] >= self._off_theme_roe
+        elif (roe is not None and roe >= self._off_theme_roe
                 and gm_now is not None and gm_now >= self._off_theme_gm):
-            asset_class = "OFF"   # 自下而上备选（非主题强基本面）
+            # OFF sleeve 限科技域（数字经济基金语境：补涨的强基本面科技股，
+            # 不是地产/矿业/ST）
+            scope_text = " ".join(filter(None, [
+                series.get("sector") or "", series.get("industry") or ""]))
+            if not any(k in scope_text for k in self._off_scope):
+                return self._abstain(
+                    ticker, date,
+                    f"off-theme out of scope: {scope_text[:40]}")
+            asset_class = "OFF"
         else:
             return self._abstain(
                 ticker, date,
@@ -162,7 +257,7 @@ class RotationGrowthModel(QuantModel):
                 f"accel={accel}, gm_recovering={gm_recovering}",
             )
 
-        # ---- 类则估值 + 信念 ----
+        # ---- 类则估值 + 信念（质量乘数统一作用）----
         g5 = self._g5_decomposition(series)
         g5_penalty = 0.5 if g5.get("pe_dominant") else 1.0
 
@@ -195,7 +290,7 @@ class RotationGrowthModel(QuantModel):
             value = min(0.40, 0.20
                         + 0.10 * min((series["roe"] or 0) / 30.0, 1.0))
 
-        value *= g5_penalty
+        value *= quality_mult * g5_penalty
 
         # ---- L5 regime：≥2/3 领先指标转熊 → A 类减半 ----
         regime = "neutral"
@@ -238,9 +333,9 @@ class RotationGrowthModel(QuantModel):
     # ------------------------------------------------------------------
 
     def _match_link(self, ticker: str, series: dict) -> tuple[str | None, list[int] | None]:
+        # 只用 行业+名称 匹配（概念标签 blob 会把 PCB 厂匹配进光模块）
         text = " ".join(filter(None, [
-            series.get("name") or "", series.get("sector") or "",
-            series.get("industry") or "", ticker,
+            series.get("name") or "", series.get("industry") or "",
         ]))
         ordered = sorted(
             self._link_map.items(),
@@ -342,13 +437,24 @@ class RotationGrowthModel(QuantModel):
         pe_series = [self._safe_float(r.get("pe_ratio")) for r in rows]
         pe_series = [v for v in pe_series if v is not None]
 
+        # 市值（亿元）：metrics 行或 facts 提供（选股器 adapter 传）
+        mcap = None
+        for r in rows:
+            mcap = self._safe_float(r.get("market_cap"))
+            if mcap is not None:
+                break
+        if mcap is None:
+            mcap = self._safe_float(facts.get("market_cap"))
+        if mcap is not None and mcap > 1e6:      # 元 → 亿元
+            mcap = mcap / 1e8
+
         series = {
             "rev_yoy": rev_yoy, "gm": gm,
             "net_income_series": [v for _, v in sorted(ni_by_qp.items(),
                                                        reverse=True)],
             "pe_series": pe_series,
             "pe": pe_series[0] if pe_series and pe_series[0] else None,
-            "roe": roe,
+            "roe": roe, "market_cap": mcap,
             "name": facts.get("name"), "sector": facts.get("sector"),
             "industry": facts.get("industry"),
         }
@@ -361,12 +467,16 @@ class RotationGrowthModel(QuantModel):
     def _reasoning(cls_, link, link_score, growth, accel, gm_rec, series,
                    g5, regime) -> str:
         pe = series.get("pe")
+        roe = series.get("roe")
+        mcap = series.get("market_cap")
+        mcap_s = f"{mcap:.0f}亿" if isinstance(mcap, (int, float)) else "-"
         g5_s = (f"G5: ΔEPS={g5['eps_growth']:+.0%} ΔPE={g5['pe_change']:+.0%}"
                 f"{' [PE主导→信念减半]' if g5.get('pe_dominant') else ''}"
                 ) if g5.get("available") else "G5: n/a"
         return (
             f"[{cls_}] growth={growth:+.0%}(accel={accel}) "
-            f"gm_cycle={'↑' if gm_rec else '→'} PE={pe} "
+            f"gm_cycle={'↑' if gm_rec else '→'} PE={pe} ROE={roe} "
+            f"mcap={mcap_s} "
             f"link={link}({link_score if link_score is not None else '-'}/10) "
             f"{g5_s} regime={regime}"
         )

@@ -43,15 +43,102 @@ class TestClassifier:
         assert sig.value > 0
 
     def test_structural_quality_goes_off_theme_not_b(self):
-        # 65% 稳定毛利 = 结构性优质（OFF），不该按周期 B 类处理
+        # 65% 稳定毛利 = 结构性优质，不按周期 B 类处理；且医疗行业在
+        # 数字经济域外 → OFF scope 过滤后 abstain（新语义）
         sig = _predict("688271.SH")
-        assert sig.metadata["asset_class"] == "OFF"
-        assert sig.metadata["link"] is None
+        assert sig.value == 0.0
+        assert sig.metadata.get("abstained") is True
+        assert "scope" in sig.reasoning
+
+    def test_structural_quality_in_scope_goes_off(self):
+        # 同样强基本面但在科技域内 → 正常入 OFF sleeve
+        class _InScope(MockRotationClient):
+            def get_company_facts(self, ticker):
+                f = super().get_company_facts(ticker) or {}
+                f["industry"] = "电子-元器件"
+                return f
+        sig = RotationGrowthModel().predict(
+            "688271.SH", AS_OF, _InScope())
+        assert sig.metadata.get("asset_class") == "OFF"
+        assert sig.value > 0
 
     def test_not_investable_abstains(self):
         sig = _predict("688009.SH")
         assert sig.value == 0.0
         assert sig.metadata.get("abstained") is True
+
+
+class TestQualityLogic:
+
+    def test_st_filtered(self):
+        class _STClient(MockRotationClient):
+            def get_company_facts(self, ticker):
+                f = dict(super().get_company_facts(ticker) or {})
+                f["name"] = "*ST东之光"
+                return f
+        sig = RotationGrowthModel().predict("688308.SH", AS_OF, _STClient())
+        assert sig.value == 0.0 and "ST" in sig.reasoning
+
+    def test_high_growth_low_roe_downgraded_to_c(self):
+        # 高增速但 ROE 2.9%（行云科技画像）→ 降级 C 小仓位而非 A 重仓
+        class _LowRoe(MockRotationClient):
+            def get_financial_metrics(self, t, e, period="ttm", limit=10):
+                rows = super().get_financial_metrics(t, e, period, limit)
+                for r in rows:
+                    r["roe"] = 2.9
+                return rows
+        sig = RotationGrowthModel().predict("688308.SH", AS_OF, _LowRoe())
+        assert sig.metadata.get("asset_class") == "C"
+        assert sig.value <= 0.30
+
+    def test_loss_making_boom_growth_rejected_from_a(self):
+        # 增速 80%（boom 区间 50-150%）+ 亏损 → A 类质量门 abstain。
+        # 注意：≥150% 的极端亏损增长（摩尔线程画像）按 spec 归 C 小仓位
+        #（张的持仓里确实小仓位持有亏损 GPU 公司）——那是正确行为。
+        class _Loss(MockRotationClient):
+            def get_financial_metrics(self, t, e, period="ttm", limit=10):
+                rows = super().get_financial_metrics(t, e, period, limit)
+                for i, r in enumerate(rows):
+                    r["pe_ratio"] = -50
+                    r["revenue"] = [180, 170, 100, 100, 100, 100,
+                                    100, 100][i]
+                return rows
+        sig = RotationGrowthModel().predict("688308.SH", AS_OF, _Loss())
+        assert sig.metadata.get("abstained") is True
+        assert "quality gate" in sig.reasoning
+
+    def test_loss_making_extreme_growth_goes_c_small(self):
+        # ≥150% 极端增长 + 亏损 → C 类小仓位（摩尔线程画像，spec 行为）
+        class _LossExtreme(MockRotationClient):
+            def get_financial_metrics(self, t, e, period="ttm", limit=10):
+                rows = super().get_financial_metrics(t, e, period, limit)
+                for r in rows:
+                    r["pe_ratio"] = -50
+                return rows
+        sig = RotationGrowthModel().predict(
+            "688308.SH", AS_OF, _LossExtreme())
+        assert sig.metadata.get("asset_class") == "C"
+        assert sig.value <= 0.30
+
+    def test_quality_lane_leader_decel_but_high_quality_stays_a(self):
+        # 旭创画像：市值 800亿 + ROE 22 + 毛利 33，H1 增速 45% < Q1 增速
+        # 60%（从顶点自然回落）→ 质量豁免通道仍入 A（信念打折）
+        class _LeaderDecel(MockRotationClient):
+            def get_financial_metrics(self, t, e, period="ttm", limit=10):
+                rows = super().get_financial_metrics(t, e, period, limit)
+                for i, r in enumerate(rows):
+                    if t == "688308.SH":
+                        # H1'26=145 vs H1'25=100 → +45%；Q1'26=160 vs
+                        # Q1'25=100 → +60% → 减速但高质
+                        r["revenue"] = [145, 160, 100, 100, 100, 100,
+                                        100, 100][i]
+                        r["roe"] = 22
+                        r["gross_margin"] = 33 if i == 0 else 31
+                        r["market_cap"] = 800
+                return rows
+        sig = RotationGrowthModel().predict("688308.SH", AS_OF, _LeaderDecel())
+        assert sig.metadata.get("asset_class") == "A"
+        assert sig.value > 0.3
 
 
 # ===========================================================================
@@ -77,12 +164,13 @@ class TestLinkScoring:
     def test_generic_equipment_keyword_not_matched(self):
         # "医学影像设备" 不应命中半导体设备环节（无裸"设备"关键词）
         sig = _predict("688271.SH")
-        assert sig.metadata["link"] != "半导体设备"
+        assert sig.metadata.get("link") != "半导体设备"
 
     def test_custom_link_map_override(self):
-        model = RotationGrowthModel(link_map={
-            "自定义环节": {"s_scores": [2, 2, 2, 2, 2],
-                          "keywords": ["医学影像"]}})
+        model = RotationGrowthModel(
+            link_map={"自定义环节": {"s_scores": [2, 2, 2, 2, 2],
+                                 "keywords": ["医学影像"]}},
+            off_theme_scope=["医学"])
         sig = model.predict("688271.SH", AS_OF, CLIENT)
         assert sig.metadata["link"] == "自定义环节"
         assert sig.metadata["link_score"] == 10

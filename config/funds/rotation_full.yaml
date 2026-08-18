@@ -1,0 +1,34 @@
+# 有锐度的均衡 · 轮动 满仓版（全A universe 用）
+# 与 rotation_demo 的差异：gross_target=1.0（无现金底仓），方向阶梯
+# 拉宽（top 22% → tail 12%），每方向只留信念最高的 6 只龙头，
+# scale_to_target 放大到满仓（单票/类配比上限仍生效）。
+
+name: 有锐度的均衡 · 全A满仓
+capital: 1000000
+rebalance: weekly
+benchmark: 000985.SH
+
+strategies:
+  - name: rotation-growth
+    display_name: 轮动 Pod (满仓)
+    weight: 1.0
+    models:
+      - name: rotation_growth
+        weight: 1.0
+    blend:
+      method: balanced_sharpness
+      gross_target: 1.0
+      market_neutral: false
+      params:
+        top_direction_weight: 0.22
+        tail_direction_weight: 0.12
+        max_directions: 6
+        class_mix: {A: 0.60, B: 0.35, C: 0.05}
+        per_name_cap: 0.05
+        off_theme_sleeve: 0.05
+        max_names_per_direction: 6
+        scale_to_target: true
+
+risk:
+  max_position_pct: 0.05
+  max_gross_exposure: 1.0
