@@ -143,6 +143,14 @@ LEADER_SEEDS: dict[str, dict[str, str]] = {
                  "顺络电子": "002138.SZ", "三环集团": "300408.SZ",
                  "长电科技": "600584.SH", "通富微电": "002156.SZ",
                  "伟测科技": "688372.SH", "闻泰科技": "600745.SH"},
+    # HK sleeve（spec：个位数仓位；消费互联网 AI 变现慢 → 低配，硬科技
+    # A/H 价差收敛 → 配置）。价格/市值为港元口径，权重层无影响。
+    "光模块/光通信_HK": {"长飞光纤光缆": "06869.HK", "中兴通讯": "00763.HK",
+                    "舜宇光学科技": "02382.HK"},
+    "PCB材料_HK": {"建滔集团": "00148.HK"},
+    "晶圆代工": {"中芯国际": "688981.SH", "华虹公司": "688347.SH",
+              "中芯国际_H": "00981.HK", "华虹半导体_H": "01347.HK"},
+    "_HK_PLATFORMS": {"腾讯控股": "00700.HK", "阿里巴巴-W": "09988.HK"},
 }
 LEADERS_FILE = "_screener_leaders.json"
 
@@ -173,17 +181,29 @@ def fetch_leaders() -> list[dict]:
     """每环节逐股直取龙头全指标（环节归属由查询给定，形态无关解析）。"""
     if os.path.exists(LEADERS_FILE):
         return json.loads(open(LEADERS_FILE, encoding="utf-8").read())
-    from src.data.mx_mcp_client import MXMCPClient, TOOL_ASHARE
+    from src.data.mx_mcp_client import (MXMCPClient, TOOL_ASHARE, TOOL_HK,
+                                        tool_for_ticker)
     from src.data.mx_data_client import sheet_to_indexed
     cli = MXMCPClient()
     out = []
     for link, seeds in LEADER_SEEDS.items():
+        # "_HK" 后缀 = 港股同类环节（assigned_link 映射回 A 股环节名）；
+        # "_HK_PLATFORMS" = 消费互联网平台（无环节 → OFF sleeve 小仓位，
+        # spec：AI 变现慢 → 低配）
+        if link == "_HK_PLATFORMS":
+            real_link = None
+        elif link.endswith("_HK"):
+            real_link = link[:-3]
+        else:
+            real_link = link
         got = 0
         for name, ticker in seeds.items():
-            q = (f"{name}({ticker}) 最近4个报告期的营业收入同比增速、"
+            q_name = name[:-2] if name.endswith("_H") else name
+            tool = tool_for_ticker(ticker) if ticker.endswith(".HK")                 else TOOL_ASHARE
+            q = (f"{q_name}({ticker}) 最近4个报告期的营业收入同比增速、"
                  f"销售毛利率，以及最新的市盈率、ROE、总市值、最新收盘价")
             try:
-                sheets = cli.query(TOOL_ASHARE, q, use_cache=False)
+                sheets = cli.query(tool, q, use_cache=False)
             except Exception:
                 continue
             yoy_map: dict = {}
@@ -247,7 +267,7 @@ def fetch_leaders() -> list[dict]:
                 "roe": scalars.get("roe"), "mcap_yi": mcap,
                 "industry": "", "concept": "",
                 "h1_yoy": g_h1, "q1_yoy": g_q1, "accel": g_h1 > g_q1,
-                "leader_link": link,
+                "leader_link": real_link,
             })
             got += 1
         print(f"  [{link}] {got}/{len(seeds)} 只龙头", flush=True)

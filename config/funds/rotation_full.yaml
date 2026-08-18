@@ -25,6 +25,7 @@ strategies:
             PCB材料: 35
             光模块/光通信: 45
             电子制造/封测: 45
+            晶圆代工: 100
     blend:
       method: balanced_sharpness
       gross_target: 1.0

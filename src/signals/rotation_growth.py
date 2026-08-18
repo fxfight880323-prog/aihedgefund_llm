@@ -61,6 +61,10 @@ DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
         "s_scores": [2, 1, 1, 1, 2],   # 6/10 — 硅片/电子材料，上游价格制定者
         "keywords": ["硅片", "半导体材料", "电子化学", "靶材", "光刻胶"],
     },
+    "晶圆代工": {
+        "s_scores": [2, 2, 1, 1, 2],   # 8/10 — 产能稀缺，价格制定者
+        "keywords": ["晶圆代工", "晶圆制造", "代工"],
+    },
     "电子制造/封测": {
         "s_scores": [1, 1, 1, 0, 0],   # 3/10 — 下游组装/封测：成本承受方
         # （spec S5: upstream price-setter > downstream cost-taker）
