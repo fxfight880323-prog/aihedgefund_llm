@@ -249,8 +249,10 @@ class RotationGrowthModel(QuantModel):
             else:
                 asset_class = "A"
         elif (self._quality_lane
-              and growth >= self._boom_growth * 0.6
-              and roe is not None and roe >= 15 and gm_now is not None
+              and growth >= (self._boom_growth * 0.5 if is_big_leader
+                             else self._boom_growth * 0.6)
+              and roe is not None and roe >= (5 if is_big_leader else 15)
+              and gm_now is not None
               and gm_now >= 30 and is_leader):
             # 质量豁免通道：龙头(市值≥200亿)+ROE≥15+毛利≥30，增速从顶点
             # 自然回落但仍 ≥30% → 仍入 A（打 0.85 折）——旭创/北方华创类

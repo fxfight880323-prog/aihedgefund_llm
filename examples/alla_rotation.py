@@ -333,7 +333,7 @@ def main():
         if not os.path.exists(q2):
             from src.data.mx_mcp_client import MXMCPClient
             sheets = MXMCPClient().query(TOOL_SCREENER,
-                "全部A股中，总市值大于150亿、ROE大于12%、销售毛利率大于30%、"
+                "全部A股中，总市值大于80亿、ROE大于12%、销售毛利率大于30%、"
                 "2026半年报营业收入同比增速大于8%的股票，输出：股票代码、"
                 "简称、最新价、2026半年报营收同比增速、2026一季报营收同比"
                 "增速、2026半年报销售毛利率、2026一季报销售毛利率、市盈率"

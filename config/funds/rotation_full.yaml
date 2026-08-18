@@ -16,6 +16,7 @@ strategies:
       - name: rotation_growth
         weight: 1.0
         params:
+          boom_growth: 0.40
           pe_ceiling_by_link:
             半导体设备: 150
             半导体材料: 100
