@@ -24,6 +24,7 @@ strategies:
             存储: 60
             PCB材料: 35
             光模块/光通信: 45
+            电子制造/封测: 45
     blend:
       method: balanced_sharpness
       gross_target: 1.0
@@ -31,7 +32,7 @@ strategies:
       params:
         top_direction_weight: 0.22
         tail_direction_weight: 0.12
-        max_directions: 6
+        max_directions: 8
         class_mix: {A: 0.60, B: 0.35, C: 0.05}
         per_name_cap: 0.05
         off_theme_sleeve: 0.05

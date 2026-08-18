@@ -61,6 +61,12 @@ DEFAULT_LINK_MAP: dict[str, dict[str, Any]] = {
         "s_scores": [2, 1, 1, 1, 2],   # 6/10 — 硅片/电子材料，上游价格制定者
         "keywords": ["硅片", "半导体材料", "电子化学", "靶材", "光刻胶"],
     },
+    "电子制造/封测": {
+        "s_scores": [1, 1, 1, 0, 0],   # 3/10 — 下游组装/封测：成本承受方
+        # （spec S5: upstream price-setter > downstream cost-taker）
+        "keywords": ["消费电子", "精密制造", "电子制造", "封测",
+                     "元器件", "被动元件", "电子零部件"],
+    },
     "存储": {
         "s_scores": [2, 2, 1, 1, 0],   # 6/10 — 涨价中段；模组是成本承受方
         "keywords": ["存储", "内存", "闪存", "DRAM", "NAND", "存储器"],
@@ -246,8 +252,9 @@ class RotationGrowthModel(QuantModel):
             # 自然回落但仍 ≥30% → 仍入 A（打 0.85 折）——旭创/北方华创类
             asset_class = "A"
             quality_mult *= 0.85
-        elif (gm_recovering and 0 < growth < self._boom_growth
+        elif ((gm_recovering or accel) and 0 < growth < self._boom_growth
                 and (gm_now is not None and gm_now < self._b_class_max_gm)):
+            # B 周期成长：毛利率回升或增速拐点（新曲线 inflecting）皆可
             asset_class = "B"
         elif (roe is not None and roe >= self._off_theme_roe
                 and gm_now is not None and gm_now >= self._off_theme_gm):
@@ -281,7 +288,8 @@ class RotationGrowthModel(QuantModel):
                             + 0.20 * min(growth, 1.0))
         elif asset_class == "B":
             pe = series["pe"]
-            if pe is not None and pe > self._pe_ceiling:
+            ceiling = self._pe_by_link.get(link, self._pe_ceiling)
+            if pe is not None and pe > ceiling:
                 # 估值上限强制：超限 → 减仓/轮出信号（负信念）
                 value = -0.5
             elif pe is not None and pe <= 0:

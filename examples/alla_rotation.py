@@ -41,8 +41,10 @@ SCREENER_Q = (
 
 
 def load_screener() -> dict:
-    if os.path.exists(SCREENER_FILE):
-        return json.loads(open(SCREENER_FILE, encoding="utf-8").read())
+    # 优先用户脚本刷新的最新截面（run_zhf_screener_refresh.py 的输出）
+    for f in ("_screener_allA_latest.json", SCREENER_FILE):
+        if os.path.exists(f):
+            return json.loads(open(f, encoding="utf-8").read())
     from src.data.mx_mcp_client import MXMCPClient
     sheets = MXMCPClient().query(TOOL_SCREENER, SCREENER_Q, use_cache=False)
     json.dump(sheets[0], open(SCREENER_FILE, "w", encoding="utf-8"),
@@ -137,6 +139,10 @@ LEADER_SEEDS: dict[str, dict[str, str]] = {
     "存储": {"兆易创新": "603986.SH", "江波龙": "301308.SZ",
            "佰维存储": "688525.SH", "聚辰股份": "688123.SH",
            "普冉股份": "688766.SH", "北京君正": "300223.SZ"},
+    "电子制造/封测": {"立讯精密": "002475.SZ", "环旭电子": "601231.SH",
+                 "顺络电子": "002138.SZ", "三环集团": "300408.SZ",
+                 "长电科技": "600584.SH", "通富微电": "002156.SZ",
+                 "伟测科技": "688372.SH", "闻泰科技": "600745.SH"},
 }
 LEADERS_FILE = "_screener_leaders.json"
 
@@ -300,14 +306,50 @@ def main():
     sheet = load_screener()
     cands = parse_candidates(sheet)
     # 第二队列：大市值高质量中速（他的 B 类/龙头池——单一增速过滤会
-    # 把中芯国际/圣邦这类 20-30% 增长的质量龙头挡在外面）
-    if os.path.exists("_screener_quality_mid.json"):
-        sheet2 = json.loads(open("_screener_quality_mid.json",
-                                 encoding="utf-8").read())
+    # 把中芯国际/圣邦这类 20-30% 增长的质量龙头挡在外面）；文件缺失
+    # 自动补查（并行脚本可能清理中间文件）
+    q2 = "_screener_quality_mid.json"
+    try:
+        if not os.path.exists(q2):
+            from src.data.mx_mcp_client import MXMCPClient
+            sheets = MXMCPClient().query(TOOL_SCREENER,
+                "全部A股中，总市值大于150亿、ROE大于12%、销售毛利率大于30%、"
+                "2026半年报营业收入同比增速大于8%的股票，输出：股票代码、"
+                "简称、最新价、2026半年报营收同比增速、2026一季报营收同比"
+                "增速、2026半年报销售毛利率、2026一季报销售毛利率、市盈率"
+                "TTM、ROE、东财行业总分类、总市值，按总市值从大到小",
+                use_cache=False)
+            json.dump(sheets[0], open(q2, "w", encoding="utf-8"),
+                      ensure_ascii=False)
+        sheet2 = json.loads(open(q2, encoding="utf-8").read())
         seen = {c["ticker"] for c in cands}
         for c in parse_candidates(sheet2):
             if c["ticker"] not in seen:
                 cands.append(c)
+    except Exception as exc:
+        print(f"  [队列2 高质量中速] 跳过: {exc}", flush=True)
+    # 第三队列：电子制造/元件/封测域（B 类 sleeve 的候选面——
+    # 前两个队列的增速口径把它们挡在外面）
+    q3 = "_screener_elec_mfg.json"
+    try:
+        if not os.path.exists(q3):
+            from src.data.mx_mcp_client import MXMCPClient
+            sheets = MXMCPClient().query(TOOL_SCREENER,
+                "全部A股中属于消费电子、电子元件、半导体封测行业的股票，"
+                "总市值大于80亿，2026半年报或最新报告期营业收入同比增速"
+                "大于5%，输出：股票代码、简称、最新价、2026半年报营收同比"
+                "增速、2026一季报营收同比增速、2026半年报销售毛利率、"
+                "2026一季报销售毛利率、市盈率TTM、ROE、总市值、东财行业"
+                "总分类，按总市值从大到小", use_cache=False)
+            json.dump(sheets[0], open(q3, "w", encoding="utf-8"),
+                      ensure_ascii=False)
+        sheet3 = json.loads(open(q3, encoding="utf-8").read())
+        seen3 = {c["ticker"] for c in cands}
+        for c in parse_candidates(sheet3):
+            if c["ticker"] not in seen3:
+                cands.append(c)
+    except Exception as exc:
+        print(f"  [队列3 电子制造域] 跳过: {exc}", flush=True)
     # 龙头直取（主池）：环节归属由查询给定，龙头全指标
     print("龙头直取:", flush=True)
     leaders = fetch_leaders()
