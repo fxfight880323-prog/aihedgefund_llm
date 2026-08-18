@@ -250,16 +250,51 @@ class RotationStrategy(StrategyTemplate):
         self.disclosure_of = setting.get("disclosure_of", {})
         self.blend_params = setting.get("blend_params", {})
         self.pe_by_link = setting.get("pe_ceiling_by_link", {})
+        # 点时选择注入（可选）：逐期候选池 + 逐期行业稀缺度表
+        # （来自选股器自下而上聚合，去除幸存者偏差）
+        self.candidates_by_dt = setting.get("candidates_by_dt") or {}
+        self.linkmap_by_dt = setting.get("linkmap_by_dt") or {}
+        # BSADF 热度叠加（可选）：{"prices": {tk: {month: close}}}
+        self.bsadf_prices = (setting.get("bsadf") or {}).get("prices") or {}
+        self.bsadf_log: list[dict] = []
         self.history: list[dict] = []                  # 调仓日志
         self._model = None
         self._model_dt = None
 
     def on_bars(self, bars: dict[str, BarData]) -> None:
         dt = self.engine.datetime
+        # BSADF 逐月出场纪律：任何月份检查持仓热度，泡沫破裂即卖
+        # （不限调仓月——热度卖出是独立于基本面调仓的风控层；
+        #   调仓月由 apply_bsadf_overlay 在权重层处理，避免双记）
+        if self.bsadf_prices and dt not in self.rebalance_dts:
+            self._bsadf_exit_guard(dt, bars)
         if dt not in self.rebalance_dts:
             return
         as_of = self.disclosure_of.get(dt, f"{dt[:4]}-{dt[5:]}-28")
         self._rebalance(dt, as_of, bars)
+
+    def _bsadf_exit_guard(self, dt: str, bars: dict[str, BarData]) -> None:
+        """逐月检查持仓的 BSADF 相位；BURST/FEAR 清仓、FADING 减半。
+
+        卖出指令按 vnpy 语义在次月撮合。只在触发时执行（平时不动）。
+        """
+        for sym, pos in list(self.engine.pos_data.items()):
+            if pos <= 0 or sym not in self.bsadf_prices:
+                continue
+            closes = _closes_upto(self.bsadf_prices[sym], dt)
+            phase, _pos = monthly_bsadf_phase(closes)
+            if phase == "FADING":
+                self.set_target(sym, self.get_pos(sym) / 2)
+                self.rebalance_portfolio(bars)
+                self.bsadf_log.append({
+                    "dt": dt, "ticker": sym, "phase": phase,
+                    "before": pos, "after": pos / 2, "unit": "股"})
+            elif phase in ("BURST", "FEAR", "PROBE_EXIT"):
+                self.set_target(sym, 0)
+                self.rebalance_portfolio(bars)
+                self.bsadf_log.append({
+                    "dt": dt, "ticker": sym, "phase": phase,
+                    "before": pos, "after": 0, "unit": "股"})
 
     # ------------------------------------------------------------------
 
@@ -270,8 +305,11 @@ class RotationStrategy(StrategyTemplate):
         # ① 点时财务（披露截止过滤）
         fin_at = avail_financials(self.financials, as_of)
 
-        # ② 动态行业稀缺度表（该期专用模型实例）
-        link_map = build_period_link_map(fin_at, self.universe)
+        # ② 动态行业稀缺度表（点时注入优先，否则用财务自建）
+        link_map = (self.linkmap_by_dt.get(dt)
+                    or build_period_link_map(fin_at, self.universe))
+
+        # 点时候选池（点时回测注入；静态 universe 回测用默认）
         model = RotationGrowthModel(
             link_map=link_map, boom_growth=0.40,
             pe_ceiling_by_link=self.pe_by_link,
@@ -285,9 +323,10 @@ class RotationStrategy(StrategyTemplate):
             **self.blend_params)
 
         # ③ 逐票打分（当期有行情的标的）
-        adapter = BacktestAdapter(fin_at, self.universe, dt)
+        universe = self.candidates_by_dt.get(dt) or self.universe
+        adapter = BacktestAdapter(fin_at, universe, dt)
         signals: list[Signal] = []
-        members = {tk for tk, _, _ in self.universe if tk in bars}
+        members = {tk for tk, _, _ in universe if tk in bars}
         for tk in sorted(members):
             try:
                 sig = model.predict(tk, as_of, adapter)
@@ -300,6 +339,10 @@ class RotationStrategy(StrategyTemplate):
         result = blender.blend(signals, {"rotation_growth": 1.0},
                                gross_target=1.0)
         weights = {t: w for t, w in result.weights.items() if w > 0}
+
+        # ④' BSADF 热度叠加：泡沫相位强制卖出/减仓（覆盖基本面权重）
+        if self.bsadf_prices:
+            weights = self.apply_bsadf_overlay(dt, weights)
 
         # ⑤ 目标股数（权重 × 当期权益）
         equity = self.engine.get_equity(bars)
@@ -317,7 +360,7 @@ class RotationStrategy(StrategyTemplate):
 
         # 日志
         by_label: dict[str, float] = {}
-        label_of = {tk: lab for tk, _, lab in self.universe}
+        label_of = {tk: lab for tk, _, lab in universe}
         for tk, w in weights.items():
             lab = label_of.get(tk, "?")
             by_label[lab] = by_label.get(lab, 0.0) + w
@@ -336,6 +379,69 @@ class RotationStrategy(StrategyTemplate):
             f"权益 ¥{equity:,.0f} | "
             f"top行业 " + ", ".join(
                 f"{n}({s}/10)" for n, s in self.history[-1]["top_links"]))
+
+    # ------------------------------------------------------------------
+
+    def apply_bsadf_overlay(self, dt: str, weights: dict[str, float]
+                            ) -> dict[str, float]:
+        """BSADF 热度卖出叠加（月频相位机）。
+
+        相位 → 权重系数：
+          BURST / FEAR / PROBE_EXIT → 0（泡沫破裂/恐慌：强制清仓）
+          FADING → 0.5（顶部衰减：减半）
+          RIDING / IGNITION / CALM → 1（骑泡沫：基本面权重不动）
+          UNKNOWN（历史不足 24 个月）→ 1（中性，不干预）
+        """
+        adjusted: dict[str, float] = {}
+        for tk, w in weights.items():
+            closes = _closes_upto(self.bsadf_prices.get(tk, {}), dt)
+            phase, _pos = monthly_bsadf_phase(closes)
+            mult = 0.5 if phase == "FADING" else 1.0
+            if phase in ("BURST", "FEAR", "PROBE_EXIT"):
+                mult = 0.0
+            if mult != 1.0:
+                self.bsadf_log.append({
+                    "dt": dt, "ticker": tk, "phase": phase,
+                    "before": w, "after": w * mult})
+            if w * mult > 0:
+                adjusted[tk] = w * mult
+        return adjusted
+
+
+def _closes_upto(monthly: dict[str, float], dt: str) -> list[float]:
+    """月初键排序截断到 dt 当月的收盘序列。"""
+    return [monthly[mk] for mk in sorted(monthly.keys())
+            if mk <= dt and monthly[mk] and monthly[mk] > 0]
+
+
+def monthly_bsadf_phase(closes: list[float]) -> tuple[str, float]:
+    """月频 BSADF 相位（复用核心 bsadf_sequence + v3 相位机）。
+
+    月频下 T 较小，mw 用 PSY 规则（≥12）；历史 < 24 个月返回 UNKNOWN。
+    """
+    import numpy as np
+    from src.signals.bsadf import (
+        _PHASE_NAME, bsadf_sequence, min_window,
+        replay_phase_machine, simulate_critical_values,
+    )
+    if len(closes) < 24:
+        return "UNKNOWN", 1.0
+    arr = np.asarray(closes, dtype=float)
+    T = len(arr)
+    mw = min_window(T)
+    if T <= mw + 1:
+        return "UNKNOWN", 1.0
+    logp = np.log(arr[arr > 0])
+    bs = bsadf_sequence(logp, mw)
+    cv = simulate_critical_values(T, mw)   # 默认 MC 缓存目录（可复现）
+    # 月频校准：v3 相位机默认参数按日频调（trailing_stop 15%/probe 5 天
+    # 对日频波动）；月度噪声更大，按 √21≈4.6 倍时间尺度放宽回撤与
+    # 衰减阈值、probe 缩到 1 个月，避免把月度正常回调当泡沫破裂
+    phase_arr, pos_arr = replay_phase_machine(
+        bs, np.asarray(cv[1]), np.asarray(cv[2]), arr,
+        fade_threshold=0.15, fade_full=0.30,
+        trailing_stop=0.25, probe_days=1)
+    return _PHASE_NAME.get(int(phase_arr[-1]), "UNKNOWN"), float(pos_arr[-1])
 
 
 def avail_financials(financials: dict, as_of: str) -> dict:

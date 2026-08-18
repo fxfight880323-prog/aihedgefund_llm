@@ -228,3 +228,84 @@ class TestPeriodLinkMap:
         uni = [("AAA", "甲", "行业一"), ("BBB", "乙", "行业二")]
         lm = build_period_link_map(fin, uni)
         assert set(lm.keys()) == {"行业一", "行业二"}
+
+
+class TestBSADFOverlay:
+    """BSADF 热度卖出叠加（月频相位 → 权重系数）。"""
+
+    def _strategy_with_phase(self, phase_map):
+        """构造 overlay 测试用的策略（mock 相位函数）。"""
+        from unittest.mock import patch
+        import src.backtest.strategy as st
+        self._patch = patch
+        self._st = st
+
+        eng = BacktestingEngine()
+        eng.set_parameters(symbols=["AAA"], capital=100_000)
+        strat = st.RotationStrategy(eng, {
+            "financials": {}, "universe": [],
+            "bsadf": {"prices": {"AAA": {"2021-01": 10},
+                                 "BBB": {"2021-01": 20}}},
+        })
+
+        def fake_phase(closes):
+            tk_phase = phase_map.get(len(closes) and closes[-1] or 0,
+                                     "CALM")
+            return tk_phase, 1.0
+
+        return eng, strat, fake_phase, st
+
+    def test_burst_forces_zero(self):
+        eng, strat, fake, st = self._strategy_with_phase({10: "BURST",
+                                                          20: "BURST"})
+        with self._patch.object(self._st, "monthly_bsadf_phase", fake):
+            out = strat.apply_bsadf_overlay("2021-01", {"AAA": 0.05,
+                                                        "BBB": 0.03})
+        assert out == {}
+        assert len(strat.bsadf_log) == 2
+
+    def test_fading_halves(self):
+        eng, strat, fake, st = self._strategy_with_phase({10: "FADING"})
+        with self._patch.object(self._st, "monthly_bsadf_phase", fake):
+            out = strat.apply_bsadf_overlay("2021-01", {"AAA": 0.05})
+        assert abs(out["AAA"] - 0.025) < 1e-9
+
+    def test_riding_kept(self):
+        eng, strat, fake, st = self._strategy_with_phase({10: "RIDING"})
+        with self._patch.object(self._st, "monthly_bsadf_phase", fake):
+            out = strat.apply_bsadf_overlay("2021-01", {"AAA": 0.05})
+        assert out["AAA"] == 0.05
+        assert strat.bsadf_log == []
+
+    def test_closes_upto_truncates(self):
+        monthly = {"2021-01": 1, "2021-03": 3, "2022-05": 5, "2022-06": 6}
+        assert st_closes_upto(monthly, "2022-05") == [1, 3, 5]
+
+    def test_monthly_phase_short_history(self):
+        from src.backtest.strategy import monthly_bsadf_phase
+        assert monthly_bsadf_phase([1.0] * 10) == ("UNKNOWN", 1.0)
+
+    def test_monthly_phase_bubble_detected(self):
+        from src.backtest.strategy import monthly_bsadf_phase
+        closes = ([100 * (1.01 ** i) for i in range(12)]
+                  + [100 * 1.13 * (1.15 ** i) for i in range(14)])
+        phase, pos = monthly_bsadf_phase(closes)
+        assert phase in ("RIDING", "IGNITION", "FADING", "BURST",
+                         "CALM", "PROBE_EXIT", "FEAR")
+        assert 0.0 <= pos <= 1.0
+
+
+def st_closes_upto(monthly, dt):
+    from src.backtest.strategy import _closes_upto
+    return _closes_upto(monthly, dt)
+
+
+class TestNormTicker:
+    def test_suffix_mapping(self):
+        from examples.backtest_pit import norm_ticker
+        assert norm_ticker("600519") == "600519.SH"
+        assert norm_ticker("688256") == "688256.SH"
+        assert norm_ticker("300750") == "300750.SZ"
+        assert norm_ticker("002460") == "002460.SZ"
+        assert norm_ticker("830799") is None      # 北交所跳过
+        assert norm_ticker("abc") is None
