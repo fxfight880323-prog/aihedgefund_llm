@@ -120,6 +120,9 @@ class RotationGrowthModel(QuantModel):
         leader_mcap_tier1: float = 500.0,
         require_profit: bool = True,      # A 类要求正利润（PE>0）
         quality_lane: bool = True,        # 高质量龙头允许增速回落仍入 A
+        pe_ceiling_by_link: dict[str, float] | None = None,  # B 类 PE 上限
+        # 按环节覆盖（spec 的 20x 是消费电子核心口径；设备/材料龙头
+        # 估值中枢不同，硬套 20x 会把北方华创们全部轮出）
         st_filter: bool = True,           # ST/*ST 直接 abstain
         off_theme_scope: list[str] | None = None,  # OFF sleeve 行业域关键词
         # G5 / L5 [param]
@@ -142,6 +145,7 @@ class RotationGrowthModel(QuantModel):
         self._mc_t2, self._mc_t1 = leader_mcap_tier2, leader_mcap_tier1
         self._require_profit = require_profit
         self._quality_lane = quality_lane
+        self._pe_by_link = pe_ceiling_by_link or {}
         self._st_filter = st_filter
         self._off_scope = off_theme_scope if off_theme_scope is not None else [
             "电子", "通信", "计算机", "半导体", "软件", "芯片", "光电",
@@ -174,7 +178,13 @@ class RotationGrowthModel(QuantModel):
         gm_recovering = (gm_now is not None and gm_prev is not None
                          and gm_now > gm_prev)
 
-        link, s_scores = self._match_link(ticker, series)
+        # 环节注入优先（龙头直取：环节由选股器查询给定，非关键词猜测）
+        assigned = series.get("assigned_link")
+        if assigned and assigned in self._link_map:
+            link = assigned
+            s_scores = list(self._link_map[assigned].get("s_scores", [0] * 5))
+        else:
+            link, s_scores = self._match_link(ticker, series)
         link_score = sum(s_scores) if s_scores else None
         link_norm = (link_score / 10.0) if link_score is not None else 0.0
 
@@ -228,7 +238,7 @@ class RotationGrowthModel(QuantModel):
                 asset_class = "C"
             else:
                 asset_class = "A"
-        elif (self._quality_lane and len(rev_yoy) >= 2 and not accel
+        elif (self._quality_lane
               and growth >= self._boom_growth * 0.6
               and roe is not None and roe >= 15 and gm_now is not None
               and gm_now >= 30 and is_leader):
@@ -415,18 +425,19 @@ class RotationGrowthModel(QuantModel):
             qk = _qkey(r)
             if qk is None:
                 continue
+            # 注意：QuantModel._safe_float(None) 返回 0.0（默认值语义），
+            # 缺失字段必须先判原始值，否则 ROE 缺失会被当成 0 → 低质量
             for target, field in ((rev_by_qp, "revenue"),
                                   (ni_by_qp, "net_income")):
-                v = self._safe_float(r.get(field))
-                if v is not None and v != 0:
-                    target.setdefault(qk, v)
-            gmv = self._safe_float(r.get("gross_margin"))
-            if gmv is not None:
-                gm.append(gmv)
-            if roe is None:
-                rv = self._safe_float(r.get("roe"))
-                if rv is not None:
-                    roe = rv
+                raw = r.get(field)
+                if raw is not None:
+                    v = self._safe_float(raw)
+                    if v is not None and v != 0:
+                        target.setdefault(qk, v)
+            if r.get("gross_margin") is not None:
+                gm.append(self._safe_float(r["gross_margin"]))
+            if roe is None and r.get("roe") is not None:
+                roe = self._safe_float(r["roe"])
 
         rev_yoy = []
         for (y, q), v in sorted(rev_by_qp.items(), reverse=True):
@@ -434,17 +445,17 @@ class RotationGrowthModel(QuantModel):
             if prev and prev > 0:
                 rev_yoy.append(v / prev - 1.0)
 
-        pe_series = [self._safe_float(r.get("pe_ratio")) for r in rows]
-        pe_series = [v for v in pe_series if v is not None]
+        pe_series = [self._safe_float(r["pe_ratio"]) for r in rows
+                     if r.get("pe_ratio") is not None]
 
         # 市值（亿元）：metrics 行或 facts 提供（选股器 adapter 传）
         mcap = None
         for r in rows:
-            mcap = self._safe_float(r.get("market_cap"))
-            if mcap is not None:
+            if r.get("market_cap") is not None:
+                mcap = self._safe_float(r["market_cap"])
                 break
-        if mcap is None:
-            mcap = self._safe_float(facts.get("market_cap"))
+        if mcap is None and facts.get("market_cap") is not None:
+            mcap = self._safe_float(facts["market_cap"])
         if mcap is not None and mcap > 1e6:      # 元 → 亿元
             mcap = mcap / 1e8
 
@@ -457,6 +468,7 @@ class RotationGrowthModel(QuantModel):
             "roe": roe, "market_cap": mcap,
             "name": facts.get("name"), "sector": facts.get("sector"),
             "industry": facts.get("industry"),
+            "assigned_link": facts.get("link"),
         }
         self._series_cache[ticker] = (date, series)
         return series

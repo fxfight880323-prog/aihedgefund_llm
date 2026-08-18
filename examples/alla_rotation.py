@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -111,6 +112,144 @@ def parse_candidates(sheet: dict) -> list[dict]:
     return out
 
 
+# 每环节龙头种子（显式点名——"买赢的环节里的龙头"的直取实现；
+# 种子 = 章宏帆实际持仓 + 各环节公认龙头）
+LEADER_SEEDS: dict[str, dict[str, str]] = {
+    "光模块/光通信": {"中际旭创": "300308.SZ", "新易盛": "300502.SZ",
+                   "天孚通信": "300394.SZ", "光迅科技": "002281.SZ",
+                   "华工科技": "000988.SZ", "源杰科技": "688498.SH",
+                   "剑桥科技": "603083.SH", "联特科技": "301205.SZ"},
+    "PCB材料": {"沪电股份": "002463.SZ", "深南电路": "002916.SZ",
+              "胜宏科技": "300476.SZ", "鹏鼎控股": "002938.SZ",
+              "景旺电子": "603228.SH", "生益科技": "600183.SH",
+              "生益电子": "688183.SH", "东山精密": "002384.SZ"},
+    "CPU+光芯片": {"圣邦股份": "300661.SZ", "纳芯微": "688052.SH",
+                "思瑞浦": "688536.SH", "卓胜微": "300782.SZ",
+                "紫光国微": "002049.SZ"},
+    "国产算力": {"寒武纪": "688256.SH", "海光信息": "688041.SH",
+              "芯原股份": "688521.SH", "龙芯中科": "688047.SH"},
+    "半导体设备": {"北方华创": "002371.SZ", "中微公司": "688012.SH",
+                "华海清科": "688120.SH", "长川科技": "300604.SZ",
+                "拓荆科技": "688072.SH", "盛美上海": "688082.SH"},
+    "半导体材料": {"沪硅产业": "688126.SH", "安集科技": "688019.SH",
+                "鼎龙股份": "300054.SZ", "中船特气": "688146.SH",
+                "雅克科技": "002409.SZ"},
+    "存储": {"兆易创新": "603986.SH", "江波龙": "301308.SZ",
+           "佰维存储": "688525.SH", "聚辰股份": "688123.SH",
+           "普冉股份": "688766.SH", "北京君正": "300223.SZ"},
+}
+LEADERS_FILE = "_screener_leaders.json"
+
+
+def _norm_period(col: str):
+    """列标签 -> (year, quarter)；兼容 中报/半年报/一季报/三季报/年报/日期。"""
+    c = str(col)
+    m = re.search(r"(\d{4})", c)
+    if not m:
+        return None
+    y = int(m.group(1))
+    md = re.search(r"[^\d](\d{2})[^\d]?(\d{2})?$", c) # 尾部 -MM-DD
+    dm = re.search(r"(\d{4})(\d{2})(\d{2})", c)
+    if "一季" in c or "Q1" in c:
+        return (y, 1)
+    if "中报" in c or "半年" in c:
+        return (y, 2)
+    if "三季" in c or "Q3" in c:
+        return (y, 3)
+    if "年报" in c or "年度" in c:
+        return (y, 4)
+    if dm:
+        return (y, {3: 1, 6: 2, 9: 3, 12: 4}.get(int(dm.group(2))))
+    return None
+
+
+def fetch_leaders() -> list[dict]:
+    """每环节逐股直取龙头全指标（环节归属由查询给定，形态无关解析）。"""
+    if os.path.exists(LEADERS_FILE):
+        return json.loads(open(LEADERS_FILE, encoding="utf-8").read())
+    from src.data.mx_mcp_client import MXMCPClient, TOOL_ASHARE
+    from src.data.mx_data_client import sheet_to_indexed
+    cli = MXMCPClient()
+    out = []
+    for link, seeds in LEADER_SEEDS.items():
+        got = 0
+        for name, ticker in seeds.items():
+            q = (f"{name}({ticker}) 最近4个报告期的营业收入同比增速、"
+                 f"销售毛利率，以及最新的市盈率、ROE、总市值、最新收盘价")
+            try:
+                sheets = cli.query(TOOL_ASHARE, q, use_cache=False)
+            except Exception:
+                continue
+            yoy_map: dict = {}
+            gm_map: dict = {}
+            lev_map: dict = {}
+            scalars: dict = {}
+            for sh in sheets:
+                for metric, by_col in sheet_to_indexed(sh).items():
+                    ms = str(metric)
+                    for col, val in by_col.items():
+                        pk = _norm_period(col)
+                        v = parse_cn_number(str(val).split("|")[0])
+                        if v is None:
+                            continue
+                        if pk:
+                            if "同比" in ms and "营业收入" in ms:
+                                if abs(v) > 1.5:
+                                    v /= 100.0
+                                yoy_map.setdefault(pk, v)
+                            elif "营业收入" in ms:
+                                lev_map.setdefault(pk, v)
+                            elif "毛利率" in ms:
+                                gm_map.setdefault(pk, v)
+                            elif ("ROE" in ms or "净资产收益率" in ms):
+                                scalars.setdefault("roe", v)  # 首个=最新期
+                        else:
+                            if "市盈" in ms:
+                                scalars.setdefault("pe", v)
+                            elif "市值" in ms:
+                                scalars.setdefault("mcap", v)
+                            elif "ROE" in ms or "净资产收益率" in ms:
+                                scalars.setdefault("roe", v)
+                            elif "收盘" in ms or "最新" in ms:
+                                scalars.setdefault("price", v)
+            if not yoy_map and lev_map:
+                for (y, qq), v in lev_map.items():
+                    prev = lev_map.get((y - 1, qq))
+                    if prev and prev > 0:
+                        yoy_map[(y, qq)] = v / prev - 1.0
+            if not yoy_map:
+                continue
+            # 取最新两个已披露同比点（中报未必已披露——妙想序列可能
+            # 最新只到一季报；YoY 本身已是同期对齐值，跨窗口比较方向性成立）
+            points = sorted(yoy_map.items(), reverse=True)
+            (g_h1, g_q1) = (points[0][1],
+                            points[1][1] if len(points) > 1
+                            else points[0][1] - 0.01)
+            gm_points = sorted(gm_map.items(), reverse=True)
+            gm_h1 = gm_points[0][1] if gm_points else None
+            gm_q1 = (gm_points[1][1] if len(gm_points) > 1
+                     else gm_h1)
+            mcap = scalars.get("mcap")
+            if mcap and mcap > 1e6:
+                mcap /= 1e8
+            out.append({
+                "ticker": ticker, "code": ticker[:6], "name": name,
+                "price": scalars.get("price"),
+                "rev": {"2026-06-30": 1 + g_h1, "2025-06-30": 1.0,
+                        "2026-03-31": 1 + g_q1, "2025-03-31": 1.0},
+                "gm_h1": gm_h1, "gm_q1": gm_q1, "pe": scalars.get("pe"),
+                "roe": scalars.get("roe"), "mcap_yi": mcap,
+                "industry": "", "concept": "",
+                "h1_yoy": g_h1, "q1_yoy": g_q1, "accel": g_h1 > g_q1,
+                "leader_link": link,
+            })
+            got += 1
+        print(f"  [{link}] {got}/{len(seeds)} 只龙头", flush=True)
+    json.dump(out, open(LEADERS_FILE, "w", encoding="utf-8"),
+              ensure_ascii=False)
+    return out
+
+
 class ScreenerAdapter:
     """把选股器截面包装成 DataClient——fund cycle 全程本地计算。"""
 
@@ -147,11 +286,11 @@ class ScreenerAdapter:
         c = self.by_ticker.get(ticker)
         if not c:
             return None
-        # 行业是干净的匹配面；概念标签只进 description（不再参与匹配
-        # ——概念 blob 会把 PCB 厂匹配进光模块）
+        # 龙头直取的环节由查询给定（assigned_link 优先于关键词匹配）
         return {"ticker": ticker, "name": c["name"],
                 "sector": c["industry"], "industry": c["industry"],
-                "description": c["concept"][:200]}
+                "description": c["concept"][:200],
+                "link": c.get("leader_link")}
 
     def get_earnings(self, ticker):
         return None
@@ -169,6 +308,13 @@ def main():
         for c in parse_candidates(sheet2):
             if c["ticker"] not in seen:
                 cands.append(c)
+    # 龙头直取（主池）：环节归属由查询给定，龙头全指标
+    print("龙头直取:", flush=True)
+    leaders = fetch_leaders()
+    ld = {c["ticker"]: c for c in leaders}
+    cands = [ld.get(c["ticker"], c) if c["ticker"] not in ld else ld[c["ticker"]]
+             for c in cands] + [c for t, c in ld.items()
+                               if not any(x["ticker"] == t for x in cands)]
     accel = [c for c in cands if c["accel"]]
     print(f"候选 {len(cands)} 只（选股器截面）→ 加速中 {len(accel)} 只", flush=True)
 

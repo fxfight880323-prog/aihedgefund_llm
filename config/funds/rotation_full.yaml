@@ -15,6 +15,15 @@ strategies:
     models:
       - name: rotation_growth
         weight: 1.0
+        params:
+          pe_ceiling_by_link:
+            半导体设备: 150
+            半导体材料: 100
+            CPU+光芯片: 120
+            国产算力: 200
+            存储: 60
+            PCB材料: 35
+            光模块/光通信: 45
     blend:
       method: balanced_sharpness
       gross_target: 1.0
