@@ -29,3 +29,7 @@ dm_first_row.json
 # OS
 .DS_Store
 Thumbs.db
+
+# 回测数据缓存与日志
+_bt_*.json
+_*.log
