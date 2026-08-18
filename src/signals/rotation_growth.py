@@ -262,7 +262,13 @@ class RotationGrowthModel(QuantModel):
                 and (gm_now is not None and gm_now < self._b_class_max_gm)):
             # B 周期成长：毛利率回升或增速拐点（新曲线 inflecting）皆可
             asset_class = "B"
-        elif (roe is not None and roe >= self._off_theme_roe
+        elif (is_big_leader and 0 < growth < self._boom_growth
+                and link is not None):
+            # B 成熟龙头通道：≥500亿 + 正增长 + 有环节归属——中芯/华虹/
+            # 建滔式产能稀缺龙头，无加速无毛利回升但有方向卡位
+            asset_class = "B"
+        elif (roe is not None
+                and roe >= (8 if is_big_leader else self._off_theme_roe)
                 and gm_now is not None and gm_now >= self._off_theme_gm):
             # OFF sleeve 限科技域（数字经济基金语境：补涨的强基本面科技股，
             # 不是地产/矿业/ST）
@@ -295,6 +301,8 @@ class RotationGrowthModel(QuantModel):
         elif asset_class == "B":
             pe = series["pe"]
             ceiling = self._pe_by_link.get(link, self._pe_ceiling)
+            if is_big_leader:
+                ceiling *= 2  # 成熟龙头估值容忍度加倍（产能稀缺溢价）
             if pe is not None and pe > ceiling:
                 # 估值上限强制：超限 → 减仓/轮出信号（负信念）
                 value = -0.5
