@@ -36,8 +36,9 @@ union-of-dates 月频循环 → cross→on_bars→mark；N 月末下单 N+1 月�
 
 ### 模型详解
 
-**② growth_loop（剧本门控）**
+**② growth_loop（剧本门控 + Serenity 卡点审查）**
 - 钩子层（hooks.py，规则解耦）：H1 营收加速（连续 2 季）、H2 毛利率拐点（环比上行+增速>20%）、H3 连续 BEAT、H6 深回撤高增长（-30% 回撤+YoY≥10%）
+- **Serenity 审查门**（serenity_gate.py，确定性层，hook 与 L1 之间）：卡点真伪检验——结构性定价权=毛利率"一直高"（全历史 floor）而非"现在高"；情景性利润（毛利率相对基线尖峰 >25pp，IVD/疫情型）→ 情景罚 + 结构性因子 4 折 → KILL；热度罚（1 年涨幅）；DOWNGRADE → 信念 ×0.7；无 LLM 时 serenity × hook 直接产出 L8 回退信念
 - 门控层：L1 商业模式/数据完整性 → L2 竞争壁垒 → L3 单位经济 → L4 客户集中度（不单独 kill）→ L5 TAM/渗透率 → L6 估值 → L7 反证
 - 原则：数据完整性契约（缺数据必须显式声明 DATA GAP，声明后不 kill）；LLM 报 NUMBERS、代码验证门算术
 - A/B/C 优先级排序 + LOOP 深研上限

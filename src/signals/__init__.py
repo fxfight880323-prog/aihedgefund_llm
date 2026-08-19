@@ -23,6 +23,7 @@ from src.signals.bsadf import BSADFModel
 from src.signals.tech_confluence import TechConfluenceModel
 from src.signals.growth_loop import GrowthLoopAgent
 from src.signals.rotation_growth import RotationGrowthModel
+from src.signals.serenity_gate import SerenityGateModel
 
 # Register built-in models
 ALPHA_MODEL_REGISTRY["pead"] = PEADModel

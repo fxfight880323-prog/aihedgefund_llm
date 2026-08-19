@@ -81,6 +81,9 @@ class GrowthLoopState(TypedDict, total=False):
     hook_evidence: dict[str, Any]  # screen_hooks 的结果
     data_packet: str               # 组装好的 point-in-time 数据包
 
+    # ---- SERENITY 审查层（确定性卡点检验，hook 与 L1 之间）----
+    serenity_review: dict[str, Any]  # score/factors/verdict/reason
+
     # ---- LOOP 阶段累积 ----
     stage_outputs: dict[str, str]  # 阶段原始 LLM 输出
     stage_scores: dict[str, float] # 各阶段 SCORE (0-100)
@@ -120,6 +123,7 @@ STAGE_WEIGHTS = {
 
 MAX_LOOP_BACKS = 2          # 剧本: "Maximum 2 loop-backs per stage"
 YELLOW_FLAG_HAIRCUT = 0.25  # 每面黄旗 -25% 信念，最多计 2 面
+DOWNGRADE_MULT_FALLBACK = 0.70  # serenity DOWNGRADE 的回退信念系数
 
 
 # ===========================================================================
@@ -892,8 +896,37 @@ def l8_conviction_node(state: GrowthLoopState) -> dict[str, Any]:
     conviction = Σ w_s · score_s  (L1 .15 / L2 .20 / L3 .20 / L4 .15 /
                                    L5 .10 / L6 .20)
     黄旗减记：每面 -25%，最多计 2 面（剧本 L8 的 haircut 映射到信念层）。
+
+    无 LLM 回退模式（serenity_gate 路由直达）：stage_scores 为空且带
+    serenity_review → conviction = hook 强度 × serenity 分数映射
+    （DOWNGRADE ×0.7）——深研层降级运行，确定性审查兜底。
     """
     scores = state.get("stage_scores", {})
+    review = state.get("serenity_review")
+
+    if not scores and review and review.get("score") is not None:
+        hooks = state.get("hook_evidence", {}).get("tripped") or []
+        hook_boost = 1.0 + 0.15 * max(0, len(hooks) - 1)
+        ser_mult = (DOWNGRADE_MULT_FALLBACK
+                    if review.get("verdict") == "DOWNGRADE" else 1.0)
+        conviction = review["score"] * hook_boost * ser_mult
+        conviction = min(100.0, conviction)
+        exit_rules = [
+            "Serenity fallback kill: 毛利率 z-score > 2.0 或季度环比 "
+            "转负 → 退出（情景性利润证伪）",
+            "Valuation kill: 1 年涨幅超 100% 后再涨 50% → 减半",
+            "Time stop: 营收增速连续 2 季回落 → 退出",
+            "Re-entry: 仅经完整 loop 或 serenity 复审 PASS",
+        ]
+        return {
+            "status": "PASSED",
+            "conviction": round(conviction, 2),
+            "exit_rules": exit_rules,
+            "thesis": (f"[serenity fallback] score={review['score']} "
+                       f"{review.get('reason', '')}"),
+            "kill_reason": "", "kill_stage": "",
+        }
+
     missing = [s for s in STAGE_WEIGHTS if s not in scores]
     filled = {s: scores.get(s, 50.0) for s in STAGE_WEIGHTS}
 
@@ -954,6 +987,65 @@ def kill_node(state: GrowthLoopState) -> dict[str, Any]:
 def _route_after_hook(state: GrowthLoopState) -> str:
     if state.get("status") == "KILLED":
         return "kill"
+    return "serenity_gate"
+
+
+def serenity_gate_node(state: GrowthLoopState) -> dict[str, Any]:
+    """SERENITY 门：确定性卡点审查（serenity-skill 量化层）。
+
+    位置：HOOK（找到高增长）与 L1-L7（LLM 深研）之间。
+    - KILL：卡点证据不足 / 情景性毛利率（一次性利润，IVD 型陷阱）
+    - DOWNGRADE：证据中等 → 信念 ×0.7（记录在案，L8 参考）
+    - PASS：证据充分 → 进入 LOOP
+
+    审查摘要注入 data_packet —— L1-L7 的 LLM 提示词直接看到卡点
+    证据链，深研层在确定性审查的地基上工作。
+    """
+    from src.signals.serenity_gate import serenity_review
+
+    ticker, date = state["ticker"], state["date"]
+    meta = state.get("metadata", {})
+    mandate = state.get("mandate") or {}
+    params = mandate.get("serenity_gate") or None
+    if params is not None and "enabled" in params and not params["enabled"]:
+        return {"serenity_review": None}   # 显式关闭 → 直通 L1
+
+    try:
+        review = serenity_review(
+            ticker, date, meta["data_client"],
+            hook_evidence=state.get("hook_evidence"),
+            params=params)
+    except Exception as exc:  # 审查层 fail-open：不因数据缺失挡深研
+        return {"serenity_review": {"verdict": "PASS",
+                                    "score": None,
+                                    "reason": f"review error: {exc}"}}
+
+    updates: dict[str, Any] = {"serenity_review": review}
+    if review["verdict"] == "KILL":
+        updates["status"] = "KILLED"
+        updates["kill_stage"] = "SERENITY"
+        updates["kill_reason"] = f"[serenity] {review['reason']}"
+        return updates
+
+    # 卡点证据注入数据包（L1-L7 可见）
+    summary = (f"\n\n--- SERENITY 卡点审查（确定性层）---\n"
+               f"score: {review['score']} | verdict: {review['verdict']}\n"
+               f"结构性毛利率 floor: {review.get('gm_floor')}pp | "
+               f"情景性 z: {review.get('gm_z')}\n"
+               f"1y涨幅 {review.get('runup_1y') and round(review['runup_1y'], 2)}"
+               f" | {review['reason']}\n"
+               f"LLM 深研应验证：客户为什么绕不开（结构性 vs 情景性）。")
+    updates["data_packet"] = (state.get("data_packet") or "") + summary
+    return updates
+
+
+def _route_after_serenity(state: GrowthLoopState) -> str:
+    if state.get("status") == "KILLED":
+        return "kill"
+    meta = state.get("metadata", {})
+    # 无 LLM 回退：serenity × hook 直接产出信念（跳过 L1-L7）
+    if meta.get("llm_client") is None:
+        return "l8_conviction"
     return "L1"
 
 
@@ -988,6 +1080,7 @@ def build_growth_loop_graph() -> Any:
     g = StateGraph(GrowthLoopState)
 
     g.add_node("hook_screen", hook_screen_node)
+    g.add_node("serenity_gate", serenity_gate_node)
     for stage in _STAGES:
         g.add_node(stage, _make_stage_node(stage))
         g.add_node(f"verify_{stage}", _make_verify_node(stage))
@@ -996,7 +1089,12 @@ def build_growth_loop_graph() -> Any:
 
     g.set_entry_point("hook_screen")
     g.add_conditional_edges(
-        "hook_screen", _route_after_hook, {"kill": "kill", "L1": "L1"}
+        "hook_screen", _route_after_hook,
+        {"kill": "kill", "serenity_gate": "serenity_gate"},
+    )
+    g.add_conditional_edges(
+        "serenity_gate", _route_after_serenity,
+        {"kill": "kill", "L1": "L1", "l8_conviction": "l8_conviction"},
     )
 
     for i, stage in enumerate(_STAGES):
