@@ -103,11 +103,18 @@ def conviction_proxy(n_hooks: int, hook_ids: list[str],
     return min(1.0, base + growth_boost + h1_boost)
 
 
-def build_signals(fin_at: dict, candidates: list[tuple], prices_all: dict
-                  ) -> tuple[list[Signal], dict]:
-    """对当期候选跑 HOOK 筛选 → 信念信号 + 诊断明细。"""
+def build_signals(fin_at: dict, candidates: list[tuple], prices_all: dict,
+                   min_holdings: int = 20
+                   ) -> tuple[list[Signal], dict]:
+    """对当期候选跑 HOOK 筛选 → 信念信号 + 诊断明细。
+
+    hook 触发不足 min_holdings 时，从 B 观察名单（数据正常但无 hook，
+    剧本 B = 观察不建仓；此处按用户要求以低信念补足持仓下限）
+    按最新增速排名补位。
+    """
     signals: list[Signal] = []
     detail: dict[str, dict] = {}
+    b_pool: list[tuple[float, str, str, str]] = []   # (yoy, tk, name, sw1)
     for tk, name, sw1 in candidates:
         periods = fin_at.get(tk)
         if not periods:
@@ -118,16 +125,31 @@ def build_signals(fin_at: dict, candidates: list[tuple], prices_all: dict
         dd = drawdown_1y(prices_all.get(tk, {}), CUR_DT[0])
         res = evaluate_hooks(yoy, gm, dd, beats=None)
         hooks = [h["id"] for h in res["tripped"]]
-        if not hooks:
-            continue
-        conv = conviction_proxy(len(hooks), hooks, yoy[0])
-        reason = (f"hooks={'+'.join(hooks)} yoy={yoy[0]:.0%}"
-                  + (f" dd={dd:.0%}" if dd is not None else ""))
-        signals.append(Signal(
-            model_name="growth_loop", ticker=tk, date=CUR_DT[0] + "-28",
-            value=conv, reasoning=reason))
-        detail[tk] = {"name": name, "sw1": sw1, "hooks": hooks,
-                      "yoy": yoy[0], "dd": dd, "conviction": conv}
+        if hooks:
+            conv = conviction_proxy(len(hooks), hooks, yoy[0])
+            reason = (f"hooks={'+'.join(hooks)} yoy={yoy[0]:.0%}"
+                      + (f" dd={dd:.0%}" if dd is not None else ""))
+            signals.append(Signal(
+                model_name="growth_loop", ticker=tk,
+                date=CUR_DT[0] + "-28", value=conv, reasoning=reason))
+            detail[tk] = {"name": name, "sw1": sw1, "hooks": hooks,
+                          "yoy": yoy[0], "dd": dd, "conviction": conv,
+                          "tier": "A"}
+        else:
+            b_pool.append((yoy[0], tk, name, sw1))
+
+    # B 补位（低信念 0.30：低于任何 hook 触发组合的信念）
+    if len(signals) < min_holdings:
+        b_pool.sort(key=lambda x: -x[0])
+        for yoy0, tk, name, sw1 in b_pool[:min_holdings - len(signals)]:
+            conv = 0.30
+            signals.append(Signal(
+                model_name="growth_loop", ticker=tk,
+                date=CUR_DT[0] + "-28", value=conv,
+                reasoning=f"B-fill（无 hook）yoy={yoy0:.0%}"))
+            detail[tk] = {"name": name, "sw1": sw1, "hooks": [],
+                          "yoy": yoy0, "dd": None, "conviction": conv,
+                          "tier": "B"}
     signals.sort(key=lambda s: -s.value)
     return signals, detail
 
@@ -168,7 +190,7 @@ class WeightsStrategy(StrategyTemplate):
             "dt": dt, "n": len(weights), "equity": equity,
             "weights": weights,
             "names": [(detail[t]["name"], detail[t]["sw1"],
-                       detail[t]["hooks"], w)
+                       detail[t]["hooks"], w, detail[t].get("tier", "A"))
                       for t, w in sorted(weights.items(),
                                          key=lambda x: -x[1])
                       if t in detail],
@@ -223,11 +245,13 @@ def main():
         detail_by_dt[month] = detail
         hook_stat: dict[str, int] = {}
         for d in detail.values():
-            for h in d["hooks"]:
-                hook_stat[h] = hook_stat.get(h, 0) + 1
+            if d["tier"] == "A":
+                for h in d["hooks"]:
+                    hook_stat[h] = hook_stat.get(h, 0) + 1
+        n_a = sum(1 for d in detail.values() if d["tier"] == "A")
         print(f"  [{month}] 候选 {len(sel[month]['candidates'])} → "
-              f"hook 触发 {len(signals)} → 持仓 {len(weights)} 只 | "
-              f"hooks: {hook_stat} | gross "
+              f"hook 触发 {n_a}（B 补位 {len(signals) - n_a}）→ "
+              f"持仓 {len(weights)} 只 | hooks: {hook_stat} | gross "
               f"{sum(weights.values()):.0%}")
 
     # ---- vnpy 引擎执行 ----
@@ -275,8 +299,9 @@ def main():
         ex = f" | 基准 {br:+.1%} | 超额 {ret - br:+.1%}" if br is not None else ""
         print(f"\n  ▶ {mk}: {ret:+.1%}{ex}（{h['n']} 只，gross "
               f"{sum(h['weights'].values()):.0%}）")
-        for name, sw1, hooks, w in h["names"][:8]:
-            print(f"     {name:8s} {sw1:6s} {'+'.join(hooks):6s} {w:.1%}")
+        for name, sw1, hooks, w, tier in h["names"][:8]:
+            hs = "+".join(hooks) if hooks else "B补位"
+            print(f"     {name:8s} {sw1:6s} {tier} {hs:8s} {w:.1%}")
 
     # hook 频率与持仓结构诊断
     print("\n⑤ 结构诊断")
