@@ -17,6 +17,20 @@ The entire workflow is orchestrated by **LangGraph**, giving you:
 - Streaming (watch signal generation in real-time)
 - Conditional logic (skip execution when all signals are neutral)
 
+### Three Target Layers — Where Alpha Comes From
+
+框架的顶层结构是**三层 Alpha 目标层**（详见 [`docs/ALPHA_LAYERS.md`](docs/ALPHA_LAYERS.md)），
+任何一次回测改进都必须归因到恰好一层，每层独立记账、设 benchmark、持续迭代：
+
+| 层 | 记录什么 | 归因规则 | 已实测 |
+|----|----------|----------|--------|
+| **L1 数据层/信息源层** | 能带来超额收益的数据源、信息源、新 MCP 接入（券商等），本层做 A/B 鉴别 | 同一方法论仅换数据 → 增量归数据层 | 一致预期 PIT 数据 +18.1pp |
+| **L2 Alpha 层/方法论层** | 方法论 + benchmark + 迭代版本线 | 同一数据换决策框架 → 增量归方法论层 | F-Score 基线 +8.1pp、否决制 +4.7pp |
+| **L3 数量信号层** | 买卖时点、过热、估值、回撤纪律（A股：卖得好比买得好重要） | 同一方法论加减信号 → 增量归信号层 | 估值卖出 +11pp |
+
+账本：`alpha_ledger/ledger.json`（程序读取）+ `alpha_ledger/alpha_ledger_report.html`（对比报告）。
+构建/重生成：`python examples/build_alpha_ledger.py`。核心模块：`src/research/alpha_ledger.py`。
+
 ### Architecture
 
 ```

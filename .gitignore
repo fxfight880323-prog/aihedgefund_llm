@@ -33,3 +33,22 @@ Thumbs.db
 # 回测数据缓存与日志
 _bt_*.json
 _*.log
+
+# 工作记忆（本地，不入库）
+.workbuddy/
+
+# 外部项目拷贝（非本仓库代码）
+deepseek-harness/
+
+# MCP 数据缓存
+_mx_cache/
+
+# 一次性诊断脚本
+_diag_*.py
+
+# 回测/图表中间产物（脚本保留，数据不入库）
+_*.json
+_*.csv
+_*.png
+_*.svg
+_*.js

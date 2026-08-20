@@ -3,6 +3,18 @@
 > 更新：2026-08 · 全部模型经 `ALPHA_MODEL_REGISTRY` / `BLEND_POLICY_REGISTRY` 注册，
 > LangGraph 主图驱动，YAML 可选组合。
 
+## 〇、三层 Alpha 目标结构（框架顶层导航）
+
+任何策略/数据/信号改进，先判定归因到哪一层（见 `docs/ALPHA_LAYERS.md` 与 `alpha_ledger/`）：
+
+```
+L1 数据层/信息源层  换数据源 → 数据α   （新 MCP/券商接入在本层 A/B 鉴别）
+L2 Alpha 层/方法论层 换决策框架 → 方法论α （必须设 benchmark：EW-全A / F-Score 基线）
+L3 数量信号层        换买卖信号 → 信号α   （A股卖出>买入：过热/估值/回撤纪律）
+```
+
+账本：`alpha_ledger/ledger.json` + `alpha_ledger_report.html`，重生成：`python examples/build_alpha_ledger.py`。
+
 ## 一、框架分层
 
 ```

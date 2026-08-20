@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Growth Loop 策略选股实例 — 赛力斯 (601127.SH)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: #f8f7f5; color: #2C2C2A; line-height: 1.7;
+    padding: 20px; max-width: 920px; margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin: 8px 0 4px; color: #1a1a1a; }
+  h2 { font-size: 17px; font-weight: 600; margin: 32px 0 12px; color: #26215C; 
+       border-bottom: 2px solid #CECBF6; padding-bottom: 6px; }
+  h3 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; color: #3C3489; }
+  p { margin: 8px 0; font-size: 13.5px; }
+  ul, ol { margin: 8px 0 8px 24px; font-size: 13.5px; }
+  li { margin: 4px 0; }
+  code { 
+    font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+    background: #f0eef9; padding: 1px 5px; border-radius: 3px; font-size: 12.5px;
+  }
+  .formula { 
+    font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+    background: #f0eef9; padding: 10px 14px; border-radius: 6px; font-size: 12.5px;
+    margin: 10px 0; display: block; white-space: pre-wrap; line-height: 1.5;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 12.5px; }
+  th { background: #534AB7; color: #fff; padding: 8px 10px; text-align: left; font-weight: 500; }
+  td { border: 1px solid #e0ddd5; padding: 6px 10px; }
+  tr:nth-child(even) td { background: #faf8f5; }
+  .pass { color: #0F6E56; font-weight: 600; }
+  .fail { color: #A32D2D; font-weight: 600; }
+  .warn { color: #854F0B; font-weight: 600; }
+  .highlight { background: #FAEEDA; padding: 1px 4px; border-radius: 2px; }
+  .card { 
+    background: #fff; border-radius: 10px; padding: 20px 24px; margin: 12px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #ece9e3;
+  }
+  .card-goal { border-left: 4px solid #534AB7; }
+  .card-hook { border-left: 4px solid #185FA5; }
+  .card-serenity { border-left: 4px solid #854F0B; }
+  .card-loop { border-left: 4px solid #3B6D11; }
+  .card-result { border-left: 4px solid #0F6E56; }
+  .badge { 
+    display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 11px;
+    font-weight: 600; margin-left: 8px;
+  }
+  .badge-pass { background: #E1F5EE; color: #085041; }
+  .badge-fail { background: #FCEBEB; color: #791F1F; }
+  .badge-warn { background: #FAEEDA; color: #633806; }
+  .badge-abstain { background: #F1EFE8; color: #5F5E5A; }
+  .step-num { 
+    display: inline-block; width: 24px; height: 24px; border-radius: 50%;
+    background: #534AB7; color: #fff; text-align: center; line-height: 24px;
+    font-size: 12px; font-weight: 600; margin-right: 8px;
+  }
+  .data-table th { font-size: 11px; }
+  .data-table td { font-family: "JetBrains Mono", Consolas, monospace; font-size: 11.5px; }
+  .summary-box { 
+    background: linear-gradient(135deg, #EEEDFE 0%, #E1F5EE 100%);
+    border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+  }
+  .key-result {
+    font-size: 16px; font-weight: 600; color: #3C3489;
+  }
+  .note { font-size: 12px; color: #888780; font-style: italic; margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<h1>Growth Loop 策略选股实例</h1>
+<p style="color:#5F5E5A;font-size:13px;">个股：赛力斯 (601127.SH) &nbsp;|&nbsp; 调仓时点：2024-08 &nbsp;|&nbsp; 行业：汽车 &nbsp;|&nbsp; 数据源：点时全市场回测缓存</p>
+
+<div class="summary-box">
+  <p class="key-result">最终结果：触发 H1+H2 双钩 → SERENITY DOWNGRADE (score=44) → conviction=1.0 → 组合权重 5.5%</p>
+  <p style="font-size:12px;color:#5F5E5A;margin-top:4px;">该期（2024-08 → 2025-04）组合收益 +39.1%，基准 +21.1%，超额 +18.0%</p>
+</div>
+
+<h2><span class="step-num">1</span>GOAL 层 — 参数设定</h2>
+
+<div class="card card-goal">
+<p>GOAL 层是策略的"宪法"——所有后续层的判定都以此为基准。参数来自 <code>config/strategies/growth_loop.yaml</code>：</p>
+
+<table>
+<tr><th>参数</th><th>值</th><th>含义</th><th>作用于</th></tr>
+<tr><td><code>target_return</code></td><td>0.15 (15%)</td><td>年化目标收益</td><td>L6 反向 DCF 门槛</td></tr>
+<tr><td><code>horizon_years</code></td><td>3 年</td><td>最短持有意图</td><td>L2 耐久性评估</td></tr>
+<tr><td><code>min_revenue_growth</code></td><td>0.20 (20%)</td><td>最低营收增速</td><td>L1/L2 TAM 增长门槛</td></tr>
+<tr><td><code>max_loop_backs</code></td><td>2</td><td>每阶段最大回环次数</td><td>LOOP 层门控</td></tr>
+<tr><td><code>strong_short_value</code></td><td>-0.5</td><td>L7 强空头信号值</td><td>做空候选产出</td></tr>
+<tr><td><code>max_position_pct</code></td><td>0.08 (8%)</td><td>单票仓位上限</td><td>组合构建钳制</td></tr>
+<tr><td><code>gross_target</code></td><td>1.0 (100%)</td><td>满仓目标</td><td>组合构建</td></tr>
+</table>
+
+<p class="note">剧本原话："Max single position 8% at cost" — 单票在任何时点占总资产不超过 8%。</p>
+</div>
+
+<h2><span class="step-num">2</span>Universe 构建 — 全市场点时筛选</h2>
+
+<div class="card card-hook">
+<p>2024年8月调仓时，策略对全市场做点时（point-in-time）筛选：</p>
+<ol>
+<li><b>增速排名</b>：全市场按最新营收 YoY 增速降序排列</li>
+<li><b>市值过滤</b>：当前市值 > 50 亿（剔除微盘股）</li>
+<li><b>无行业偏好</b>：不排除任何行业（剧本原则："排除已知行业"的反面——先广撒网）</li>
+<li><b>取 top-100</b>：最终取增速最高的 100 只作为候选 universe</li>
+</ol>
+<p>2024-08 期最终候选 <b>28 只</b>（部分因市值不足 50 亿被过滤），覆盖 12 个申万一级行业：</p>
+
+<table class="data-table">
+<tr><th>股票</th><th>代码</th><th>行业</th><th>营收 YoY</th><th>Hooks</th></tr>
+<tr><td>赛力斯</td><td>601127.SH</td><td>汽车</td><td>490%</td><td class="pass">H1+H2</td></tr>
+<tr><td>扬电科技</td><td>301012.SZ</td><td>电力设备</td><td>—</td><td class="pass">H1+H2+H6</td></tr>
+<tr><td>德明利</td><td>001309.SZ</td><td>电子</td><td>—</td><td class="pass">H1+H6</td></tr>
+<tr><td>佰维存储</td><td>688525.SH</td><td>电子</td><td>—</td><td class="pass">H2+H6</td></tr>
+<tr><td>沪光股份</td><td>605333.SH</td><td>汽车</td><td>—</td><td class="pass">H1+H2</td></tr>
+<tr><td>长川科技</td><td>300604.SZ</td><td>电子</td><td>—</td><td class="pass">H1+H2</td></tr>
+<tr><td>帝科股份</td><td>300842.SZ</td><td>电力设备</td><td>—</td><td class="pass">H2+H6</td></tr>
+<tr><td>... </td><td colspan="4"><i>共 28 只候选，22 只触发至少 1 个 hook</i></td></tr>
+</table>
+</div>
+
+<h2><span class="step-num">3</span>HOOK 层 — 数值化筛选（核心）</h2>
+
+<div class="card card-hook">
+<p>HOOK 层是<strong>纯量化、可证伪</strong>的筛选门。剧本原则：<em>"A hook based on narrative alone (no numeric trigger) is invalid."</em>——没有数值触发的 hook 是无效的。</p>
+
+<p>对赛力斯的财务数据做逐钩计算：</p>
+
+<h3>3.1 赛力斯原始财务数据（点时 as-of = 2024-08-31）</h3>
+<p>数据来自妙想 MCP，取 <code>date ≤ 2024-08-31</code> 的全部财报行。以下是营收和毛利率序列（newest-first，按季度对齐）：</p>
+
+<table class="data-table">
+<tr><th>报告期</th><th>营收（元）</th><th>毛利率（%）</th><th>ROE（%）</th></tr>
+<tr><td>2024 Q2（中报）</td><td>65,037,000,000</td><td>25.04</td><td>—</td></tr>
+<tr><td>2024 Q1（一季报）</td><td>26,596,000,000</td><td>21.48</td><td>—</td></tr>
+<tr><td>2023 Q4（年报）</td><td>35,842,000,000</td><td>9.47</td><td>—</td></tr>
+<tr><td>2023 Q3（三季报）</td><td>19,528,000,000</td><td>8.79</td><td>—</td></tr>
+<tr><td>2023 Q2（中报）</td><td>11,014,000,000</td><td>6.88</td><td>—</td></tr>
+<tr><td>2023 Q1（一季报）</td><td>5,101,000,000</td><td>4.81</td><td>—</td></tr>
+<tr><td>2022 Q4（年报）</td><td>34,043,000,000</td><td>8.23</td><td>—</td></tr>
+<tr><td>... </td><td colspan="3"><i>共 18 期可用数据（2020 Q1 ~ 2024 Q2）</i></td></tr>
+</table>
+
+<h3>3.2 计算 YoY 增速序列（同季对齐）</h3>
+<p>妙想报表是<b>年内累计值</b>（一季报=3个月/中报=6个月/三季报=9个月/年报=12个月），所以必须同季对上季比较：</p>
+
+<div class="formula">YoY[0] = 2024Q2 / 2023Q2 - 1 = 650.37亿 / 110.14亿 - 1 = <span style="color:#0F6E56;font-weight:600;">489.7%</span>
+YoY[1] = 2024Q1 / 2023Q1 - 1 = 265.96亿 / 51.01亿 - 1 = <span style="color:#0F6E56;font-weight:600;">421.7%</span>
+YoY[2] = 2023Q4 / 2022Q4 - 1 = 358.42亿 / 340.43亿 - 1 = <span style="color:#0F6E56;font-weight:600;">5.3%</span></div>
+
+<p class="note">注意：YoY[2] 只有 5% 是因为赛力斯 2022 年还在卖传统燃油 SUV，营收基数已经不低；到 2023 年中开始与华为合作推出 AITO 问界系列，营收才爆发式增长。</p>
+
+<h3>3.3 计算毛利率序列（newest-first）</h3>
+<div class="formula">GM[0] = 25.04%（2024 Q2 中报）
+GM[1] = 21.48%（2024 Q1 一季报）
+GM 历史最低 (gm_floor) = 2.3%（2020-2021 年传统燃油车时期）</div>
+
+<h3>3.4 计算回撤（距 1 年高点）</h3>
+<div class="formula">取 2023-09 ~ 2024-08 月度收盘价窗口（13 个月）
+窗口最高价 = 2024 年内高点
+当前价 = 2024-08 月度收盘
+drawdown = 1 - 当前价 / 最高价 = <span style="color:#854F0B;">16.8%</span></div>
+
+<h3>3.5 逐钩触发判定</h3>
+
+<table>
+<tr><th>钩子</th><th>条件</th><th>赛力斯实际值</th><th>判定</th></tr>
+<tr>
+  <td><b>H1</b> 营收拐点</td>
+  <td>最近 3 期 YoY 严格递增<br><code>YoY[0] &gt; YoY[1] &gt; YoY[2]</code></td>
+  <td>489.7% &gt; 421.7% &gt; 5.3% ✓</td>
+  <td><span class="badge badge-pass">PASS</span></td>
+</tr>
+<tr>
+  <td><b>H2</b> 毛利率拐点</td>
+  <td>毛利率环比上行<br>且 YoY &gt; 20%<br><code>GM[0] &gt; GM[1] and YoY[0] &gt; 0.20</code></td>
+  <td>25.04% &gt; 21.48% ✓<br>489.7% &gt; 20% ✓</td>
+  <td><span class="badge badge-pass">PASS</span></td>
+</tr>
+<tr>
+  <td><b>H3</b> 连续 BEAT</td>
+  <td>连续 ≥2 季<br><code>eps_surprise == "BEAT"</code></td>
+  <td>数据源无 eps_surprise 字段<br>→ 按设计 abstain</td>
+  <td><span class="badge badge-abstain">ABSTAIN</span></td>
+</tr>
+<tr>
+  <td><b>H6</b> 回撤后质量</td>
+  <td>回撤 ≥ 30%<br>且 YoY ≥ 10%<br><code>dd &gt;= 0.30 and YoY[0] &gt;= 0.10</code></td>
+  <td>回撤 16.8% &lt; 30% ✗</td>
+  <td><span class="badge badge-fail">FAIL</span></td>
+</tr>
+</table>
+
+<p><b>HOOK 层结论</b>：触发 H1 + H2 两个钩子 → 获得进入下一层的资格（A 优先级候选）。</p>
+
+<h3>3.6 A/B/C 优先级排名</h3>
+<p>28 只候选中 22 只触发 ≥1 个 hook → 全部进入 A 优先级。排名规则：hook 数量多者优先，其次 YoY 增速高者优先。赛力斯以 2 个 hook + 490% YoY 排名靠前。</p>
+<p class="note">剧本原设计 A 上限 3 只是 LOOP 深研的 LLM 成本约束，不是组合规则——回测取全部触发 hook 的标的按信念加权。</p>
+</div>
+
+<h2><span class="step-num">4</span>SERENITY 卡点审查门</h2>
+
+<div class="card card-serenity">
+<p>SERENITY 门位于 HOOK 和 LOOP 之间，核心目的是区分<strong>结构性定价权</strong>（持续高毛利）与<strong>情景性利润</strong>（一次性暴利）。设计吸取了 2022 年新冠 IVD 教训（万孚/万泰/九安 GM 70%+ 拿最高分后均值回归崩塌 -26.4%）。</p>
+
+<h3>4.1 门控语义</h3>
+<table>
+<tr><th>分数</th><th>判决</th><th>处置</th></tr>
+<tr><td>≥ 55</td><td>PASS</td><td>进入 LOOP 深研，信念不折价</td></tr>
+<tr><td>35 ~ 55</td><td>DOWNGRADE</td><td>进入 LOOP，但信念 × 0.7</td></tr>
+<tr><td>&lt; 35</td><td>KILL</td><td>不进入深研</td></tr>
+</table>
+
+<h3>4.2 赛力斯 SERENITY 评分计算</h3>
+
+<p><b>关键中间量：</b></p>
+<div class="formula">gm_now = 25.04    gm_prev = 21.48    gm_floor = 2.3（全历史最低毛利率）
+gm_chg = 25.04 - 21.48 = +3.56pp
+gm_spike = gm_now - 历史后半段中位数 = 25.04 - 4.5 = <span style="color:#854F0B;">+20.5pp</span>
+GM 标准差 std = 5.8
+回撤 dd = 16.8%    1年涨幅 runup = <span style="color:#A32D2D;">112%</span>（从年内低点翻倍以上）</div>
+
+<p><b>8 因子评分（raw_score = 60.0）：</b></p>
+<table class="data-table">
+<tr><th>因子</th><th>得分/5</th><th>权重</th><th>贡献</th><th>赛力斯依据</th></tr>
+<tr><td>demand_inflection</td><td>5.0</td><td>15</td><td>15.0</td><td>YoY 490% + 2连加速 → 满分</td></tr>
+<tr><td>architecture_coupling</td><td>1.8*</td><td>10</td><td>3.6</td><td>GM水平 25 × floor 2.3 → 低（*因 gm_spike>15pp 打 4 折）</td></tr>
+<tr><td>chokepoint_severity</td><td>1.2*</td><td>15</td><td>3.6</td><td>GM变化 +3.56pp（*4 折价）</td></tr>
+<tr><td>supplier_concentration</td><td>2.5</td><td>12</td><td>6.0</td><td>无同业数据 → 固定中性</td></tr>
+<tr><td>expansion_difficulty</td><td>0.5*</td><td>12</td><td>1.2</td><td>gm_floor 2.3% 极低（*4 折价）</td></tr>
+<tr><td>evidence_quality</td><td>5.0</td><td>15</td><td>15.0</td><td>18 个报告期 → 数据充分满分</td></tr>
+<tr><td>valuation_disconnect</td><td>1.0</td><td>11</td><td>2.2</td><td>回撤 16.8% < 15% 门槛 → 最低分</td></tr>
+<tr><td>catalyst_timing</td><td>5.0</td><td>10</td><td>10.0</td><td>YoY 2连加速 → 满分</td></tr>
+<tr><td><b>合计 raw</b></td><td></td><td><b>100</b></td><td><b>60.0</b></td><td></td></tr>
+</table>
+
+<p class="note">* 情景性尖峰罚项：当 gm_spike > 25pp 时，毛利率驱动的三个结构性因子（architecture_coupling, chokepoint_severity, expansion_difficulty）打 4 折。赛力斯 gm_spike = 20.5pp，未达 25pp 阈值但超过了 15pp 的次级阈值，仍触发 episodic_margin 罚项。</p>
+
+<p><b>3 项罚分（penalties × 2.0 = 16.0）：</b></p>
+<table class="data-table">
+<tr><th>罚项</th><th>级别</th><th>× 2.0</th><th>原因</th></tr>
+<tr><td>episodic_margin</td><td>2</td><td>4.0</td><td>gm_spike +20.5pp > 15pp → 一次性利润嫌疑</td></tr>
+<tr><td>hype_risk</td><td>3</td><td>6.0</td><td>1年涨幅 112%（从低点翻倍以上）→ 热度过高</td></tr>
+<tr><td>cyclicality</td><td>3</td><td>6.0</td><td>GM 标准差 5.8（中等波动）</td></tr>
+<tr><td><b>合计</b></td><td><b>8</b></td><td><b>16.0</b></td><td></td></tr>
+</table>
+
+<p><b>最终分数：</b></p>
+<div class="formula">score = max(0, min(100, raw_score - penalties × 2.0))
+     = max(0, min(100, 60.0 - 16.0))
+     = <span style="font-size:16px;font-weight:600;color:#854F0B;">44.0</span>
+
+35 ≤ 44.0 < 55 → <span style="color:#854F0B;font-weight:600;">DOWNGRADE</span>（信念 × 0.7）</div>
+
+<p><b>SERENITY 的核心判断</b>：赛力斯的毛利率从 2% 飙升到 25%，这种改善虽然真实（H2 触发），但历史基数太低——SERENITY 门不确定这是结构性定价权还是新能源车赛道的一次性风口红利。同时 1 年涨幅 112% 表明市场已经 price in 了增长预期。因此判 DOWNGRADE 而非 PASS——允许进入深研但信念打折。</p>
+
+<h3>4.3 同期 22 只候选 SERENITY 门控汇总</h3>
+<table class="data-table">
+<tr><th>判决</th><th>数量</th><th>代表</th></tr>
+<tr><td class="pass">PASS (≥55)</td><td>9 只</td><td>长川科技 75.6（最高）</td></tr>
+<tr><td class="warn">DOWNGRADE (35-55)</td><td>13 只</td><td>赛力斯 44.0</td></tr>
+<tr><td class="fail">KILL (&lt;35)</td><td>0 只</td><td>—</td></tr>
+</table>
+</div>
+
+<h2><span class="step-num">5</span>LOOP 层 — L1-L7 LLM 门控深研（生产路径）</h2>
+
+<div class="card card-loop">
+<p class="note"><b>诚实声明</b>：LOOP 层（L1-L7 LLM 深研）无法诚实回测——LLM 训练数据含未来信息。回测使用确定性代理（conviction_proxy）替代。以下是两层路径的说明。</p>
+
+<h3>5.1 回测路径（确定性代理）</h3>
+<p>回测跳过 L1-L7 和 SERENITY，直接从 HOOK 触发结果计算 conviction 代理：</p>
+
+<div class="formula">conviction_proxy(n_hooks, hook_ids, latest_yoy):
+  base       = 0.5 + 0.2 × (n_hooks - 1)     = 0.5 + 0.2 × (2-1) = <b>0.70</b>
+  growth_boost = 0.3 × min(max(latest_yoy, 0), 1.5) / 1.5
+              = 0.3 × min(4.897, 1.5) / 1.5  = 0.3 × 1.0         = <b>0.30</b>
+  h1_boost   = 0.05 if "H1" in hook_ids      = <b>0.05</b>
+
+  conviction = min(1.0, 0.70 + 0.30 + 0.05)  = <span style="color:#3C3489;font-weight:600;">1.00</span> (capped)</div>
+
+<p class="note">growth_boost 被 1.5 封顶——YoY 490% 和 YoY 150% 在代理公式里是等价的，防止极端增速导致信念爆炸。</p>
+
+<h3>5.2 生产路径（L1-L7 完整深研）</h3>
+<p>在实盘运行中，SERENITY DOWNGRADE 的赛力斯会进入 L1-L7 七阶段 LLM 门控深研。每阶段 = 一次 LLM 调用，输出以机器可解析块结尾：</p>
+
+<table>
+<tr><th>阶段</th><th>主题</th><th>PASS 条件</th><th>确定性验证规则</th></tr>
+<tr><td>L1</td><td>商业模式/TAM 审计</td><td>money model clear + bottom-up TAM ≥5年增长 > 20%</td><td>claimed_tam ≤ 3 × bottomup_tam</td></tr>
+<tr><td>L2</td><td>增长分解/BEAR-BASE-BULL</td><td>BASE CAGR ≥ 20% + growth_floor ≥ 50% current</td><td>growth_floor ≥ 0.5 × current_growth</td></tr>
+<tr><td>L3</td><td>单位经济/经营杠杆</td><td>incremental_margin > current_op_margin</td><td>incremental_margin > current_op_margin</td></tr>
+<tr><td>L4</td><td>竞争壁垒/护城河</td><td>≥1 有证据的护城河</td><td>—（pass-through）</td></tr>
+<tr><td>L5</td><td>管理层审计</td><td>promise-vs-delivery 正面</td><td>—（产出 YELLOW-FLAGS）</td></tr>
+<tr><td>L6</td><td>反向 DCF 估值</td><td>expected return ≥ 15% + bear ≥ -30%</td><td>implied_cagr ≤ base_cagr</td></tr>
+<tr><td>L7</td><td>红队反证（不可跳过）</td><td>long thesis 存活 + 3 tripwire</td><td>short_strength ≥ 7 → 强制 FAIL</td></tr>
+</table>
+
+<p>每阶段 verify 之后三向路由：PASS → 下一阶段；LOOP-BACK → 回环重跑（上限 2 次）；其余 → KILL。</p>
+
+<h3>5.3 L8 确定性信念计算</h3>
+<p>L8 是纯代码计算——LLM 不碰仓位。L1-L6 按权重加权（L7 是红队否决门，不贡献正向分数）：</p>
+
+<div class="formula">STAGE_WEIGHTS = {L1: 0.15, L2: 0.20, L3: 0.20, L4: 0.15, L5: 0.10, L6: 0.20}
+# 权重总和 = 1.0
+
+conviction = Σ(w_s × score_s)  # 各阶段 LLM 评分 × 权重
+# 黄旗减记：每面 YELLOW-FLAG -25% 信念，最多计 2 面
+conviction *= (1.0 - 0.25 × min(yellow_flags, 2))
+
+# 若 SERENITY 判 DOWNGRADE：
+conviction *= 0.70  # DOWNGRADE 折价</div>
+
+<p>对于赛力斯，如果 L1-L7 全部 PASS 且无黄旗，L8 信念 = 加权平均分 × 0.7（DOWNGRADE 折价）。</p>
+</div>
+
+<h2><span class="step-num">6</span>组合构建 — conviction_weighted + 8% 钳制</h2>
+
+<div class="card card-result">
+<h3>6.1 回测路径权重计算</h3>
+<div class="formula">22 只 A 候选的 conviction 值：
+  赛力斯 = 1.00, 扬电科技 = 1.00, 德明利 = 1.00, ...
+  全部 conviction 之和 ≈ 18.2
+
+weight_赛力斯 = conviction / sum(convictions) × gross_target
+             = 1.00 / 18.2 × 1.0
+             = <span style="color:#3C3489;font-weight:600;">5.5%</span>
+
+single-name cap: 5.5% < 8% → 未触发上限</div>
+
+<h3>6.2 生产路径权重计算（含 SERENITY 折价）</h3>
+<div class="formula"># 若 SERENITY DOWNGRADE 生效：
+serenity_conviction = (44/100) × 0.7 = 0.308
+# 但在 L1-L7 深研后，信念会被 L8 重新计算
+
+# 在无 LLM 回退模式中：
+hook_boost = 1.0 + 0.15 × max(0, n_hooks - 1) = 1.0 + 0.15 × 1 = 1.15
+conviction = min(100, 44 × 1.15 × 0.7) / 100 = 35.4 / 100 = 0.354
+
+weight = 0.354 / sum(all convictions) × 1.0</div>
+
+<h3>6.3 2024-08 期组合构成</h3>
+<table class="data-table">
+<tr><th>股票</th><th>行业</th><th>Hooks</th><th>权重</th></tr>
+<tr><td>赛力斯</td><td>汽车</td><td>H1+H2</td><td>5.5%</td></tr>
+<tr><td>扬电科技</td><td>电力设备</td><td>H1+H2+H6</td><td>5.5%</td></tr>
+<tr><td>德明利</td><td>电子</td><td>H1+H6</td><td>5.5%</td></tr>
+<tr><td>沪光股份</td><td>汽车</td><td>H1+H2</td><td>5.5%</td></tr>
+<tr><td>佰维存储</td><td>电子</td><td>H2+H6</td><td>5.5%</td></tr>
+<tr><td>长川科技</td><td>电子</td><td>H1+H2</td><td>5.2%</td></tr>
+<tr><td>帝科股份</td><td>电力设备</td><td>H2+H6</td><td>5.2%</td></tr>
+<tr><td>涛涛车业</td><td>汽车</td><td>H1+H6</td><td>5.0%</td></tr>
+<tr><td>... </td><td colspan="3"><i>共 22 只，gross 100%</i></td></tr>
+</table>
+</div>
+
+<h2><span class="step-num">7</span>投资结果与 L8 预承诺退出规则</h2>
+
+<div class="card card-result">
+<h3>7.1 2024-08 → 2025-04 期收益</h3>
+<table>
+<tr><th>指标</th><th>策略</th><th>基准（中证全指）</th><th>超额</th></tr>
+<tr><td>期间收益</td><td><span class="pass">+39.1%</span></td><td>+21.1%</td><td><span class="pass">+18.0%</span></td></tr>
+</table>
+
+<h3>7.2 L8 预承诺退出规则（入场后不可修改）</h3>
+<ol>
+<li><b>Thesis kill</b>：任何 L7 tripwire 触发 → 5 个交易日内退出 ≥50%，剩余部分重跑 loop</li>
+<li><b>Valuation kill</b>：市场隐含 CAGR 超过 BULL 情景 → 减半</li>
+<li><b>Time stop</b>：BASE-case KPI 连续 3 季度未达 → 无论价格退出</li>
+<li><b>Re-entry</b>：仅在计算触发价处（市场隐含 CAGR = BASE）完整重跑 loop；不得穿越 tripwire 加仓</li>
+</ol>
+
+<h3>7.3 赛力斯的后续表现</h3>
+<p>赛力斯在 2024-08 入场后，恰逢问界 M9 爆发式增长和华为智选车模式验证，该期组合收益 +39.1%。但在后续 2025-04 调仓时，赛力斯不再出现在候选列表中——因为其增速开始从 490% 的基数回落，不再满足 H1 加速条件。</p>
+</div>
+
+<h2>总结：完整选股链路一览</h2>
+
+<div class="card">
+<table class="data-table">
+<tr><th>层级</th><th>输入</th><th>赛力斯数据</th><th>输出</th></tr>
+<tr><td><b>GOAL</b></td><td>策略参数</td><td>target 15% / min growth 20%</td><td>判定基准</td></tr>
+<tr><td><b>Universe</b></td><td>全市场 top-100 增速</td><td>28 只候选（市值>50亿过滤后）</td><td>A/B/C 候选池</td></tr>
+<tr><td><b>HOOK</b></td><td>财报 + 价格</td><td>YoY 5%→422%→490% / GM 21.5%→25.0% / dd 16.8%</td><td>H1 ✓ + H2 ✓ → A 优先级</td></tr>
+<tr><td><b>SERENITY</b></td><td>全历史财报 + 价格</td><td>score=44（raw 60 - penalty 16）</td><td>DOWNGRADE → 信念 ×0.7</td></tr>
+<tr><td><b>LOOP</b></td><td>LLM 深研 L1-L7</td><td>（生产路径，回测用代理替代）</td><td>L8 确定性信念</td></tr>
+<tr><td><b>组合</b></td><td>conviction_weighted</td><td>conviction=1.0（代理）/ 0.35（含SERENITY）</td><td>权重 5.5%（回测）</td></tr>
+<tr><td><b>结果</b></td><td>持有至下一调仓</td><td>2024-08 → 2025-04</td><td><span class="pass">+39.1%（超额 +18%）</span></td></tr>
+</table>
+
+<p class="note" style="margin-top:16px;">数据来源：点时全市场回测缓存（_bt_pit_*.json）。回测诚实声明：LOOP 层 L1-L7 LLM 深研无法诚实回测（训练数据含未来信息），本回测仅用 HOOK 层确定性规则 + L8 信念代理。SERENITY 门在生产路径中生效，回测路径中未计入信念代理。</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>章宏帆框架 × 一致预期 · 万得全A 全市场回测</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; margin: 0; background: #f7f8fa; color: #1c1e21; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 22px; } h2 { font-size: 17px; border-left: 4px solid #d33; padding-left: 10px; margin-top: 36px; }
+  h3 { font-size: 14px; color: #555; }
+  table { border-collapse: collapse; width: 100%; background: #fff; font-size: 13px; }
+  th, td { border: 1px solid #e3e6ea; padding: 6px 10px; text-align: right; }
+  th { background: #f0f2f5; } td:first-child { text-align: left; }
+  tr.hl td { background: #fdf0ef; font-weight: 600; }
+  .card { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 16px; margin-top: 14px; }
+  .ct { font-size: 12px; color: #444; padding: 2px 0; }
+  .pos { color: #d33; } .neg { color: #1a7f37; }
+  .period { margin-bottom: 10px; }
+  .period h4 { margin: 6px 0; font-size: 13px; }
+  .concl { font-size: 13px; line-height: 1.75; }
+  .concl p { margin: 8px 0; }
+  .concl b { color: #a00; }
+  tr.sep td { border-top: 2px solid #a00; background: #fdf0ef; }
+  .caveat { background: #fff8e6; border: 1px solid #f0d9a8; border-radius: 8px; padding: 14px 18px; margin-top: 14px; font-size: 13px; line-height: 1.7; }
+</style></head><body><div class="wrap">
+<h1>章宏帆框架 × 分析师一致预期 — 万得全A 全市场回测</h1>
+<h3>池子=万得全A(881001.WI) 每期PIT成分（4441→5503只）｜2021-08 ~ 2026-04 十期半年调仓｜成本 5bp+10bp｜vnpy 引擎</h3>
+
+<div class="card">
+<h2>总览（对比等权全A —— 方法论铁律）</h2>
+<table>
+<tr><th>策略</th><th>总收益</th><th>年化</th><th>最大回撤</th>
+<th>超额(等权全A)</th><th>超额(中证全指)</th></tr>
+
+        <tr>
+          <td class="hl">ZHF-cons 全市场</td>
+          <td>-7.3%</td>
+          <td>-1.4%</td>
+          <td>-36.6%</td>
+          <td>-60.2%</td>
+          <td>-7.5%</td>
+        </tr>
+        <tr>
+          <td class="">C-cons 全市场</td>
+          <td>+0.1%</td>
+          <td>+0.0%</td>
+          <td>-33.1%</td>
+          <td>-52.9%</td>
+          <td>-0.1%</td>
+        </tr>
+        <tr>
+          <td class="">EW-全A</td>
+          <td>+52.9%</td>
+          <td>+8.4%</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="">CSI-全指</td>
+          <td>+0.2%</td>
+          <td>+0.0%</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+</table>
+</div>
+
+<div class="card">
+<h2>关键结论（先看这个）</h2>
+<div class="concl">
+<p><b>① 池子beta淹没alpha，在龙头池版得到实证。</b> 龙头池 58 只等权 5 年 +455%，而中证全指同期 +0.2% —— 池子本身即史诗级超额收益。章宏帆框架×一致预期在该池跑出的 +329%/+434%，绝大部分是<b>池子beta+幸存者偏差</b>，不是框架alpha。</p>
+<p><b>② 全市场诚实回测：框架alpha≈0。</b> 同一套信号、同一引擎、同成本，把池子换成万得全A每期PIT成分后，ZHF-cons 全市场 <b>-7.3%</b>（超额等权全A <b>-60.2pp</b>）、C-cons <b>+0.1%</b>（超额 <b>-52.9pp</b>）。对照中证全指（分析师覆盖股票的市值加权代理），ZHF 仅跑输 7.5pp、C-cons 跑平 —— <b>一致预期信号在全市场没有创造正alpha</b>。</p>
+<p><b>③ 主要失血=风格错配，不是选股。</b> ZHF 持仓长期 80-90% 主板大中盘（分析师覆盖集中区，2021期 92.5% 主板），而等权全A 的 +52.9% 主要来自创业板/科创板小盘。策略在 2022-04、2024-04 熊市月超额为正（+6.2pp/+3.5pp），2026 年小盘行情中连续超额为负（-3.8pp/-3.5pp）。</p>
+<p><b>④ MDD 不降反升。</b> 全市场版 MDD -36.6% 远高于龙头池版 -27.0% —— 池子的质量过滤才是原框架真正的回撤防线，框架自身的 A/B/C 类配比+估值护栏在全市场不提供下行保护。</p>
+</div>
+</div>
+
+<div class="card">
+<h2>与龙头池版对比（窗口近似：池子版 2021-08~2026-04，全市场版 2021-06~2026-08）</h2>
+<table>
+<tr><th>策略</th><th>总收益</th><th>年化</th><th>最大回撤</th></tr>
+
+        <tr><td>ZHF-cons（龙头池 58 只）</td><td>+329.1%</td><td>+30.7%</td><td>-27.0%</td></tr>
+        <tr><td>C-cons（龙头池 58 只）</td><td>+434.0%</td><td>+38.3%</td><td>-30.4%</td></tr>
+        <tr><td>龙头池等权（58 只）</td><td>+455.0%</td><td>+39.4%</td><td>—</td></tr>
+        <tr class="sep"><td>ZHF-cons（万得全A）</td><td>-7.3%</td><td>-1.4%</td><td>-36.6%</td></tr>
+        <tr><td>C-cons（万得全A）</td><td>+0.1%</td><td>+0.0%</td><td>-33.1%</td></tr>
+        <tr><td>等权万得全A</td><td>+52.9%</td><td>+8.4%</td><td>—</td></tr>
+        <tr><td>中证全指 000985.SH</td><td>+0.2%</td><td>+0.0%</td><td>—</td></tr>
+    
+</table>
+</div>
+
+<div class="card">
+<h2>净值曲线（相对起点累计收益 %）</h2>
+<canvas id="nav" style="width:100%;height:380px"></canvas>
+</div>
+
+<div class="card">
+<h2>逐期筛选诊断</h2>
+<table>
+<tr><th>调仓期</th><th>万得全A成分</th><th>一致预期覆盖</th>
+<th>ZHF持仓数</th><th>ZHF A/B/C/OFF</th><th>C-Score持仓数</th></tr>
+
+        <tr>
+          <td>2021-08</td><td>4441</td><td>4441</td>
+          <td>40</td><td>B:279 OFF:166 A:930 C:331</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2022-04</td><td>4780</td><td>4780</td>
+          <td>40</td><td>B:354 A:734 C:146 OFF:186</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2022-08</td><td>4869</td><td>4869</td>
+          <td>40</td><td>B:247 OFF:204 A:755 C:206</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2023-04</td><td>5148</td><td>5148</td>
+          <td>40</td><td>OFF:205 A:717 B:313 C:276</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2023-08</td><td>5255</td><td>5255</td>
+          <td>40</td><td>B:230 A:585 C:314 OFF:212</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2024-04</td><td>5361</td><td>5361</td>
+          <td>40</td><td>B:411 OFF:149 C:325 A:463</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2024-08</td><td>5344</td><td>5344</td>
+          <td>40</td><td>B:341 OFF:188 C:353 A:419</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2025-04</td><td>5407</td><td>5407</td>
+          <td>40</td><td>A:432 C:471 B:318 OFF:122</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2025-08</td><td>5424</td><td>5424</td>
+          <td>40</td><td>OFF:149 A:501 C:498 B:233</td><td>40</td>
+        </tr>
+        <tr>
+          <td>2026-04</td><td>5503</td><td>5503</td>
+          <td>40</td><td>B:218 A:554 C:442 OFF:85</td><td>40</td>
+        </tr>
+</table>
+</div>
+
+<div class="card">
+<h2>ZHF 持仓板块分布（主板/创业板/科创板）</h2>
+<table>
+<tr><th>调仓期</th><th>板块分布</th><th>A/B/C/OFF 类别</th></tr>
+
+        <tr><td>2021-08</td><td>主板 37/40 · 创 3 · 科 0</td><td>B:279 OFF:166 A:930 C:331</td></tr>
+        <tr><td>2022-04</td><td>主板 39/40 · 创 1 · 科 0</td><td>B:354 A:734 C:146 OFF:186</td></tr>
+        <tr><td>2022-08</td><td>主板 35/40 · 创 5 · 科 0</td><td>B:247 OFF:204 A:755 C:206</td></tr>
+        <tr><td>2023-04</td><td>主板 29/40 · 创 10 · 科 1</td><td>OFF:205 A:717 B:313 C:276</td></tr>
+        <tr><td>2023-08</td><td>主板 35/40 · 创 5 · 科 0</td><td>B:230 A:585 C:314 OFF:212</td></tr>
+        <tr><td>2024-04</td><td>主板 23/40 · 创 14 · 科 3</td><td>B:411 OFF:149 C:325 A:463</td></tr>
+        <tr><td>2024-08</td><td>主板 26/40 · 创 12 · 科 2</td><td>B:341 OFF:188 C:353 A:419</td></tr>
+        <tr><td>2025-04</td><td>主板 26/40 · 创 13 · 科 1</td><td>A:432 C:471 B:318 OFF:122</td></tr>
+        <tr><td>2025-08</td><td>主板 24/40 · 创 16 · 科 0</td><td>OFF:149 A:501 C:498 B:233</td></tr>
+        <tr><td>2026-04</td><td>主板 35/40 · 创 4 · 科 1</td><td>B:218 A:554 C:442 OFF:85</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>最新一期持仓（2026-04）</h2>
+<table><tr><th>代码</th><th>权重</th></tr>
+<tr><td>000151.SZ</td><td>2.7%</td></tr><tr><td>000656.SZ</td><td>2.7%</td></tr><tr><td>000895.SZ</td><td>2.7%</td></tr><tr><td>002058.SZ</td><td>2.7%</td></tr><tr><td>002668.SZ</td><td>2.7%</td></tr><tr><td>002690.SZ</td><td>2.7%</td></tr><tr><td>600066.SH</td><td>2.7%</td></tr><tr><td>600285.SH</td><td>2.7%</td></tr><tr><td>600660.SH</td><td>2.7%</td></tr><tr><td>603444.SH</td><td>2.7%</td></tr><tr><td>688578.SH</td><td>2.7%</td></tr><tr><td>920523.BJ</td><td>2.7%</td></tr><tr><td>000680.SZ</td><td>2.7%</td></tr><tr><td>002946.SZ</td><td>2.7%</td></tr><tr><td>600563.SH</td><td>2.7%</td></tr><tr><td>002801.SZ</td><td>2.7%</td></tr><tr><td>600887.SH</td><td>2.7%</td></tr><tr><td>603998.SH</td><td>2.7%</td></tr><tr><td>603551.SH</td><td>2.6%</td></tr><tr><td>300685.SZ</td><td>2.6%</td></tr><tr><td>000408.SZ</td><td>2.3%</td></tr><tr><td>000426.SZ</td><td>2.3%</td></tr><tr><td>000506.SZ</td><td>2.3%</td></tr><tr><td>000603.SZ</td><td>2.3%</td></tr><tr><td>000657.SZ</td><td>2.3%</td></tr><tr><td>000703.SZ</td><td>2.3%</td></tr><tr><td>000807.SZ</td><td>2.3%</td></tr><tr><td>000933.SZ</td><td>2.3%</td></tr><tr><td>001203.SZ</td><td>2.3%</td></tr><tr><td>001309.SZ</td><td>2.3%</td></tr><tr><td>002378.SZ</td><td>2.3%</td></tr><tr><td>002407.SZ</td><td>2.3%</td></tr><tr><td>002558.SZ</td><td>2.3%</td></tr><tr><td>002582.SZ</td><td>2.3%</td></tr><tr><td>002842.SZ</td><td>2.3%</td></tr><tr><td>002943.SZ</td><td>2.3%</td></tr><tr><td>003010.SZ</td><td>2.3%</td></tr><tr><td>300159.SZ</td><td>2.3%</td></tr><tr><td>300169.SZ</td><td>2.3%</td></tr><tr><td>300277.SZ</td><td>2.3%</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>逐期个股贡献（ZHF-cons，Top 8）</h2>
+
+        <div class="period">
+          <h4>2021-08 → 2022-04 &nbsp;组合 -22.8%（39只）</h4>
+          <div class='ct'><b>601225.SH</b> w=2.7% <span class='pos'>+53.3%</span> → +1.44%</div><div class='ct'><b>000012.SZ</b> w=2.3% <span class='neg'>-55.4%</span> → -1.28%</div><div class='ct'><b>000949.SZ</b> w=2.3% <span class='neg'>-52.9%</span> → -1.22%</div><div class='ct'><b>002553.SZ</b> w=2.7% <span class='neg'>-43.7%</span> → -1.18%</div><div class='ct'><b>001203.SZ</b> w=2.3% <span class='neg'>-48.1%</span> → -1.11%</div><div class='ct'><b>002064.SZ</b> w=2.3% <span class='neg'>-46.9%</span> → -1.08%</div><div class='ct'><b>000100.SZ</b> w=2.3% <span class='neg'>-43.8%</span> → -1.01%</div><div class='ct'><b>603587.SH</b> w=2.6% <span class='neg'>-37.9%</span> → -1.00%</div>
+        </div>
+        <div class="period">
+          <h4>2022-04 → 2022-08 &nbsp;组合 +11.5%（40只）</h4>
+          <div class='ct'><b>002175.SZ</b> w=2.7% <span class='pos'>+56.1%</span> → +1.51%</div><div class='ct'><b>002738.SZ</b> w=2.3% <span class='pos'>+62.9%</span> → +1.45%</div><div class='ct'><b>002466.SZ</b> w=2.3% <span class='pos'>+52.5%</span> → +1.21%</div><div class='ct'><b>000762.SZ</b> w=2.3% <span class='pos'>+47.5%</span> → +1.10%</div><div class='ct'><b>002655.SZ</b> w=2.3% <span class='pos'>+43.7%</span> → +1.01%</div><div class='ct'><b>600803.SH</b> w=2.7% <span class='pos'>+35.7%</span> → +0.96%</div><div class='ct'><b>000408.SZ</b> w=2.3% <span class='pos'>+39.3%</span> → +0.91%</div><div class='ct'><b>002756.SZ</b> w=2.3% <span class='pos'>+33.5%</span> → +0.77%</div>
+        </div>
+        <div class="period">
+          <h4>2022-08 → 2023-04 &nbsp;组合 -7.6%（40只）</h4>
+          <div class='ct'><b>002737.SZ</b> w=2.7% <span class='pos'>+67.0%</span> → +1.80%</div><div class='ct'><b>002555.SZ</b> w=2.7% <span class='pos'>+64.5%</span> → +1.74%</div><div class='ct'><b>300770.SZ</b> w=2.7% <span class='pos'>+53.6%</span> → +1.44%</div><div class='ct'><b>601001.SH</b> w=2.7% <span class='neg'>-39.1%</span> → -1.05%</div><div class='ct'><b>002176.SZ</b> w=2.3% <span class='neg'>-43.5%</span> → -1.01%</div><div class='ct'><b>000651.SZ</b> w=2.7% <span class='pos'>+35.6%</span> → +0.96%</div><div class='ct'><b>002466.SZ</b> w=2.3% <span class='neg'>-39.1%</span> → -0.90%</div><div class='ct'><b>300401.SZ</b> w=2.7% <span class='neg'>-31.4%</span> → -0.85%</div>
+        </div>
+        <div class="period">
+          <h4>2023-04 → 2023-08 &nbsp;组合 -4.3%（39只）</h4>
+          <div class='ct'><b>301004.SZ</b> w=2.7% <span class='pos'>+73.9%</span> → +1.99%</div><div class='ct'><b>688707.SH</b> w=2.7% <span class='neg'>-33.0%</span> → -0.89%</div><div class='ct'><b>300799.SZ</b> w=2.3% <span class='pos'>+37.5%</span> → +0.87%</div><div class='ct'><b>300426.SZ</b> w=2.3% <span class='neg'>-32.6%</span> → -0.75%</div><div class='ct'><b>300438.SZ</b> w=2.3% <span class='neg'>-31.5%</span> → -0.73%</div><div class='ct'><b>002192.SZ</b> w=2.7% <span class='neg'>-26.2%</span> → -0.71%</div><div class='ct'><b>600481.SH</b> w=2.3% <span class='neg'>-29.4%</span> → -0.68%</div><div class='ct'><b>601065.SH</b> w=2.7% <span class='pos'>+21.3%</span> → +0.57%</div>
+        </div>
+        <div class="period">
+          <h4>2023-08 → 2024-04 &nbsp;组合 -4.7%（37只）</h4>
+          <div class='ct'><b>603603.SH</b> w=2.7% <span class='neg'>-87.6%</span> → -2.37%</div><div class='ct'><b>600285.SH</b> w=2.7% <span class='pos'>+70.8%</span> → +1.92%</div><div class='ct'><b>601168.SH</b> w=2.7% <span class='pos'>+65.5%</span> → +1.77%</div><div class='ct'><b>002318.SZ</b> w=2.7% <span class='pos'>+47.1%</span> → +1.28%</div><div class='ct'><b>300338.SZ</b> w=2.3% <span class='neg'>-49.2%</span> → -1.14%</div><div class='ct'><b>002865.SZ</b> w=2.3% <span class='neg'>-48.8%</span> → -1.13%</div><div class='ct'><b>600088.SH</b> w=2.3% <span class='pos'>+42.8%</span> → +0.99%</div><div class='ct'><b>600660.SH</b> w=2.7% <span class='pos'>+36.1%</span> → +0.96%</div>
+        </div>
+        <div class="period">
+          <h4>2024-04 → 2024-08 &nbsp;组合 -16.1%（40只）</h4>
+          <div class='ct'><b>300573.SZ</b> w=2.3% <span class='neg'>-54.2%</span> → -1.26%</div><div class='ct'><b>002840.SZ</b> w=2.3% <span class='neg'>-47.0%</span> → -1.09%</div><div class='ct'><b>000921.SZ</b> w=2.7% <span class='neg'>-38.0%</span> → -1.01%</div><div class='ct'><b>000568.SZ</b> w=2.7% <span class='neg'>-35.4%</span> → -0.95%</div><div class='ct'><b>002786.SZ</b> w=2.7% <span class='neg'>-33.4%</span> → -0.89%</div><div class='ct'><b>002833.SZ</b> w=2.7% <span class='neg'>-29.8%</span> → -0.80%</div><div class='ct'><b>603103.SH</b> w=2.3% <span class='neg'>-34.1%</span> → -0.79%</div><div class='ct'><b>002690.SZ</b> w=2.7% <span class='neg'>-27.1%</span> → -0.72%</div>
+        </div>
+        <div class="period">
+          <h4>2024-08 → 2025-04 &nbsp;组合 +14.7%（38只）</h4>
+          <div class='ct'><b>300857.SZ</b> w=2.3% <span class='pos'>+104.5%</span> → +2.43%</div><div class='ct'><b>601127.SH</b> w=2.3% <span class='pos'>+73.0%</span> → +1.70%</div><div class='ct'><b>603737.SH</b> w=2.3% <span class='pos'>+65.8%</span> → +1.52%</div><div class='ct'><b>002247.SZ</b> w=2.3% <span class='pos'>+63.2%</span> → +1.47%</div><div class='ct'><b>300866.SZ</b> w=2.7% <span class='pos'>+45.0%</span> → +1.20%</div><div class='ct'><b>688147.SH</b> w=2.3% <span class='pos'>+48.1%</span> → +1.12%</div><div class='ct'><b>600779.SH</b> w=2.7% <span class='pos'>+38.5%</span> → +1.03%</div><div class='ct'><b>688480.SH</b> w=2.3% <span class='pos'>+39.9%</span> → +0.92%</div>
+        </div>
+        <div class="period">
+          <h4>2025-04 → 2025-08 &nbsp;组合 +37.1%（38只）</h4>
+          <div class='ct'><b>300502.SZ</b> w=2.3% <span class='pos'>+465.5%</span> → +10.80%</div><div class='ct'><b>300476.SZ</b> w=2.3% <span class='pos'>+272.8%</span> → +6.33%</div><div class='ct'><b>603800.SH</b> w=2.3% <span class='pos'>+105.0%</span> → +2.44%</div><div class='ct'><b>300533.SZ</b> w=2.3% <span class='pos'>+100.1%</span> → +2.32%</div><div class='ct'><b>002052.SZ</b> w=2.3% <span class='pos'>+93.0%</span> → +2.16%</div><div class='ct'><b>301317.SZ</b> w=2.3% <span class='pos'>+61.8%</span> → +1.43%</div><div class='ct'><b>002714.SZ</b> w=2.7% <span class='pos'>+42.0%</span> → +1.13%</div><div class='ct'><b>603379.SH</b> w=2.3% <span class='pos'>+42.4%</span> → +0.98%</div>
+        </div>
+        <div class="period">
+          <h4>2025-08 → 2026-04 &nbsp;组合 +10.1%（39只）</h4>
+          <div class='ct'><b>300604.SZ</b> w=2.3% <span class='pos'>+191.9%</span> → +4.43%</div><div class='ct'><b>601600.SH</b> w=2.7% <span class='pos'>+52.2%</span> → +1.39%</div><div class='ct'><b>002595.SZ</b> w=2.7% <span class='pos'>+46.7%</span> → +1.26%</div><div class='ct'><b>002058.SZ</b> w=2.3% <span class='pos'>+49.7%</span> → +1.15%</div><div class='ct'><b>002001.SZ</b> w=2.7% <span class='pos'>+42.3%</span> → +1.14%</div><div class='ct'><b>300502.SZ</b> w=2.3% <span class='pos'>+47.7%</span> → +1.10%</div><div class='ct'><b>605599.SH</b> w=2.7% <span class='pos'>+39.8%</span> → +1.07%</div><div class='ct'><b>600096.SH</b> w=2.7% <span class='pos'>+35.5%</span> → +0.96%</div>
+        </div>
+        <div class="period">
+          <h4>2026-04 → 2026-08 &nbsp;组合 -10.8%（39只）</h4>
+          <div class='ct'><b>001203.SZ</b> w=2.3% <span class='neg'>-49.3%</span> → -1.14%</div><div class='ct'><b>002058.SZ</b> w=2.7% <span class='neg'>-37.5%</span> → -1.02%</div><div class='ct'><b>002943.SZ</b> w=2.3% <span class='neg'>-38.3%</span> → -0.88%</div><div class='ct'><b>300277.SZ</b> w=2.3% <span class='neg'>-34.8%</span> → -0.80%</div><div class='ct'><b>688578.SH</b> w=2.7% <span class='pos'>+26.6%</span> → +0.72%</div><div class='ct'><b>001309.SZ</b> w=2.3% <span class='neg'>-25.0%</span> → -0.58%</div><div class='ct'><b>002378.SZ</b> w=2.3% <span class='neg'>-24.5%</span> → -0.57%</div><div class='ct'><b>002946.SZ</b> w=2.7% <span class='neg'>-19.0%</span> → -0.51%</div>
+        </div>
+</div>
+
+<div class="caveat">
+<h3 style="margin-top:0">诚实声明（必须读）</h3>
+1. <b>数据源</b>：成分股=juzi 万得全A(881001.WI) PIT 快照；一致预期=朝阳永续 con_forecast_stk PIT 快照（snapshot 日期≤调仓日，无未来函数）；价格=腾讯月K前复权。<br>
+2. <b>万得全A指数本身无公开行情序列</b>，市值加权基准用中证全指(000985.SH) 替代；更严格的无池子偏差基准是<b>等权万得全A NAV</b>（用 PIT 成分+真实月K计算），超额以它为准。<br>
+3. <b>幸存者偏差残余</b>：价格仅覆盖当期成分内股票；已退市股票当月不参与等权基准收益（轻微高估基准/低估策略超额）。<br>
+4. <b>北交所缺失</b>：腾讯月K接口不支持北交所(bj)代码，310 只 BJ 成分无价格（每期缺失率 1.9%~5.6%，多为2023年后扩容）；其中仅 9 只曾被一致预期覆盖，对策略组合影响可忽略，对等权基准有轻微低估（北交所小盘涨幅未被计入）。<br>
+5. <b>信号→成交时点</b>：调仓日数据快照与月末收盘同月（与龙头池版一致，保证可比）；严格做法应延后一个月执行，实际影响小但存在。<br>
+6. <b>方法论适配</b>：全市场无产业链方向映射（link=None），方向轮动层退化为纯个股信念；A/B/C 分类、估值护栏、类配比、单票上限均保留原框架。组合构造由"方向内选龙头"改为"全市场信念 top-40 + 类配比约束"（龙头池版持仓 8-32 只，本版统一 ≤40 只）。<br>
+7. 组合构造差异：C-cons 基线在龙头池版为全信号等权（≤10% 单票），全市场版改为与 ZHF 相同的 top-40 构造（口径一致才可比）。<br>
+8. <b>龙头池对比窗口</b>：池子版为 2021-08~2026-04，全市场版为 2021-06~2026-08（63 个月），窗口不完全一致，对比仅作量级参考。
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const labels = ["2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12", "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"];
+const series = [{"label": "ZHF-cons \u5168\u5e02\u573a", "data": [0.0, 0.0, 0.0, -0.13, -4.24, -1.34, 1.46, -5.0, -1.71, -6.58, -15.54, -8.46, -2.12, -6.65, -9.13, -16.55, -18.6, -7.35, -14.5, -7.45, -7.61, -11.35, -13.65, -17.01, -10.73, -12.47, -17.84, -18.81, -21.5, -18.6, -20.06, -27.35, -22.21, -22.56, -21.18, -23.57, -29.97, -32.32, -35.65, -20.22, -20.36, -20.88, -20.62, -21.55, -21.21, -20.12, -24.6, -22.85, -20.05, -13.93, -1.71, -3.27, -1.83, -3.07, 0.29, 7.22, 10.09, -0.55, 2.38, -3.52, -7.9, -8.89, -7.3], "borderColor": "#d33", "backgroundColor": "#d3322", "fill": false, "tension": 0.15, "borderWidth": 2.5},{"label": "C-cons \u5168\u5e02\u573a", "data": [0.0, 0.0, 0.0, -0.13, -3.71, -0.97, 1.54, -6.52, -2.4, -5.73, -15.48, -6.97, -6.86, -5.36, -7.61, -12.3, -17.73, -10.97, -14.82, -5.9, -3.48, -8.84, -12.48, -16.27, -12.29, -13.53, -18.76, -19.57, -21.85, -20.39, -20.55, -28.57, -21.91, -19.85, -18.9, -20.11, -27.01, -27.83, -32.02, -18.3, -17.48, -13.51, -15.52, -14.17, -13.91, -14.33, -18.34, -15.96, -12.94, -9.81, -0.76, 0.54, 1.9, 2.3, 6.98, 14.85, 20.71, 12.6, 13.66, 10.47, -3.78, -5.87, 0.06], "borderColor": "#e88", "backgroundColor": "#e8822", "fill": false, "tension": 0.15, "borderWidth": 1.5},{"label": "EW-\u5168A", "data": [0.0, 0.0, 0.0, -1.94, -4.09, 6.96, 10.58, -0.06, 5.02, -0.52, -16.2, -6.61, 1.4, 4.66, 1.46, -7.84, -4.33, 3.69, -0.61, 7.73, 11.46, 10.13, 6.93, 7.08, 9.87, 11.21, 6.61, 6.43, 5.38, 9.23, 6.87, -13.38, -8.11, -3.65, -5.26, -6.5, -14.64, -13.95, -17.17, 2.38, 9.74, 15.05, 10.05, 8.19, 16.41, 16.68, 13.79, 19.77, 27.42, 34.54, 46.31, 48.1, 50.39, 50.02, 52.83, 65.02, 71.94, 55.78, 66.33, 61.65, 55.25, 45.26, 52.94], "borderColor": "#666", "backgroundColor": "#66622", "fill": false, "tension": 0.15, "borderWidth": 1.5},{"label": "CSI-\u5168\u6307", "data": [0.0, -3.88, -1.28, -1.9, -1.61, 0.98, 2.32, -7.34, -4.79, -11.99, -20.35, -15.98, -8.28, -11.3, -14.0, -20.61, -22.87, -16.73, -18.47, -12.37, -12.32, -13.03, -14.32, -17.47, -16.7, -14.98, -19.92, -20.79, -22.61, -22.49, -24.21, -33.59, -27.13, -26.11, -25.37, -26.5, -30.75, -31.09, -33.93, -19.32, -17.83, -16.94, -18.57, -20.59, -16.91, -17.27, -20.01, -18.33, -15.08, -11.41, -1.89, 0.71, 0.56, -1.74, 1.46, 7.28, 9.67, 0.14, 8.71, 9.16, 12.3, -2.62, 0.21], "borderColor": "#2a6", "backgroundColor": "#2a622", "fill": false, "tension": 0.15, "borderWidth": 1.5}];
+new Chart(document.getElementById('nav'), {
+  type: 'line',
+  data: { labels, datasets: series },
+  options: {
+    responsive: true, interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { boxWidth: 14, font: { size: 12 } } } },
+    scales: {
+      x: { ticks: { maxTicksLimit: 12 } },
+      y: { ticks: { callback: v => v + '%' } }
+    }
+  }
+});
+</script></body></html>

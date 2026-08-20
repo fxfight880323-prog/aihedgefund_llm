@@ -1,0 +1,29 @@
+# Piotroski F-Score + BM expectation gap strategy
+# Based on Piotroski & So (2012) + Liu Xu (Dacheng Fund)
+#
+# F-Score (0-9): 9 binary fundamental indicators
+# BM = 1/PB: book-to-market ratio as valuation proxy
+# Strategy: buy "incongruent value" stocks (high F-score + high BM)
+# Liu Xu filters: PE <= 20, PB <= 2, ROA focus, low turnover
+
+name: f-score
+display_name: Piotroski F-Score 预期差
+models:
+  - name: f_score
+    weight: 1.0
+    params:
+      f_score_threshold: 7       # minimum F-score to trigger buy
+      pe_max: 20.0                # Liu Xu: PE <= 20
+      pb_max: 2.0                  # Liu Xu: PB <= 2
+      min_conviction: 0.3
+      bm_high_pb: 1.5             # PB <= 1.5 = high BM (value)
+      bm_low_pb: 4.0              # PB >= 4.0 = low BM (glamour)
+blend:
+  method: conviction_weighted
+  gross_target: 1.0
+  market_neutral: false
+  per_name_cap: 0.06              # 6% per position (concentrated)
+  min_holdings: 15                # target 15-30 stocks (Liu Xu style)
+rebalance:
+  frequency: semi_annual           # aligned with reporting periods
+  months: ["04", "08"]             # April (annual+Q1) and August (H1)

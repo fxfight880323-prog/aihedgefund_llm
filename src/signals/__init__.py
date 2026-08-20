@@ -24,6 +24,7 @@ from src.signals.tech_confluence import TechConfluenceModel
 from src.signals.growth_loop import GrowthLoopAgent
 from src.signals.rotation_growth import RotationGrowthModel
 from src.signals.serenity_gate import SerenityGateModel
+from src.signals.f_score import FScoreModel
 
 # Register built-in models
 ALPHA_MODEL_REGISTRY["pead"] = PEADModel
@@ -33,6 +34,7 @@ ALPHA_MODEL_REGISTRY["bsadf"] = BSADFModel
 ALPHA_MODEL_REGISTRY["tech_confluence"] = TechConfluenceModel
 ALPHA_MODEL_REGISTRY["growth_loop"] = GrowthLoopAgent
 ALPHA_MODEL_REGISTRY["rotation_growth"] = RotationGrowthModel
+# f_score auto-registers via @register_alpha_model decorator
 
 # ---- ADD YOUR MODELS HERE ----
 # from src.signals.my_momentum import MyMomentumModel
@@ -56,4 +58,5 @@ __all__ = [
     "TechConfluenceModel",
     "GrowthLoopAgent",
     "RotationGrowthModel",
+    "FScoreModel",
 ]

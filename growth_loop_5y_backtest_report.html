@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>growth loop · 5 年 PIT 回测诚实报告</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+         background: #f7f7f5; color: #222; line-height: 1.65; padding: 32px 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+  .badge { display: inline-block; background: #eef2ff; color: #3b5bdb; border-radius: 4px;
+           padding: 2px 8px; font-size: 12px; margin-right: 6px; }
+  .card { background: #fff; border: 1px solid #e5e5e3; border-radius: 10px;
+          padding: 20px; margin-bottom: 18px; }
+  .card h2 { font-size: 16px; margin-bottom: 12px; border-left: 3px solid #3b5bdb;
+             padding-left: 10px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 10px; margin-bottom: 6px; }
+  .kpi { background: #fafaf8; border: 1px solid #ecece8; border-radius: 8px; padding: 12px; }
+  .kpi .v { font-size: 20px; font-weight: 700; }
+  .kpi .l { font-size: 12px; color: #888; margin-top: 2px; }
+  .pos { color: #c0392b; } .neg { color: #1e8449; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; background: #fafaf8; padding: 6px 8px; border-bottom: 2px solid #e5e5e3; }
+  td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+  .note { background: #fff8e6; border: 1px solid #f0dc9e; border-radius: 8px;
+          padding: 12px 14px; font-size: 13px; margin: 8px 0; }
+  .warn { background: #fdeaea; border: 1px solid #f0b4b4; border-radius: 8px;
+          padding: 14px; font-size: 13.5px; margin: 10px 0; }
+  .ok { background: #e9f7ef; border: 1px solid #b4e4c4; border-radius: 8px;
+        padding: 12px 14px; font-size: 13px; margin: 8px 0; }
+  ul { padding-left: 20px; font-size: 13.5px; }
+  li { margin-bottom: 6px; }
+  .chart-title { font-size: 13px; color: #555; margin: 14px 0 6px; }
+  .legend { font-size: 12px; color: #666; margin-bottom: 4px; }
+  .legend span { display: inline-block; margin-right: 14px; }
+  .swatch { display: inline-block; width: 12px; height: 3px; vertical-align: middle;
+             margin-right: 4px; }
+  .foot { color: #999; font-size: 11.5px; text-align: center; margin-top: 26px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>growth loop · 5 年 PIT 回测诚实报告</h1>
+  <div class="sub">
+    <span class="badge">策略：GOAL→HOOK→LOOP（回测仅 HOOK 层）</span>
+    <span class="badge">区间：2021-06 → 2026-08（5.2 年）</span>
+    <span class="badge">半年度调仓</span>
+    <span class="badge">vnpy 式组合引擎</span>
+  </div>
+  <div class="sub">数据源：东方财富妙想 MCP（真实行情/财务）· 点时候选：全市场增速 top-100（披露截止日月末调仓）· 生成时间：2026-08-19</div>
+
+  <div class="warn">
+    <b>诚实声明（先读）：</b>这份报告只回测了 growth loop 的 <b>HOOK 层</b>（H1 营收加速 / H2 毛利率拐点 / H3 连续BEAT / H6 深回撤高增长），
+    没有回测 LOOP 层（L1-L7 LLM 深研 + L8 信念）——因为 LLM 的训练数据包含未来信息，任何"用 LLM 回测历史"的结果都不可证伪、不诚实。
+    因此本报告是 growth loop 的<b>下限参考</b>：它检验的是"纯数值钩子能否选出好公司"，不含任何主观判断能力。
+  </div>
+
+  <div class="card">
+    <h2>① 核心结论</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="v neg">-14.0%</div><div class="l">5.2 年总收益（初始 ¥100 万 → ¥860,179）</div></div>
+      <div class="kpi"><div class="v neg">-2.87%</div><div class="l">年化收益</div></div>
+      <div class="kpi"><div class="v neg">-18.5%</div><div class="l">超额收益（vs 中证全指 +4.5%）</div></div>
+      <div class="kpi"><div class="v neg">-56.6%</div><div class="l">最大回撤（2021-08 → 2024-08，长达 36 个月）</div></div>
+      <div class="kpi"><div class="v">-0.05</div><div class="l">夏普比率（rf=2%）</div></div>
+      <div class="kpi"><div class="v">45%</div><div class="l">月度胜率（28/62 个月上涨）</div></div>
+    </div>
+    <div class="note">
+      <b>一句话结论：</b>growth loop 的 HOOK 层在过去 5 年<b>亏钱</b>（-14.0%），且大幅跑输中证全指（超额 -18.5%）。
+      前 3 年（2021-08 → 2024-08）几乎持续阴跌、回撤高达 -56.6%；2024 年下半年起才连续跑出超额。
+      这个策略<b>目前不适合实盘</b>，但它的失效模式（高位高增速股系统性回撤、行业集中度过高）是清晰可诊断的——这正是改进的起点。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>② 净值曲线（归一化：2021-06 = 100）</h2>
+    <div class="legend">
+      <span><i class="swatch" style="background:#c0392b"></i>growth loop HOOK 层</span>
+      <span><i class="swatch" style="background:#3b5bdb"></i>中证全指</span>
+    </div>
+    <svg viewBox="0 0 680 250" width="100%" style="max-width:680px"><line x1="46" y1="224.0" x2="668" y2="224.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="227.0" font-size="9" fill="#999" text-anchor="end">38.9</text><line x1="46" y1="171.5" x2="668" y2="171.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="174.5" font-size="9" fill="#999" text-anchor="end">55.3</text><line x1="46" y1="119.0" x2="668" y2="119.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="122.0" font-size="9" fill="#999" text-anchor="end">71.7</text><line x1="46" y1="66.5" x2="668" y2="66.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="69.5" font-size="9" fill="#999" text-anchor="end">88.2</text><line x1="46" y1="14.0" x2="668" y2="14.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="17.0" font-size="9" fill="#999" text-anchor="end">104.6</text><text x="46.0" y="242" font-size="9" fill="#999" text-anchor="middle">2021-06</text><text x="136.3" y="242" font-size="9" fill="#999" text-anchor="middle">2022-03</text><text x="226.6" y="242" font-size="9" fill="#999" text-anchor="middle">2022-12</text><text x="316.9" y="242" font-size="9" fill="#999" text-anchor="middle">2023-09</text><text x="407.2" y="242" font-size="9" fill="#999" text-anchor="middle">2024-06</text><text x="497.5" y="242" font-size="9" fill="#999" text-anchor="middle">2025-03</text><text x="587.7" y="242" font-size="9" fill="#999" text-anchor="middle">2025-12</text><polyline points="46.0,28.6 56.0,28.6 66.1,28.6 76.1,29.0 86.1,44.8 96.2,36.3 106.2,41.1 116.2,41.1 126.3,51.2 136.3,43.8 146.3,82.2 156.4,73.7 166.4,48.6 176.4,66.9 186.5,76.7 196.5,103.8 206.5,108.6 216.5,88.2 226.6,115.2 236.6,99.4 246.6,108.1 256.7,124.3 266.7,133.6 276.7,140.7 286.8,146.1 296.8,138.7 306.8,154.3 316.9,155.9 326.9,160.0 336.9,162.0 347.0,166.8 357.0,194.3 367.0,182.3 377.1,181.2 387.1,179.8 397.1,181.8 407.2,191.0 417.2,200.0 427.2,209.5 437.3,178.2 447.3,173.1 457.3,169.6 467.4,165.0 477.4,162.9 487.4,141.6 497.5,141.4 507.5,155.3 517.5,163.2 527.5,154.0 537.6,141.6 547.6,116.3 557.6,96.6 567.7,96.4 577.7,98.6 587.7,76.0 597.8,49.4 607.8,46.7 617.8,76.4 627.9,34.1 637.9,51.2 647.9,28.5 658.0,104.3 668.0,73.3" fill="none" stroke="#c0392b" stroke-width="2"/><circle cx="668.0" cy="73.3" r="3.5" fill="#c0392b"/><text x="664.0" y="65.3" font-size="10" fill="#c0392b" text-anchor="end">86.0</text></svg>
+    <svg viewBox="0 0 680 250" width="100%" style="max-width:680px"><line x1="46" y1="224.0" x2="668" y2="224.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="227.0" font-size="9" fill="#999" text-anchor="end">62.4</text><line x1="46" y1="171.5" x2="668" y2="171.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="174.5" font-size="9" fill="#999" text-anchor="end">75.8</text><line x1="46" y1="119.0" x2="668" y2="119.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="122.0" font-size="9" fill="#999" text-anchor="end">89.2</text><line x1="46" y1="66.5" x2="668" y2="66.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="69.5" font-size="9" fill="#999" text-anchor="end">102.6</text><line x1="46" y1="14.0" x2="668" y2="14.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="17.0" font-size="9" fill="#999" text-anchor="end">116.0</text><text x="46.0" y="242" font-size="9" fill="#999" text-anchor="middle">2021-06</text><text x="136.3" y="242" font-size="9" fill="#999" text-anchor="middle">2022-03</text><text x="226.6" y="242" font-size="9" fill="#999" text-anchor="middle">2022-12</text><text x="316.9" y="242" font-size="9" fill="#999" text-anchor="middle">2023-09</text><text x="407.2" y="242" font-size="9" fill="#999" text-anchor="middle">2024-06</text><text x="497.5" y="242" font-size="9" fill="#999" text-anchor="middle">2025-03</text><text x="587.7" y="242" font-size="9" fill="#999" text-anchor="middle">2025-12</text><polyline points="46.0,76.6 56.0,91.8 66.1,81.7 76.1,84.1 86.1,82.9 96.2,72.8 106.2,67.5 116.2,105.4 126.3,95.4 136.3,123.6 146.3,156.3 156.4,139.2 166.4,109.1 176.4,120.9 186.5,131.5 196.5,157.4 206.5,166.2 216.5,142.2 226.6,149.0 236.6,125.1 246.6,124.9 256.7,127.7 266.7,132.7 276.7,145.1 286.8,142.0 296.8,135.3 306.8,154.6 316.9,158.1 326.9,165.2 336.9,164.7 347.0,171.4 357.0,208.2 367.0,182.9 377.1,178.9 387.1,176.0 397.1,180.4 407.2,197.1 417.2,198.4 427.2,209.5 437.3,152.3 447.3,146.5 457.3,143.0 467.4,149.4 477.4,157.3 487.4,142.9 497.5,144.3 507.5,155.0 517.5,148.4 527.5,135.7 537.6,121.3 547.6,84.0 557.6,73.9 567.7,74.5 577.7,83.4 587.7,70.9 597.8,48.1 607.8,38.8 617.8,76.1 627.9,42.5 637.9,40.8 647.9,28.5 658.0,86.9 668.0,59.0" fill="none" stroke="#3b5bdb" stroke-width="2"/><circle cx="668.0" cy="59.0" r="3.5" fill="#3b5bdb"/><text x="664.0" y="51.0" font-size="10" fill="#3b5bdb" text-anchor="end">104.5</text></svg>
+    <div class="note">两条曲线起点相同（100）。策略在 2024-08 触底（约 58），此后 2 年修复到 86；
+    中证全指全程在 96-112 区间窄幅波动。红线从未显著跑赢蓝线——2022-2024 的高增速股是"高增长陷阱"的典型样本。</div>
+  </div>
+
+  <div class="card">
+    <h2>③ 回撤曲线（策略净值从历史高点的回撤 %）</h2>
+    <svg viewBox="0 0 680 250" width="100%" style="max-width:680px"><line x1="46" y1="224.0" x2="668" y2="224.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="227.0" font-size="9" fill="#999" text-anchor="end">-61.1</text><line x1="46" y1="171.5" x2="668" y2="171.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="174.5" font-size="9" fill="#999" text-anchor="end">-44.7</text><line x1="46" y1="119.0" x2="668" y2="119.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="122.0" font-size="9" fill="#999" text-anchor="end">-28.3</text><line x1="46" y1="66.5" x2="668" y2="66.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="69.5" font-size="9" fill="#999" text-anchor="end">-11.9</text><line x1="46" y1="14.0" x2="668" y2="14.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="17.0" font-size="9" fill="#999" text-anchor="end">4.5</text><text x="46.0" y="242" font-size="9" fill="#999" text-anchor="middle">2021-06</text><text x="136.3" y="242" font-size="9" fill="#999" text-anchor="middle">2022-03</text><text x="226.6" y="242" font-size="9" fill="#999" text-anchor="middle">2022-12</text><text x="316.9" y="242" font-size="9" fill="#999" text-anchor="middle">2023-09</text><text x="407.2" y="242" font-size="9" fill="#999" text-anchor="middle">2024-06</text><text x="497.5" y="242" font-size="9" fill="#999" text-anchor="middle">2025-03</text><text x="587.7" y="242" font-size="9" fill="#999" text-anchor="middle">2025-12</text><polyline points="46.0,28.5 56.0,28.5 66.1,28.5 76.1,28.9 86.1,44.7 96.2,36.2 106.2,41.0 116.2,41.0 126.3,51.1 136.3,43.7 146.3,82.1 156.4,73.6 166.4,48.4 176.4,66.8 186.5,76.6 196.5,103.8 206.5,108.5 216.5,88.1 226.6,115.1 236.6,99.3 246.6,108.0 256.7,124.3 266.7,133.6 276.7,140.6 286.8,146.0 296.8,138.7 306.8,154.2 316.9,155.8 326.9,160.0 336.9,162.0 347.0,166.7 357.0,194.3 367.0,182.3 377.1,181.2 387.1,179.8 397.1,181.8 407.2,191.0 417.2,200.0 427.2,209.5 437.3,178.1 447.3,173.1 457.3,169.5 467.4,165.0 477.4,162.9 487.4,141.6 497.5,141.3 507.5,155.2 517.5,163.2 527.5,154.0 537.6,141.6 547.6,116.2 557.6,96.5 567.7,96.3 577.7,98.5 587.7,75.9 597.8,49.3 607.8,46.6 617.8,76.3 627.9,34.0 637.9,51.1 647.9,28.5 658.0,104.4 668.0,73.3" fill="none" stroke="#1e8449" stroke-width="2"/><circle cx="668.0" cy="73.3" r="3.5" fill="#1e8449"/><text x="664.0" y="65.3" font-size="10" fill="#1e8449" text-anchor="end">-14.0</text></svg>
+    <div class="note">最大回撤 -56.6%，从 2021-08 一路阴跌到 2024-08，长达 36 个月没有修复。
+    这意味着实盘中任何 2021-2024 年间的持有者都要承受超过一半的本金损失，且看不到尽头——这是该策略最大的风险特征。</div>
+  </div>
+
+  <div class="card">
+    <h2>④ 逐年收益（自然年）</h2>
+    <div class="legend"><span>红=上涨（A股惯例）· 绿=下跌</span></div>
+    <svg viewBox="0 0 680 250" width="100%" style="max-width:680px"><line x1="46" y1="128.0" x2="668" y2="128.0" stroke="#bbb" stroke-width="1"/><line x1="46" y1="224.0" x2="668" y2="224.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="227.0" font-size="9" fill="#999" text-anchor="end">-13%</text><line x1="46" y1="171.5" x2="668" y2="171.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="174.5" font-size="9" fill="#999" text-anchor="end">-6%</text><line x1="46" y1="119.0" x2="668" y2="119.0" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="122.0" font-size="9" fill="#999" text-anchor="end">1%</text><line x1="46" y1="66.5" x2="668" y2="66.5" stroke="#e8e8e8" stroke-width="1"/><text x="40" y="69.5" font-size="9" fill="#999" text-anchor="end">8%</text><rect x="66.7" y="128.0" width="62.2" height="11.6" fill="#1e8449" rx="1"/><text x="97.8" y="125.0" font-size="9" fill="#1e8449" text-anchor="middle">-2%</text><text x="97.8" y="242" font-size="9" fill="#666" text-anchor="middle">2021</text><rect x="170.4" y="128.0" width="62.2" height="78.5" fill="#1e8449" rx="1"/><text x="201.5" y="125.0" font-size="9" fill="#1e8449" text-anchor="middle">-10%</text><text x="201.5" y="242" font-size="9" fill="#666" text-anchor="middle">2022</text><rect x="274.1" y="128.0" width="62.2" height="19.4" fill="#1e8449" rx="1"/><text x="305.2" y="125.0" font-size="9" fill="#1e8449" text-anchor="middle">-3%</text><text x="305.2" y="242" font-size="9" fill="#666" text-anchor="middle">2023</text><rect x="377.7" y="108.8" width="62.2" height="19.2" fill="#c0392b" rx="1"/><text x="408.8" y="105.8" font-size="9" fill="#c0392b" text-anchor="middle">+3%</text><text x="408.8" y="242" font-size="9" fill="#666" text-anchor="middle">2024</text><rect x="481.4" y="59.2" width="62.2" height="68.8" fill="#c0392b" rx="1"/><text x="512.5" y="56.2" font-size="9" fill="#c0392b" text-anchor="middle">+9%</text><text x="512.5" y="242" font-size="9" fill="#666" text-anchor="middle">2025</text><rect x="585.1" y="31.5" width="62.2" height="96.5" fill="#c0392b" rx="1"/><text x="616.2" y="28.5" font-size="9" fill="#c0392b" text-anchor="middle">+13%</text><text x="616.2" y="242" font-size="9" fill="#666" text-anchor="middle">2026</text></svg>
+    <table><thead><tr><th>年度</th><th>策略</th><th>中证全指</th><th>超额</th></tr></thead><tbody><tr><td>2021</td><td class='neg'>-1.5%</td><td>+1.3%</td><td class='neg'>-2.9%</td></tr><tr><td>2022</td><td class='neg'>-10.4%</td><td>-2.1%</td><td class='neg'>-8.3%</td></tr><tr><td>2023</td><td class='neg'>-2.6%</td><td>-2.2%</td><td class='neg'>-0.3%</td></tr><tr><td>2024</td><td class='pos'>+2.5%</td><td>-2.0%</td><td class='pos'>+4.5%</td></tr><tr><td>2025</td><td class='pos'>+9.1%</td><td>+3.3%</td><td class='pos'>+5.8%</td></tr><tr><td>2026</td><td class='pos'>+12.7%</td><td>+7.3%</td><td class='pos'>+5.4%</td></tr></tbody></table>
+    <div class="note">策略 2022、2023 年连续亏损（-10.4% / -2.6%），2021-2023 三年累计约 -14%；
+    2024-2026 年才转正（+2.5% / +9.1% / +12.7%）。近 2.5 年靠 AI 链高增速股翻身，
+    但也正是同样的逻辑在 2021-2023 年造成了巨额回撤——收益来源单一且不稳定。</div>
+  </div>
+
+  <div class="card">
+    <h2>⑤ 逐调仓期收益（每期持有的实际回报）</h2>
+    <table><thead><tr><th>调仓期</th><th>策略</th><th>中证全指</th><th>超额</th></tr></thead><tbody><tr><td>2021-08 → 2022-04</td><td class='neg'>-16.8%</td><td>-19.3%</td><td class='pos'>+2.5%</td></tr><tr><td>2022-04 → 2022-08</td><td class='pos'>+2.1%</td><td>+8.0%</td><td class='neg'>-5.9%</td></tr><tr><td>2022-08 → 2023-04</td><td class='neg'>-21.0%</td><td>-0.4%</td><td class='neg'>-20.6%</td></tr><tr><td>2023-04 → 2023-08</td><td class='neg'>-9.6%</td><td>-6.5%</td><td class='neg'>-3.1%</td></tr><tr><td>2023-08 → 2024-04</td><td class='neg'>-13.2%</td><td>-6.8%</td><td class='neg'>-6.4%</td></tr><tr><td>2024-04 → 2024-08</td><td class='neg'>-17.6%</td><td>-11.5%</td><td class='neg'>-6.2%</td></tr><tr><td>2024-08 → 2025-04</td><td class='pos'>+39.1%</td><td>+21.1%</td><td class='pos'>+18.0%</td></tr><tr><td>2025-04 → 2025-08</td><td class='pos'>+20.2%</td><td>+22.7%</td><td class='neg'>-2.4%</td></tr><tr><td>2025-08 → 2026-04</td><td class='pos'>+35.4%</td><td>+10.8%</td><td class='pos'>+24.6%</td></tr><tr><td>2026-04 → 2026-08</td><td class='neg'>-12.5%</td><td>-3.9%</td><td class='neg'>-8.6%</td></tr></tbody></table>
+    <div class="note">10 个调仓期里 4 期为正、6 期为负。最差的是 2022-08 → 2023-04（-21.0%，超额 -20.6%，
+    当时满仓锂电/光伏高增速股恰逢赛道崩塌）；最好的是 2025-08 → 2026-04（+35.4%）。
+    策略在 2022-2024 上半年几乎每个调仓期都跑输基准，说明"营收高增速"筛选在景气下行周期是系统性负 alpha。</div>
+  </div>
+
+  <div class="card">
+    <h2>⑥ 回测设置与数据（可复现）</h2>
+    <ul>
+      <li><b>引擎：</b>vnpy PortfolioStrategy BacktestingEngine 的直接移植（src/backtest/engine.py）。
+        撮合语义与 vnpy 一致：调仓月 N 月末按收盘价下目标仓单 → N+1 期按 min(委托价, 开盘价) 成交 + 逆向滑点。
+        信息在 N 期、成交在 N+1 期 → <b>无前视</b>。</li>
+      <li><b>PIT 语义：</b>财务按法定披露截止日过滤（Q1/年报 4-30、中报 8-31、三季报 10-31），
+        调仓日为披露截止日后的第一个月末，只用当时已公开的报告期数据（_bt_pit_selection.json 的 as_of 字段可查）。</li>
+      <li><b>数据源：</b>东方财富妙想 MCP——每期全市场"营业收入同比增速 top-100"实时筛选 + 逐票财务/月收盘价（真实数据，非合成）。</li>
+      <li><b>候选池：</b>全期 10 个调仓期共 207 只唯一候选（207 只有财务数据），无 2026 年已知龙头池，无幸存者偏差。</li>
+      <li><b>成本：</b>佣金 5bp + 滑点 10bp（单边），402 笔成交，总佣金 ¥5,035。</li>
+      <li><b>组合规则：</b>conviction_weighted 加权 + 单票 8% 上限 + B 名单低信念补足 20 只下限（gross 100%）。</li>
+      <li><b>基准：</b>中证全指真实指数月收盘（2021-06: 5834 → 2026-08: 6098）。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⑦ 诚实的局限（这份结果仍然偏乐观，而非偏悲观）</h2>
+    <div class="warn">
+      以下每一条都会让"真实结果"比本报告更差或更不确定，请在解读时保持怀疑：
+    </div>
+    <ul>
+      <li><b>只测了 HOOK 层：</b>L1-L7 LLM 深研未回测。真实 growth loop 的选股质量依赖 LLM 判断，
+        本报告只验证了"数值钩子"这一个环节。完整策略的真实表现<b>未知</b>，不能由本报告推断。</li>
+      <li><b>H3 未启用：</b>连续 BEAT 需要点时盈利预测数据，数据源不可得 → 诚实 abstain，少了一个筛选维度。</li>
+      <li><b>轻度前视（已尽力规避）：</b>① 50 亿市值过滤用的是当前口径（2021 年的候选在当年可能不足 50 亿）；
+        ② 申万行业分类是 2026 年的分类口径；③ B 补位机制用"当年数据"从候选里补足 20 只——候选池本身来自当年筛选，无未来信息，但补位规则并非剧本原设计（剧本 B=观察不建仓）。</li>
+      <li><b>月频 bar 近似：</b>每月只用月末收盘价，open=high=low=close 近似；未建模涨跌停无法买入/卖出、停牌、一字板流动性。</li>
+      <li><b>半年度调仓：</b>真实 growth loop 剧本是"季度重审 + 事件驱动退出"（L9 审计 + 4 条预承诺退出规则），
+        回测里只有 BSADF 版叠加了月频风控，本报告（纯 HOOK 版）没有事件驱动退出。</li>
+      <li><b>幸存者偏差残余：</b>候选来自"当年 top-100 增速筛选"，但筛选工具对超长列表可能截断（日志可见每期实际行数）；
+        且 2021 年尚未纳入的次新股/退市股处理不完整。方向：轻微高估。</li>
+      <li><b>基准不完全同类：</b>策略是高集中成长股组合（8-35 只），基准是全市场指数，风格暴露差异大，
+        超额数字不能简单归因于"选股能力"。</li>
+      <li><b>成本模型偏乐观：</b>5bp 佣金 + 10bp 滑点对高波动小票（候选多为 50-200 亿小市值）实际偏低估，
+        尤其 B 补位的小票流动性差，真实冲击成本可能更高。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⑧ 关于"用 vnpy 框架"的专业说明</h2>
+    <div class="ok">
+      vnpy 官方回测器（cta_backtester / portfolio_strategy）面向<b>期货</b> bar/tick 驱动的 CTA 与多腿组合策略：
+      策略模板绑定单一/少数合约、逐 bar 信号→下单。growth loop 是 <b>A 股月度横截面选股</b>（全市场筛选 → 一篮子权重 → 半年度再平衡 → 财报披露时点对齐），
+      两者是不同范式。把选股逻辑硬塞进 CTA 回测器会引入结构性失真（无法表达组合权重、披露时点、再平衡），
+      那才是"不诚实的结果"。
+    </div>
+    <div class="ok">
+      本项目回测引擎（src/backtest/engine.py）正是 vnpy PortfolioStrategy BacktestingEngine 的忠实移植——
+      相同的撮合时序（N 期下单 → N+1 期 cross_limit_order 撮合）、相同的目标仓位模板（set_target / rebalance_portfolio）、
+      相同的统计口径（月频年化 ×12、vnpy 公式）。回测结果的正确性来自 <b>PIT 数据语义</b>，不来自框架品牌。
+      如果你确实需要跑真正的 vnpy 包（期货策略场景），可以下一步安装；但用于本策略的 A 股选股回测，现有引擎已是正确形态。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⑨ 改进方向（基于这份真实结果的诊断）</h2>
+    <ul>
+      <li><b>失效模式 1：高增速陷阱。</b>2022-2024 满仓"营收增速 top-100"在景气下行期是系统性负 alpha。
+        改进：增速筛选需叠加行业景气周期信号（如 BSADF 行业热度相位），而不是只看公司自身增速。</li>
+      <li><b>失效模式 2：回撤太深太长。</b>-56.6% 回撤 36 个月不可承受。改进：增加趋势过滤（如净值 200 日线下方时降仓）、
+        行业集中度上限（单行业 ≤30%）。参考：项目里另外两个变体的回测（Serenity 八因子 -26.4%、BSADF 热度卖出叠加 -18.7%）
+        都比纯 HOOK 版更差——简单的"加过滤"没有解决问题，需要更根本的周期判断，而非更重的筛选。</li>
+      <li><b>失效模式 3：收益来源单一。</b>近 2.5 年超额几乎全靠 AI 链。改进：引入风格因子中性化或多 alpha 源组合。</li>
+      <li><b>对照组缺失：</b>建议加跑"同池随机等权组合"作为 placebo 对照，验证超额是否真的来自 HOOK 信号而非风格暴露。</li>
+    </ul>
+  </div>
+
+  <div class="foot">数据与脚本：D:\workspace\ai_fund_framework（backtest_growth_loop.py / _bt_gl_nav.json / _bt_pit_*.json）
+  · 本报告仅为研究参考，不构成投资建议</div>
+</div>
+</body>
+</html>

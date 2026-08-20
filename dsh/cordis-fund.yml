@@ -1,0 +1,143 @@
+# AI Fund Framework — Cordis Profile
+# 
+# This profile configures DeepSeek Harness for quantitative investment operations.
+# It extends the standard web profile with fund-specific system prompts and
+# teaches the agent how to use the AI Fund Framework via the fund_tools.py bridge.
+#
+# Usage:
+#   DSH_CORDIS_CONFIG=./dsh/cordis-fund.yml pnpm dsh web --no-open
+#   # Or via Python SDK with cordis= pointing to this file
+
+# ── Base runtime ─────────────────────────────────────────────────────────────
+
+- id: jsonrpc-server
+  name: '@deepseek-ai/dsh-sdk-jsonrpc-server'
+  config:
+    maxTokensAsSuccess: true
+
+- id: llm-deepseek
+  name: '@deepseek-ai/dsh-llm-deepseek'
+  config:
+    apiKeyEnv: DEEPSEEK_API_KEY
+    streamIdleTimeoutMs: 172800000
+    models:
+      - id: !!js process.env.DSH_MODEL ?? 'deepseek-chat'
+        contextWindow: !!js Number(process.env.DSH_CONTEXT_WINDOW ?? 128000)
+
+# ── Sandbox & Execution ──────────────────────────────────────────────────────
+
+- id: sandbox
+  name: '@deepseek-ai/dsh-sandbox-local'
+
+- id: sandbox-policy
+  name: '@deepseek-ai/dsh-sandbox-policy'
+  config:
+    mode: workspace-write
+    workspaceRoot: !!js process.env.DSH_CWD ?? process.cwd()
+
+- id: subprocess
+  name: '@deepseek-ai/dsh-subprocess-local'
+
+- id: pty
+  name: '@deepseek-ai/dsh-terminal'
+
+- id: terminal-bash
+  name: '@deepseek-ai/dsh-terminal-bash'
+  config:
+    timeoutMs: 600000
+
+# ── Filesystem ───────────────────────────────────────────────────────────────
+
+- id: fs-local
+  name: '@deepseek-ai/dsh-fs-local'
+  config:
+    cwd: !!js process.env.DSH_CWD ?? process.cwd()
+
+# ── Agent Core ───────────────────────────────────────────────────────────────
+
+- id: agent-spine
+  name: '@deepseek-ai/dsh-agent-spine-demo'
+  config:
+    includeHarnessIdentity: true
+    includeRuntimeContext: true
+    persona: >-
+      You are an AI investment analyst and portfolio manager operating within
+      the AI Fund Framework. You have access to quantitative alpha models,
+      backtesting engines, and portfolio construction tools.
+
+      Your workspace is a Python-based quantitative fund framework. Key directories:
+      - src/signals/ — Alpha models (f_score, growth_loop, buffett, c_score, etc.)
+      - src/backtest/ — Backtesting engine
+      - src/portfolio/ — Portfolio construction
+      - src/risk/ — Risk management
+      - src/data/ — Data clients (Wind, financial datasets)
+      - config/ — Fund and strategy YAML configurations
+
+      When the user asks you to analyze stocks, run backtests, or manage a
+      portfolio, use the fund_tools.py CLI bridge. All framework operations
+      should go through this bridge rather than ad-hoc Python scripts.
+
+      Available commands (run via bash):
+        python dsh/fund_tools.py screen [options]     — Stock screening
+        python dsh/fund_tools.py backtest [options]   — Strategy backtest
+        python dsh/fund_tools.py signal [options]     — Single-stock analysis
+        python dsh/fund_tools.py portfolio [options]  — Portfolio construction
+        python dsh/fund_tools.py risk [options]       — Risk checks
+        python dsh/fund_tools.py report [options]     — Generate report
+
+      Key principles:
+      1. Point-in-time data only — never use future information in backtests
+      2. The LLM proposes, deterministic code disposes — you form views, the engine sizes positions
+      3. Fail loud — report data gaps explicitly, never silently skip
+      4. Conviction requests, risk disposes — your signals are proposals; risk models can veto
+      5. Always generate reports after backtests for audit trails
+
+      You can also use the standard bash, read, write, and edit tools for
+      inspecting and modifying framework code.
+    workspaceContext: true
+    skills:
+      enabled: true
+      paths:
+        - ./dsh/skills
+    toolBash: true
+    toolJobs: true
+
+# ── Persistent Bash ──────────────────────────────────────────────────────────
+
+- id: persistent-bash
+  name: '@deepseek-ai/dsh-tool-bash-persistent'
+  config:
+    timeoutMs: 600000
+    description: >-
+      Run commands in a bash shell within the AI Fund Framework workspace.
+      The framework is Python-based; use 'python dsh/fund_tools.py <cmd>'
+      for structured fund operations.
+
+# ── Editor ───────────────────────────────────────────────────────────────────
+
+- id: str-replace-editor
+  name: '@deepseek-ai/dsh-tool-str-replace-editor'
+  config:
+    maxOutputChars: 32000
+
+# ── Session Persistence ──────────────────────────────────────────────────────
+
+- id: sessions
+  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  config:
+    root: !!js process.env.DSH_SESSION_ROOT ?? './.dsh-sessions'
+    compression: none
+
+# ── Context Compaction ───────────────────────────────────────────────────────
+
+- id: compaction
+  name: '@deepseek-ai/dsh-compaction-basic'
+  config:
+    enabled: true
+
+# ── Web UI ───────────────────────────────────────────────────────────────────
+
+- id: web-app
+  name: '@deepseek-ai/dsh-web-app'
+  config:
+    port: !!js Number(process.env.DSH_PORT ?? 3080)

@@ -1,0 +1,32 @@
+# Piotroski F-Score + BM expectation gap fund
+# Based on Piotroski & So (2012) + Liu Xu (Dacheng Fund)
+# Semi-annual rebalancing, concentrated, low turnover
+
+name: F-Score 预期差基金 Demo
+capital: 1000000            # RMB 1,000,000
+rebalance: semi_annual      # April + August (aligned with reporting periods)
+benchmark: 000300.SH         # 沪深300
+
+strategies:
+  - name: f_score
+    display_name: Piotroski F-Score Pod
+    weight: 1.0
+    models:
+      - name: f_score
+        weight: 1.0
+        params:
+          f_score_threshold: 7
+          pe_max: 20.0
+          pb_max: 2.0
+          min_conviction: 0.3
+          bm_high_pb: 1.5
+          bm_low_pb: 4.0
+    blend:
+      method: conviction_weighted
+      gross_target: 1.0
+      market_neutral: false
+      per_name_cap: 0.06
+
+risk:
+  max_position_pct: 0.06      # 6% per name (Liu Xu: concentrated 15-30)
+  max_gross_exposure: 1.0    # unlevered

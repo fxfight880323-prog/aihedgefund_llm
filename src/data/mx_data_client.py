@@ -315,6 +315,93 @@ class MXDataClient:
                     lines.append(f"    {metric}: {shown}")
         return "\n".join(lines) if len(lines) > 2 else None
 
+    # ------------------------------------------------------------------
+    # F-Score data: fetch all 9 Piotroski components + valuation metrics.
+    # Used by FScoreModel (src/signals/f_score.py) in live mode.
+    # ------------------------------------------------------------------
+
+    def get_f_score_metrics(
+        self, ticker: str, end_date: str, limit: int = 10
+    ) -> list[dict[str, Any]]:
+        """Return F-Score component metrics for Piotroski & So (2012).
+
+        Fetches both daily valuation (PE, PB) and annual statement
+        metrics (ROA, CFO, debt ratio, current ratio, asset turnover,
+        shares, gross margin, revenue, net income, total assets),
+        merged by date/period.
+
+        Returns a list of dicts sorted newest-first, each containing:
+          ticker, date, period, pe_ratio, pb_ratio,
+          roa, cfo, cfo_ta, debt_ratio, current_ratio,
+          shares, gross_margin, asset_turnover,
+          revenue, net_income, total_assets
+        """
+        tool = tool_for_ticker(ticker)
+
+        # Query 1: daily valuation (PE/PB) -- reuse existing pattern
+        val_sheets = self.client.query(
+            tool,
+            f"{ticker} 截至 {end_date} 的市盈率PE(TTM)、市净率PB",
+        )
+
+        # Query 2: annual statement series for F-score components
+        # ROA, CFO, debt ratio, current ratio, asset turnover, shares,
+        # gross margin, revenue, net income, total assets
+        fin_sheets = self.client.query(
+            tool,
+            f"{ticker} 最近{limit}个年度的"
+            f"总资产收益率ROA、"
+            f"经营活动产生的现金流量净额、"
+            f"资产负债率、"
+            f"流动比率、"
+            f"总资产周转率、"
+            f"总股本、"
+            f"销售毛利率、"
+            f"营业收入、"
+            f"净利润、"
+            f"总资产",
+        )
+
+        # Build {date: {metric_key: value}} across both result sets
+        by_date: dict[str, dict[str, Any]] = {}
+
+        for sheet in val_sheets + fin_sheets:
+            cols = sheet.get("columns", [])
+            date_cols = [c for c in cols if _looks_like_date(c)]
+            if not date_cols:
+                continue
+            for row in sheet.get("items", []):
+                if not row:
+                    continue
+                metric = str(row[0])
+                key = _f_score_metric_key(metric)
+                for col, val in zip(cols[1:], row[1:]):
+                    if not _looks_like_date(col):
+                        continue
+                    d = _normalize_date(col)
+                    by_date.setdefault(d, {})
+                    if key not in by_date[d]:
+                        parsed = parse_cn_number(val)
+                        by_date[d][key] = (parsed if parsed is not None
+                                           else val)
+
+        # Also compute cfo_ta (CFO / total assets) as a derived field
+        for d, row in by_date.items():
+            cfo = row.get("cfo")
+            ta = row.get("total_assets")
+            if cfo is not None and ta is not None and ta > 0:
+                # CFO is in yuan, total_assets may be in yuan or wan yuan
+                # MX returns both in yuan typically
+                row["cfo_ta"] = (float(cfo) / float(ta)) * 100.0
+
+        kept = sorted(by_date.keys(), reverse=True)[:limit]
+        metrics_list: list[dict[str, Any]] = []
+        for d in kept:
+            row = {"ticker": ticker, "date": d, "period": "annual"}
+            row.update(by_date[d])
+            metrics_list.append(row)
+        return metrics_list
+
 
 # ---------------------------------------------------------------------------
 # Internal parsing helpers
@@ -423,6 +510,35 @@ _METRIC_MAP = [
 def _metric_key(metric: str) -> str:
     m = str(metric)
     for needles, key in _METRIC_MAP:
+        if isinstance(needles, tuple):
+            if any(n in m for n in needles):
+                return key
+        elif needles in m:
+            return key
+    return m
+
+
+# F-Score specific metric mapping (Piotroski 9 components + valuation)
+_F_SCORE_METRIC_MAP = [
+    (("市盈率", "PE"), "pe_ratio"),
+    (("市净率", "PB"), "pb_ratio"),
+    (("总资产收益率", "ROA"), "roa"),
+    (("经营", "现金流量净额", "CFO"), "cfo"),
+    ("资产负债率", "debt_ratio"),
+    ("流动比率", "current_ratio"),
+    ("总资产周转率", "asset_turnover"),
+    (("总股本", "股本"), "shares"),
+    ("毛利率", "gross_margin"),
+    ("营业收入", "revenue"),
+    ("净利润", "net_income"),
+    ("总资产", "total_assets"),
+]
+
+
+def _f_score_metric_key(metric: str) -> str:
+    """Map MX Chinese metric names to F-score canonical keys."""
+    m = str(metric)
+    for needles, key in _F_SCORE_METRIC_MAP:
         if isinstance(needles, tuple):
             if any(n in m for n in needles):
                 return key

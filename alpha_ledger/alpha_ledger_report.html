@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>三层 Alpha 账本对比</title></head>
+<body style="margin:0;background:#f6f8fa;font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;color:#1f2328">
+<div style="max-width:1080px;margin:0 auto;padding:28px 20px">
+  <h1 style="font-size:22px;margin:0 0 4px">🛰️ 三层 Alpha 账本 — 对比总览</h1>
+  <div style="color:#57606a;font-size:13px">更新：2026-08-20 · schema v1.0 ·
+    全局基准：<b>EW-全A（等权万得全A PIT 成分池）</b>（5年 +52.9%）</div>
+
+  <div style="margin:16px 0;padding:12px 16px;background:#fff8e6;border:1px solid #d4a72c;border-radius:8px;font-size:13px;color:#7a5c00">
+    <b>铁律</b>：① 每笔 alpha 只记一层 ② 先与 EW-全A 对比再下结论 ③ 无效实验也要记账，防止重复踩坑
+  </div>
+
+  <h2 style="font-size:17px;margin:24px 0 12px">📊 各层有效 alpha 对比</h2>
+  <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #d0d7de;border-radius:10px;overflow:hidden;font-size:13px">
+    <thead><tr style="background:#f0f3f6;color:#57606a;text-align:left">
+      <th style="padding:10px 12px">归因层</th><th>Alpha 资产</th><th>超额/增量</th><th>证据</th>
+    </tr></thead>
+    <tbody>
+            <tr>
+              <td>L1 数据层 / 信息源层</td>
+              <td style="font-weight:600">juzi 一致预期 PIT 数据（con_forecast_stk）</td>
+              <td style="color:#1a7f37;font-weight:600">+18.1%</td>
+              <td style="color:#57606a;font-size:12px">C-Score +30.7%/超额+26.2pp vs F-Score +12.6%/超额+8.1pp；数据增量 +18.1pp，10期8期跑赢</td>
+            </tr>
+            <tr>
+              <td>L1 数据层 / 信息源层</td>
+              <td style="font-weight:600">万得全A 881001.WI PIT 成分（基准池）</td>
+              <td style="color:#1a7f37;font-weight:600">+0.0%</td>
+              <td style="color:#57606a;font-size:12px">消除幸存者偏差约 53pp：龙头池等权 5年+455% vs 全A等权 +52.9%</td>
+            </tr>
+            <tr>
+              <td>L1 数据层 / 信息源层</td>
+              <td style="font-weight:600">腾讯月K 行情（线程池全市场）</td>
+              <td style="color:#1a7f37;font-weight:600">+0.0%</td>
+              <td style="color:#57606a;font-size:12px">支撑全市场 5.2 年回测的基础数据管线</td>
+            </tr>
+            <tr>
+              <td>L2 Alpha层 / 方法论层</td>
+              <td style="font-weight:600">F-Score 预期差（Piotroski-So + 刘旭纪律）</td>
+              <td style="color:#1a7f37;font-weight:600">+8.1%</td>
+              <td style="color:#57606a;font-size:12px">5年 +12.6% / MDD -14.4% / 超额 +8.1pp；低估值=熊市防御（方法论基线，本层 benchmark）</td>
+            </tr>
+            <tr>
+              <td>L2 Alpha层 / 方法论层</td>
+              <td style="font-weight:600">ZHF 否决制（consensus_veto 只否决不打分）</td>
+              <td style="color:#1a7f37;font-weight:600">+4.7%</td>
+              <td style="color:#57606a;font-size:12px">否决 -2.6% vs 打分 -7.3%，+4.7pp；印证「预期信息量在方向变动，非水平排序」</td>
+            </tr>
+            <tr>
+              <td>L3 数量信号层</td>
+              <td style="font-weight:600">估值卖出（PE 上限/高估降权）</td>
+              <td style="color:#1a7f37;font-weight:600">+11.0%</td>
+              <td style="color:#57606a;font-size:12px">+11pp：A股卖出比买入重要——最有效的单一改进</td>
+            </tr>
+            <tr>
+              <td>L3 数量信号层</td>
+              <td style="font-weight:600">BSADF 泡沫检验（调仓月叠加）</td>
+              <td style="color:#1a7f37;font-weight:600">+0.9%</td>
+              <td style="color:#57606a;font-size:12px">略优于基线（泡沫破裂期正确减仓），但幅度有限</td>
+            </tr>
+            <tr>
+              <td>L3 数量信号层</td>
+              <td style="font-weight:600">涨幅分解 G5（ΔPE 主导→信念×0.5）</td>
+              <td style="color:#1a7f37;font-weight:600">—</td>
+              <td style="color:#57606a;font-size:12px">框架内置过热降温，已随 rotation_growth 使用</td>
+            </tr></tbody>
+  </table>
+
+  <h2 style="font-size:17px;margin:24px 0 12px">🗂️ 三层明细账</h2>
+  
+            <div style="background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:18px 20px;margin-bottom:16px">
+              <div style="font-size:16px;font-weight:700;color:#1f2328">🛰️ L1 数据层 / 信息源层
+                <span style="float:right;font-size:13px;color:#57606a">3 有效 / 0 无效 · 已归因超额 +18.1%</span>
+              </div>
+              <div style="color:#57606a;font-size:13px;margin:6px 0 10px">接入并鉴别能带来超额收益的数据源/信息源/新 MCP。基准：同一方法论下基线数据源 vs 新数据源。</div>
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead><tr style="color:#57606a;text-align:left;border-bottom:1px solid #d8dee4">
+                  <th style="padding:6px">结论</th><th>资产</th><th>超额/增量</th><th>总收益</th><th>MDD</th><th>证据</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">juzi 一致预期 PIT 数据（con_forecast_stk）</td>
+                  <td>+18.1%</td>
+                  <td>+30.7%</td>
+                  <td>-22.9%</td>
+                  <td style="color:#57606a;font-size:12px">C-Score +30.7%/超额+26.2pp vs F-Score +12.6%/超额+8.1pp；数据增量 +18.1pp，10期8期跑赢</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">万得全A 881001.WI PIT 成分（基准池）</td>
+                  <td>+0.0%</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">消除幸存者偏差约 53pp：龙头池等权 5年+455% vs 全A等权 +52.9%</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">腾讯月K 行情（线程池全市场）</td>
+                  <td>+0.0%</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">支撑全市场 5.2 年回测的基础数据管线</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#9a6700;font-weight:600">CANDIDATE</span></td>
+                  <td style="font-weight:600">券商/新 MCP（westock / wind / gildata 等）</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">待鉴别：一致预期数据已被证实是数据层核心（+18.1pp），券商 MCP 需证明增量</td>
+                </tr></tbody>
+              </table>
+            </div>
+            <div style="background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:18px 20px;margin-bottom:16px">
+              <div style="font-size:16px;font-weight:700;color:#1f2328">🧠 L2 Alpha层 / 方法论层
+                <span style="float:right;font-size:13px;color:#57606a">2 有效 / 3 无效 · 已归因超额 +12.8%</span>
+              </div>
+              <div style="color:#57606a;font-size:13px;margin:6px 0 10px">记录方法论并设置 benchmark，持续迭代。基准：F-Score 基线（已证实跑赢全A等权）。</div>
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead><tr style="color:#57606a;text-align:left;border-bottom:1px solid #d8dee4">
+                  <th style="padding:6px">结论</th><th>资产</th><th>超额/增量</th><th>总收益</th><th>MDD</th><th>证据</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">F-Score 预期差（Piotroski-So + 刘旭纪律）</td>
+                  <td>+8.1%</td>
+                  <td>+12.6%</td>
+                  <td>-14.4%</td>
+                  <td style="color:#57606a;font-size:12px">5年 +12.6% / MDD -14.4% / 超额 +8.1pp；低估值=熊市防御（方法论基线，本层 benchmark）</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">ZHF 否决制（consensus_veto 只否决不打分）</td>
+                  <td>+4.7%</td>
+                  <td>-2.6%</td>
+                  <td>-38.4%</td>
+                  <td style="color:#57606a;font-size:12px">否决 -2.6% vs 打分 -7.3%，+4.7pp；印证「预期信息量在方向变动，非水平排序」</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#9a6700;font-weight:600">CANDIDATE</span></td>
+                  <td style="font-weight:600">章宏帆框架（rotation_growth 有锐度的均衡）</td>
+                  <td>—</td>
+                  <td>+329.1%</td>
+                  <td>-27.0%</td>
+                  <td style="color:#57606a;font-size:12px">ZHF-cons 5年 +329.1%/MDD -27.0%，但跑输池子 126pp → 框架价值=纪律(MDD砍半)非选股；纪律贡献待独立归因</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#cf222e;font-weight:600">REJECTED</span></td>
+                  <td style="font-weight:600">Growth Loop 剧本（GOAL→HOOK→LOOP 深研）</td>
+                  <td>—</td>
+                  <td>-14.0%</td>
+                  <td>-56.6%</td>
+                  <td style="color:#57606a;font-size:12px">纯增速 5年 -14.0%/MDD -56.6%：Growth Trap（买入点=YoY峰值，追高接盘循环）</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#cf222e;font-weight:600">REJECTED</span></td>
+                  <td style="font-weight:600">ROA 加权（F-Score 变体）</td>
+                  <td>-3.7%</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">-3.7pp：周期股盈利峰值偏误（钢铁/化工/煤炭超配→周期下行暴亏）</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#cf222e;font-weight:600">REJECTED</span></td>
+                  <td style="font-weight:600">IRR 门控 / BSADF 叠加 / 减速清仓（GL 系列变体）</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">均无效：在 Growth Trap 基线上加任何门控都无法扭转 -14%</td>
+                </tr></tbody>
+              </table>
+            </div>
+            <div style="background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:18px 20px;margin-bottom:16px">
+              <div style="font-size:16px;font-weight:700;color:#1f2328">🔔 L3 数量信号层
+                <span style="float:right;font-size:13px;color:#57606a">3 有效 / 3 无效 · 已归因超额 +11.9%</span>
+              </div>
+              <div style="color:#57606a;font-size:13px;margin:6px 0 10px">A股卖出比买入重要：过热/估值/回撤/预期下修等买卖信号。基准：无信号基线 vs 加信号。</div>
+              <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead><tr style="color:#57606a;text-align:left;border-bottom:1px solid #d8dee4">
+                  <th style="padding:6px">结论</th><th>资产</th><th>超额/增量</th><th>总收益</th><th>MDD</th><th>证据</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">估值卖出（PE 上限/高估降权）</td>
+                  <td>+11.0%</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">+11pp：A股卖出比买入重要——最有效的单一改进</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">BSADF 泡沫检验（调仓月叠加）</td>
+                  <td>+0.9%</td>
+                  <td>—</td>
+                  <td>-32.0%</td>
+                  <td style="color:#57606a;font-size:12px">略优于基线（泡沫破裂期正确减仓），但幅度有限</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#1a7f37;font-weight:600">VERIFIED</span></td>
+                  <td style="font-weight:600">涨幅分解 G5（ΔPE 主导→信念×0.5）</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">框架内置过热降温，已随 rotation_growth 使用</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#cf222e;font-weight:600">REJECTED</span></td>
+                  <td style="font-weight:600">BSADF 逐月出场</td>
+                  <td>-2.9%</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">-2.9pp：主升段卖飞赢家；月频相位机无法区分抛物线回撤与真破裂</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#cf222e;font-weight:600">REJECTED</span></td>
+                  <td style="font-weight:600">yoy_drop 下修清仓（每半年）</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>-66.3%</td>
+                  <td style="color:#57606a;font-size:12px">MDD -66.3%：持续下修期每半年砍光全部持仓→满仓接刀→割肉换血循环</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#cf222e;font-weight:600">REJECTED</span></td>
+                  <td style="font-weight:600">回撤止损 strict（dd50%/yoy50pp）</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>-73.0%</td>
+                  <td style="color:#57606a;font-size:12px">MDD -73.0%：止损太晚，无甜蜜点</td>
+                </tr>
+                <tr>
+                  <td><span style="color:#9a6700;font-weight:600">CANDIDATE</span></td>
+                  <td style="font-weight:600">过热监控清单（候选信号，待鉴别）</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td style="color:#57606a;font-size:12px">A股卖出>买入：候选信号逐一 A/B 鉴别后入账</td>
+                </tr></tbody>
+              </table>
+            </div>
+
+  <div style="color:#8c959f;font-size:12px;margin-top:20px;border-top:1px solid #d8dee4;padding-top:10px">
+    归因协议：换数据源→L1 数据层；换决策框架→L2 方法论层；换买卖信号→L3 数量信号层。详见 docs/ALPHA_LAYERS.md
+  </div>
+</div>
+</body></html>

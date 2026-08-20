@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>章宏帆框架 × 预期只否决 + 卖出纪律 · 四臂对比</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; margin: 0; background: #f7f8fa; color: #1c1e21; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 22px; } h2 { font-size: 17px; border-left: 4px solid #d33; padding-left: 10px; margin-top: 36px; }
+  h3 { font-size: 14px; color: #555; }
+  table { border-collapse: collapse; width: 100%; background: #fff; font-size: 13px; }
+  th, td { border: 1px solid #e3e6ea; padding: 6px 10px; text-align: right; }
+  th { background: #f0f2f5; } td:first-child { text-align: left; }
+  tr.hl td { background: #fdf0ef; font-weight: 600; }
+  tr.sep td { border-top: 2px solid #a00; background: #fdf0ef; }
+  .card { background: #fff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 16px; margin-top: 14px; }
+  .ct { font-size: 12px; color: #444; padding: 2px 0; }
+  .pos { color: #d33; } .neg { color: #1a7f37; }
+  .concl { font-size: 13px; line-height: 1.75; }
+  .concl p { margin: 8px 0; }
+  .concl b { color: #a00; }
+  .caveat { background: #fff8e6; border: 1px solid #f0d9a8; border-radius: 8px; padding: 14px 18px; margin-top: 14px; font-size: 13px; line-height: 1.7; }
+</style></head><body><div class="wrap">
+<h1>章宏帆框架 × 分析师一致预期「只否决不打分」+ 卖出纪律 — 四臂对比</h1>
+<h3>池子=万得全A(881001.WI) 每期PIT成分（4441→5503只）｜2021-06 ~ 2026-08（63个月）｜成本 5bp+10bp｜vnpy 引擎</h3>
+
+<div class="card">
+<h2>总览（对比等权全A —— 方法论铁律）</h2>
+<table>
+<tr><th>策略</th><th>总收益</th><th>年化</th><th>最大回撤</th><th>超额(等权全A)</th></tr>
+
+        <tr class="hl">
+          <td>ZHF-veto</td>
+          <td>-2.6%</td>
+          <td>-0.5%</td>
+          <td>-38.4%</td>
+          <td>-55.5%</td>
+        </tr>
+        <tr class="">
+          <td>ZHF-veto-sell</td>
+          <td>+3.2%</td>
+          <td>+0.6%</td>
+          <td>-66.3%</td>
+          <td>-49.7%</td>
+        </tr>
+        <tr class="">
+          <td>ZHF-veto-sell-strict</td>
+          <td>+2.1%</td>
+          <td>+0.4%</td>
+          <td>-73.0%</td>
+          <td>-50.9%</td>
+        </tr>
+        <tr class="">
+          <td>ZHF-veto-switch</td>
+          <td>-5.3%</td>
+          <td>-1.0%</td>
+          <td>-33.8%</td>
+          <td>-58.2%</td>
+        </tr>
+        <tr class="">
+          <td>ZHF-cons(上轮)</td>
+          <td>-7.3%</td>
+          <td>-1.4%</td>
+          <td>-36.6%</td>
+          <td>-60.2%</td>
+        </tr>
+        <tr class="">
+          <td>EW-全A</td>
+          <td>+52.9%</td>
+          <td>+8.4%</td>
+          <td>—</td>
+          <td>+0.0%</td>
+        </tr>
+</table>
+<p class="ct">实验设计：否决闸门 = 预期净利增速&gt;0 &nbsp;|&nbsp; 预期修正动量 rev4w&gt;0 &nbsp;|&nbsp; 预期 PEG∈(0,2)，任一不过不买；通过后由 ZHF 决策树打分、类配比 60/35/5/5。卖出纪律 = 调仓月预期恶化 overlay（yoy 环比下滑 / rev4w 转负即卖）+ 非调仓月单票峰值回撤止损（普通 40% / 严格 50%）。风格开关 = 过去 12 月基准收益 &lt; -10% 判熊市，调仓半仓。</p>
+</div>
+
+<div class="card">
+<h2>关键结论（先看这个）</h2>
+<div class="concl">
+<p><b>① 否决优于打分，但仍无正超额。</b> 预期数据改为「只否决不打分」后，ZHF-veto 全市场 <b>-2.6%</b>，比上轮预期打分版 ZHF-cons（-7.3%）<b>改善 +5%</b>。印证 v3rec 的结论：一致预期的信息量在「方向变动」（rev4w、PEG 越界）而非水平排序。但相对等权全A（+52.9%）仍跑输 <b>-56%</b> —— 否决只是少亏，没有创造正收益。</p>
+<p><b>② 卖出纪律 = 收益换回撤，不是免费午餐（本次最重要的发现，方向与直觉相反）。</b> 叠加预期恶化 overlay + 回撤止损后，ZHF-veto-sell 总收益 <b>+3.2%</b>（比无卖出臂 ++6%），但 <b>MDD 从 -38% 恶化到 -66%</b>：677 笔卖出（预期恶化 422 / 回撤止损 149 / rev4w 转负 106），2024-08 净值最低仅 <b>0.34M</b>（vs 无卖出臂 0.63M）。机制：a) yoy_drop=0（任何下滑即卖）在 2021-2024 分析师持续下修期每半年砍掉几乎全部持仓（422 笔）；b) 砍完立即按新否决权重<b>满仓接刀</b>，新买入的继续跌 → 再砍 → 再满仓，形成「割肉换血」循环；c) 回撤止损 149 笔全部卖在深坑（-40%~-90%），浮亏变实亏。最终收益转正是靠 2025-2026 预期修复行情从 0.34M 低基数反弹 +232% —— <b>这是死里逃生路径，不是稳定 alpha</b>。收益/回撤比约 0.05，任何实际投资者在 -66% 回撤面前早已离场。</p>
+<p><b>③ 风格开关（熊市半仓）最差。</b> 熊市判定（过去 12 月基准 &lt; -10%）在 2022-04 后长期命中，ZHF-veto-switch <b>-5.3%</b>，比无开关再亏 -3% —— 用滞后月频基准判熊市再半仓，等于在跌幅已发生后被动降仓，且 2023-2025 的反复反弹全部错过（半仓只吃到一半）。</p>
+<p><b>④ 严格卖出仍跑不赢回撤：稳健性确认。</b> 止损放宽到回撤 50%、预期下滑 50pp 才卖（713 笔），ZHF-veto-sell-strict 总收益 <b>+2.1%</b>（仍为正），但 <b>MDD -73% 更深</b>：放开 yoy 下滑阈值后留在组合里的股票在 2023-2024 跌得更深才触发止损。结论稳健：<b>在 ZHF×预期×月频框架下，卖出纪律无法同时保住收益和回撤</b> —— 超灵敏版（yoy_drop=0）砍仓太狠、严格版（yoy_drop=50pp）止损太晚，中间没有甜蜜点。</p>
+<p><b>⑤ 总账：五个变体全部跑输等权万得全A（+52.9%）至少 50pp。</b> 无论怎么改否决/打分/卖出/开关，一致预期信号在万得全A池都无正超额。真正的问题不在「预期怎么用」，而在<b>组合的风格暴露</b>：ZHF 持仓永远是大中盘分析师覆盖股，而 2021-2026 等权全A的收益主要来自小盘 —— 这是结构化错配，选股层修不掉。</p>
+</div>
+</div>
+
+<div class="card">
+<h2>四臂 vs 上轮 vs 基准</h2>
+<table>
+<tr><th>策略</th><th>总收益</th><th>年化</th><th>最大回撤</th></tr>
+
+        <tr><td>ZHF-veto（万得全A，本实验）</td><td>-2.6%</td><td>-0.5%</td><td>-38.4%</td></tr>
+        <tr><td>ZHF-veto-sell（+卖出纪律）</td><td>+3.2%</td><td>+0.6%</td><td>-66.3%</td></tr>
+        <tr><td>ZHF-veto-switch（+熊市半仓）</td><td>-5.3%</td><td>-1.0%</td><td>-33.8%</td></tr>
+        <tr><td>ZHF-veto-sell-strict（严格卖出）</td><td>+2.1%</td><td>+0.4%</td><td>-73.0%</td></tr>
+        <tr class="sep"><td>ZHF-cons（上轮，预期打分版）</td><td>-7.3%</td><td>-1.4%</td><td>-36.6%</td></tr>
+        <tr><td>等权万得全A</td><td>+52.9%</td><td>+8.4%</td><td>—</td></tr>
+    
+</table>
+</div>
+
+<div class="card">
+<h2>净值曲线（相对起点累计收益 %）</h2>
+<canvas id="nav" style="width:100%;height:380px"></canvas>
+</div>
+
+<div class="card">
+<h2>逐期否决与选股诊断</h2>
+<table>
+<tr><th>调仓期</th><th>万得全A成分</th><th>一致预期覆盖</th>
+<th>否决数(率)</th><th>否决原因分布</th><th>决策树弃权</th><th>持仓数</th><th>A/B/C/OFF</th></tr>
+
+        <tr>
+          <td>2021-08</td><td>4441</td><td>4441</td>
+          <td>3267 (74%)</td><td>peg_bad:785 rev_le0:1503 yoy_le0:979</td>
+          <td>120</td><td>40</td><td>B:214 A:637 C:203</td>
+        </tr>
+        <tr>
+          <td>2022-04</td><td>4780</td><td>4780</td>
+          <td>3978 (83%)</td><td>peg_bad:592 rev_le0:1655 yoy_le0:1731</td>
+          <td>84</td><td>40</td><td>B:234 C:75 A:409</td>
+        </tr>
+        <tr>
+          <td>2022-08</td><td>4869</td><td>4869</td>
+          <td>3989 (82%)</td><td>peg_bad:649 rev_le0:1486 yoy_le0:1854</td>
+          <td>126</td><td>40</td><td>B:177 A:482 C:95</td>
+        </tr>
+        <tr>
+          <td>2023-04</td><td>5148</td><td>5148</td>
+          <td>4270 (83%)</td><td>peg_bad:676 rev_le0:1794 yoy_le0:1800</td>
+          <td>126</td><td>40</td><td>A:396 B:219 C:137</td>
+        </tr>
+        <tr>
+          <td>2023-08</td><td>5255</td><td>5255</td>
+          <td>4444 (85%)</td><td>peg_bad:786 rev_le0:1903 yoy_le0:1755</td>
+          <td>108</td><td>40</td><td>B:173 A:369 C:161</td>
+        </tr>
+        <tr>
+          <td>2024-04</td><td>5361</td><td>5361</td>
+          <td>4522 (84%)</td><td>peg_bad:946 rev_le0:2062 yoy_le0:1514</td>
+          <td>131</td><td>40</td><td>B:281 C:156 A:271</td>
+        </tr>
+        <tr>
+          <td>2024-08</td><td>5344</td><td>5344</td>
+          <td>4543 (85%)</td><td>peg_bad:718 rev_le0:1934 yoy_le0:1891</td>
+          <td>107</td><td>40</td><td>B:262 C:176 A:256</td>
+        </tr>
+        <tr>
+          <td>2025-04</td><td>5407</td><td>5407</td>
+          <td>4550 (84%)</td><td>peg_bad:1098 rev_le0:1988 yoy_le0:1464</td>
+          <td>126</td><td>40</td><td>A:285 C:212 B:234</td>
+        </tr>
+        <tr>
+          <td>2025-08</td><td>5424</td><td>5424</td>
+          <td>4556 (84%)</td><td>peg_bad:1138 rev_le0:1760 yoy_le0:1658</td>
+          <td>139</td><td>40</td><td>A:347 B:181 C:201</td>
+        </tr>
+        <tr>
+          <td>2026-04</td><td>5503</td><td>5503</td>
+          <td>4663 (85%)</td><td>peg_bad:1164 rev_le0:1803 yoy_le0:1696</td>
+          <td>143</td><td>40</td><td>B:156 A:360 C:181</td>
+        </tr>
+</table>
+</div>
+
+<div class="card">
+<h2>卖出诊断 — 普通臂（dd=40% / yoy 下滑&gt;0 即卖）</h2>
+<div class='ct'><b>drawdown:149笔 · yoy_drop:422笔 · rev_flip:106笔</b></div><table><tr><th>日期</th><th>代码</th><th>原因</th><th>细节</th></tr><tr><td>2021-10</td><td>000933.SZ</td><td>drawdown</td><td class='ct'>峰值回撤 48%</td></tr><tr><td>2021-11</td><td>000683.SZ</td><td>drawdown</td><td class='ct'>峰值回撤 41%</td></tr><tr><td>2022-01</td><td>000830.SZ</td><td>drawdown</td><td class='ct'>峰值回撤 46%</td></tr><tr><td>2022-03</td><td>300443.SZ</td><td>drawdown</td><td class='ct'>峰值回撤 51%</td></tr><tr><td>2022-04</td><td>000789.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 10.96% → 5.2%（下滑 6pp）</td></tr><tr><td>2022-04</td><td>002032.SZ</td><td>rev_flip</td><td class='ct'>rev4w 转负（-99.93）</td></tr><tr><td>2022-04</td><td>002098.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 18.13% → 2.2800000000000002%（下滑 16pp）</td></tr><tr><td>2022-04</td><td>002131.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 14.09% → 0.0%（下滑 14pp）</td></tr><tr><td>2022-04</td><td>002501.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 10.81% → -3.5100000000000002%（下滑 14pp）</td></tr><tr><td>2022-04</td><td>002508.SZ</td><td>rev_flip</td><td class='ct'>rev4w 转负（-315.51）</td></tr><tr><td>2022-04</td><td>002768.SZ</td><td>rev_flip</td><td class='ct'>rev4w 转负（-934.04）</td></tr><tr><td>2022-04</td><td>300770.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 18.400000000000002% → 9.98%（下滑 8pp）</td></tr></table>
+</div>
+
+<div class="card">
+<h2>卖出诊断 — 严格臂（dd=50% / yoy 下滑&gt;50pp 才卖）</h2>
+<div class='ct'><b>drawdown:83笔 · yoy_drop:482笔 · rev_flip:148笔</b></div><table><tr><th>日期</th><th>代码</th><th>原因</th><th>细节</th></tr><tr><td>2021-11</td><td>000933.SZ</td><td>drawdown</td><td class='ct'>峰值回撤 57%</td></tr><tr><td>2022-03</td><td>300443.SZ</td><td>drawdown</td><td class='ct'>峰值回撤 51%</td></tr><tr><td>2022-04</td><td>000789.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 10.96% → 5.2%（下滑 6pp）</td></tr><tr><td>2022-04</td><td>002032.SZ</td><td>rev_flip</td><td class='ct'>rev4w 转负（-99.93）</td></tr><tr><td>2022-04</td><td>002098.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 18.13% → 2.2800000000000002%（下滑 16pp）</td></tr><tr><td>2022-04</td><td>002131.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 14.09% → 0.0%（下滑 14pp）</td></tr><tr><td>2022-04</td><td>002501.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 10.81% → -3.5100000000000002%（下滑 14pp）</td></tr><tr><td>2022-04</td><td>002508.SZ</td><td>rev_flip</td><td class='ct'>rev4w 转负（-315.51）</td></tr><tr><td>2022-04</td><td>002768.SZ</td><td>rev_flip</td><td class='ct'>rev4w 转负（-934.04）</td></tr><tr><td>2022-04</td><td>300770.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 18.400000000000002% → 9.98%（下滑 8pp）</td></tr><tr><td>2022-04</td><td>300773.SZ</td><td>yoy_drop</td><td class='ct'>预期增速 17.56% → 12.8%（下滑 5pp）</td></tr><tr><td>2022-04</td><td>600612.SH</td><td>yoy_drop</td><td class='ct'>预期增速 17.27% → 2.05%（下滑 15pp）</td></tr></table>
+</div>
+
+<div class="caveat">
+<h3 style="margin-top:0">诚实声明（必须读）</h3>
+1. <b>数据源</b>：成分股=juzi 万得全A(881001.WI) PIT 快照；一致预期=朝阳永续 con_forecast_stk PIT 快照（snapshot 日期≤调仓日）；价格=腾讯月K前复权。卖出 overlay 使用的「本期 vs 上期」预期均来自调仓时点快照，无未来函数。<br>
+2. <b>数据约束（本次实验的物理边界）</b>：全市场 PIT 实际财务数据不可得（juzi 单股粒度不可行；妙想/自选股为当前快照即未来函数），全市场唯一 PIT 可得的一致预期数据只在 10 个调仓期有快照。因此<b>预期恶化 overlay 只能每半年检查一次</b>（非调仓月无新预期数据），回撤止损为月度粒度（月K）。真实世界里分析师预期逐日更新、卖出响应会更快，本实验是数据约束下的下界估计。<br>
+3. <b>回撤止损的已知缺陷</b>：月频止损天然滞后，触发时往往已深跌（本实验普遍在 -40% 以后），且卖出后无再买入机制（调仓月才重建仓位）。<br>
+4. <b>熊市判定使用等权全A NAV 的滞后性</b>：等权全A为月频序列，12 月收益 &lt;-10% 的判定在 2022-04 之后长期命中，半仓状态错过后续反弹。<br>
+5. <b>幸存者偏差残余</b>：价格仅覆盖当期成分内股票；已退市股票当月不参与等权基准收益（轻微高估基准）。<br>
+6. <b>信号→成交时点</b>：调仓日数据快照与月末收盘同月（与前几轮一致，保证可比）；严格做法应延后一个月执行。<br>
+7. 四臂共享同一否决选股权重（weights_veto），差异仅在卖出/开关层 —— 对比口径干净。<br>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const labels = ["2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12", "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"];
+const series = [{"label": "ZHF-veto", "data": [0.0, 0.0, 0.0, -0.13, -3.97, -0.86, 1.79, -5.34, -1.66, -6.82, -16.57, -10.35, -2.64, -7.06, -9.39, -16.76, -19.17, -8.53, -16.63, -9.47, -9.45, -12.66, -14.18, -17.98, -12.71, -14.38, -20.22, -20.21, -24.44, -22.75, -23.72, -32.61, -26.25, -25.16, -22.79, -24.65, -31.88, -33.85, -37.35, -21.75, -21.9, -22.03, -21.95, -22.54, -21.84, -21.04, -25.73, -24.21, -18.43, -10.34, 4.7, 1.57, 2.0, 0.38, 4.33, 12.18, 14.43, 2.48, 5.43, -0.87, -5.08, -4.03, -2.59], "borderColor": "#d33", "backgroundColor": "#d3322", "fill": false, "tension": 0.15, "borderWidth": 2.5},{"label": "ZHF-veto-sell", "data": [0.0, 0.0, 0.0, -0.13, -3.98, -1.23, 0.84, -7.7, -4.99, -11.49, -20.56, -15.26, -5.71, -11.88, -15.23, -27.59, -31.95, -17.74, -29.36, -15.42, -14.5, -19.26, -23.0, -28.06, -21.76, -21.4, -33.31, -32.88, -39.28, -36.43, -38.48, -61.03, -48.73, -45.58, -42.63, -42.54, -55.48, -61.66, -66.04, -41.82, -43.0, -40.08, -44.81, -47.05, -44.59, -42.42, -50.76, -46.85, -39.04, -30.35, -11.38, -5.42, -3.8, -9.39, -3.85, 13.06, 22.8, 2.9, 19.75, 13.1, 12.69, -2.27, 3.2], "borderColor": "#e68", "backgroundColor": "#e6822", "fill": false, "tension": 0.15, "borderWidth": 2.5},{"label": "ZHF-veto-sell-strict", "data": [0.0, 0.0, 0.0, -0.13, -3.98, -1.23, 0.95, -7.3, -4.49, -10.68, -20.0, -14.22, -4.44, -11.52, -15.1, -28.85, -33.61, -17.49, -28.81, -13.55, -12.86, -18.68, -23.16, -28.69, -21.8, -20.86, -33.52, -31.35, -39.94, -37.14, -40.12, -64.86, -50.49, -47.48, -44.25, -44.41, -59.83, -67.19, -72.76, -44.08, -45.1, -41.33, -47.27, -49.97, -46.08, -44.01, -52.41, -47.71, -40.57, -32.05, -12.27, -5.55, -4.11, -8.28, -2.76, 14.8, 24.32, 4.54, 21.81, 13.46, 10.8, -3.5, 2.08], "borderColor": "#e8a", "backgroundColor": "#e8a22", "fill": false, "tension": 0.15, "borderWidth": 2.5},{"label": "ZHF-veto-switch", "data": [0.0, 0.0, 0.0, -0.13, -3.97, -0.86, 1.79, -5.34, -1.66, -6.82, -16.57, -10.35, -2.64, -7.06, -9.39, -16.76, -19.17, -8.53, -16.63, -9.47, -9.45, -12.66, -14.18, -17.98, -12.71, -14.38, -20.22, -20.21, -24.44, -22.75, -23.72, -32.61, -26.25, -25.16, -22.79, -24.6, -28.25, -29.17, -30.85, -22.97, -23.05, -23.12, -23.1, -23.4, -23.03, -22.59, -25.15, -24.36, -18.93, -11.41, 2.03, -1.2, -0.79, -2.36, 1.48, 9.13, 11.33, -0.32, 2.56, -3.58, -7.68, -6.66, -5.26], "borderColor": "#b60", "backgroundColor": "#b6022", "fill": false, "tension": 0.15, "borderWidth": 2.5},{"label": "ZHF-cons(\u4e0a\u8f6e)", "data": [0.0, 0.0, 0.0, -1.94, -4.09, 6.96, 10.58, -0.06, 5.02, -0.52, -16.2, -6.61, 1.4, 4.66, 1.46, -7.84, -4.33, 3.69, -0.61, 7.73, 11.46, 10.13, 6.93, 7.08, 9.87, 11.21, 6.61, 6.43, 5.38, 9.23, 6.87, -13.38, -8.11, -3.65, -5.26, -6.5, -14.64, -13.95, -17.17, 2.38, 9.74, 15.05, 10.05, 8.19, 16.41, 16.68, 13.79, 19.77, 27.42, 34.54, 46.31, 48.1, 50.39, 50.02, 52.83, 65.02, 71.94, 55.78, 66.33, 61.65, 55.25, 45.26, 52.94], "borderColor": "#888", "backgroundColor": "#88822", "fill": false, "tension": 0.15, "borderWidth": 2.5},{"label": "EW-\u5168A", "data": [0.0, 0.0, 0.0, -1.94, -4.09, 6.96, 10.58, -0.06, 5.02, -0.52, -16.2, -6.61, 1.4, 4.66, 1.46, -7.84, -4.33, 3.69, -0.61, 7.73, 11.46, 10.13, 6.93, 7.08, 9.87, 11.21, 6.61, 6.43, 5.38, 9.23, 6.87, -13.38, -8.11, -3.65, -5.26, -6.5, -14.64, -13.95, -17.17, 2.38, 9.74, 15.05, 10.05, 8.19, 16.41, 16.68, 13.79, 19.77, 27.42, 34.54, 46.31, 48.1, 50.39, 50.02, 52.83, 65.02, 71.94, 55.78, 66.33, 61.65, 55.25, 45.26, 52.94], "borderColor": "#2a6", "backgroundColor": "#2a622", "fill": false, "tension": 0.15, "borderWidth": 1.5}];
+new Chart(document.getElementById('nav'), {
+  type: 'line',
+  data: { labels, datasets: series },
+  options: {
+    responsive: true, interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { boxWidth: 14, font: { size: 12 } } } },
+    scales: {
+      x: { ticks: { maxTicksLimit: 12 } },
+      y: { ticks: { callback: v => v + '%' } }
+    }
+  }
+});
+</script></body></html>

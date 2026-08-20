@@ -1,0 +1,68 @@
+<svg viewBox="0 0 680 516" width="100%" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>三层 Alpha 目标结构</title>
+<desc>框架分为数据层、方法论层、数量信号层，每层独立记账与归因</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<rect x="40" y="32" width="600" height="48" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="340" y="52" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#2C2C2A">策略总收益 = 基准（EW-全A 等权池） + 数据α + 方法论α + 数量信号α</text>
+<text x="340" y="70" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">每笔 alpha 只记一层 · 先与等权池对比再下结论 · 无效实验同样记账</text>
+
+<rect x="40" y="96" width="600" height="104" rx="16" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="60" y="118" dominant-baseline="central" font-size="14" font-weight="500" fill="#0C447C">L1 数据层 / 信息源层　数据α 已验证 +18.1pp</text>
+<text x="60" y="134" dominant-baseline="central" font-size="12" fill="#185FA5">接入什么数据，决定 alpha 天花板（新 MCP / 券商接入都在本层鉴别）</text>
+
+<rect x="56" y="146" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.5"/>
+<text x="144" y="162" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">数据源 / MCP 接入</text>
+<text x="144" y="178" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">juzi 一致预期 · 券商 MCP</text>
+
+<rect x="252" y="146" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.5"/>
+<text x="340" y="162" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">A/B 鉴别分析</text>
+<text x="340" y="178" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">同一方法论 · 增量&gt;0 → 入账</text>
+
+<rect x="448" y="146" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.5"/>
+<text x="536" y="162" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">实测超额记账</text>
+<text x="536" y="178" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">一致预期数据 +18.1pp</text>
+
+<line x1="340" y1="200" x2="340" y2="216" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="40" y="216" width="600" height="104" rx="16" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="60" y="238" dominant-baseline="central" font-size="14" font-weight="500" fill="#3C3489">L2 Alpha 层 / 方法论层　方法论α 已验证 +12.8pp</text>
+<text x="60" y="254" dominant-baseline="central" font-size="12" fill="#534AB7">怎么决策，决定 alpha 能否稳定提取（方法论必须设 benchmark）</text>
+
+<rect x="56" y="266" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.5"/>
+<text x="144" y="282" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#3C3489">方法论沉淀</text>
+<text x="144" y="298" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#534AB7">F-Score · 否决制 · 章宏帆</text>
+
+<rect x="252" y="266" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.5"/>
+<text x="340" y="282" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#3C3489">Benchmark 对照</text>
+<text x="340" y="298" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#534AB7">EW-全A / F-Score 基线</text>
+
+<rect x="448" y="266" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.5"/>
+<text x="536" y="282" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#3C3489">迭代晋级</text>
+<text x="536" y="298" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#534AB7">变体跑赢基准才升级</text>
+
+<line x1="340" y1="320" x2="340" y2="336" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="40" y="336" width="600" height="104" rx="16" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="60" y="358" dominant-baseline="central" font-size="14" font-weight="500" fill="#791F1F">L3 数量信号层　信号α 已验证 +11.9pp · A股卖得好比买得好重要</text>
+<text x="60" y="374" dominant-baseline="central" font-size="12" fill="#A32D2D">何时买卖，决定 alpha 兑现率（过热 / 卖出 / 回撤纪律都记本层）</text>
+
+<rect x="56" y="386" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="144" y="402" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#791F1F">卖出 / 过热信号</text>
+<text x="144" y="418" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#A32D2D">估值卖出 +11pp · BSADF · G5</text>
+
+<rect x="252" y="386" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="340" y="402" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#791F1F">回撤 / 纪律</text>
+<text x="340" y="418" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#A32D2D">止损 · 下修清仓（MDD -66% 教训）</text>
+
+<rect x="448" y="386" width="176" height="42" rx="8" fill="#FFFFFF" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="536" y="402" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#791F1F">增量测量</text>
+<text x="536" y="418" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#A32D2D">无信号基线 vs 加信号</text>
+
+<rect x="40" y="456" width="600" height="40" rx="10" fill="#FFFFFF" stroke="#888780" stroke-width="0.5"/>
+<text x="340" y="476" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#444441">归因协议：换数据源 → L1　·　换决策框架 → L2　·　换买卖信号 → L3</text>
+</svg>
