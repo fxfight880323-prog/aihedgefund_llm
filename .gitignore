@@ -52,3 +52,10 @@ _*.csv
 _*.png
 _*.svg
 _*.js
+
+# 数据缓存（可重新拉取/重建，不入库）
+*.parquet
+_gbm_batches/
+_bt_band_val/
+_bt_ew_daily/
+data/

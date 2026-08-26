@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>选股报告 - 福耀玻璃参照（2026-08-24）</title>
+<style>
+body{font-family:'Segoe UI','Microsoft YaHei',sans-serif;margin:0;padding:0;
+     background:#f5f5f5;color:#222;line-height:1.6}
+.container{max-width:1400px;margin:0 auto;padding:20px 28px}
+h1{font-size:24px;margin:8px 0 4px}
+h2{font-size:17px;margin-top:32px;border-left:4px solid #c62828;padding-left:10px}
+.sub{color:#666;font-size:13px;margin-bottom:16px}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12.5px;
+       background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+th,td{border:1px solid #e8e8e8;padding:5px 7px;text-align:center;white-space:nowrap}
+th{background:#eef2f6;font-weight:600;position:sticky;top:0;z-index:1}
+td.l{text-align:left} td.mono{font-family:Consolas,monospace;font-size:12px}
+td.pe{color:#c62828;font-weight:700} td.score{font-weight:700}
+tr:hover{background:#f0f7ff}
+.kpi-row{display:flex;gap:14px;margin:16px 0;flex-wrap:wrap}
+.kpi{background:#fff;border-radius:8px;padding:10px 18px;
+      box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:120px}
+.kpi b{font-size:24px;display:block} .kpi span{font-size:12px;color:#666}
+.kpi.red b{color:#c62828} .kpi.green b{color:#1e8449}
+.card{background:#fff;border-radius:8px;padding:14px 20px;margin:12px 0;
+      box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;line-height:1.8}
+.card.warn{background:#fef9e7;border:1px solid #f5cba7}
+.card.fy{background:#f4ecf7;border:1px solid #d2b4de}
+.note{color:#888;font-size:12px;margin-top:18px;border-top:1px dashed #ccc;
+       padding-top:10px;line-height:1.8}
+.highlight-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;
+               padding:12px 18px;margin:14px 0;font-size:14px}
+.tag{display:inline-block;background:#e8eaf6;color:#3f51b5;
+      border-radius:4px;padding:1px 8px;font-size:12px;margin:2px}
+</style></head><body>
+<div class="container">
+
+<h1>刘旭式框架 · 当前推荐 A 股</h1>
+<p class="sub">数据截至 <b>2026-08-24</b>（最新交易日）· 池子 = 万得全A(881001.WI) PIT 成分
+· 管线 = fetch → screen → score → band → apply
+· 已剔除银行/非银金融（铁律）</p>
+
+<div class="card fy">
+<b>福耀玻璃（600660.SH）在管线中的位置：</b><br>
+✓ 通过全部筛选条件（市值1474亿≥100亿→ PE 17.4>0 → L4: PE≤25 → L5: 增速5.8%≤25%, PEG 1.3≤2）<br>
+✓ 通过 gm 质量层（毛利率 38.1% ≥ 中位数 27.0%）<br>
+✗ <b>未入评分 Top40</b>：PE 升序排第 132/226 位，PE 17.4 高于最终 39 只的全部区间（6.6~15.6）<br>
+→ <b>框架核心信念 = PE 升序（便宜优先）</b>，回测证实这是决定成败的关键：同一筛选器 PE 升序 +55.6% vs 质量优先 -12%。
+福耀玻璃是好公司，但当前估值不在框架的"便宜"区间内。
+</div>
+
+<div class="kpi-row">
+  <div class="kpi"><b>5,529</b><span>万得全A PIT成分</span></div>
+  <div class="kpi"><b>5,406</b><span>剔除金融后池子</span></div>
+  <div class="kpi green"><b>226</b><span>Core 通过</span></div>
+  <div class="kpi green"><b>113</b><span>GM 质量层通过</span></div>
+  <div class="kpi red"><b>39</b><span>最终推荐（Band 后）</span></div>
+  <div class="kpi"><b>2.56%</b><span>等权权重</span></div>
+</div>
+
+<h2>① 筛选漏斗</h2>
+<table>
+<tr><th>#</th><th class="l">步骤</th><th>剩余</th><th>淘汰</th></tr>
+<tr><td>1</td><td class="l">万得全A PIT成分</td>
+    <td><b>5,529</b></td><td>—</td></tr><tr><td>2</td><td class="l">剔除银行/非银金融(铁律)</td>
+    <td><b>5,406</b></td><td>-123</td></tr><tr><td>3</td><td class="l">市值≥100亿</td>
+    <td><b>1,672</b></td><td>-3733</td></tr><tr><td>4</td><td class="l">PE>0</td>
+    <td><b>1,448</b></td><td>-224</td></tr><tr><td>5</td><td class="l">L4 估值安全边际(PE≤25或股息率≥2%)</td>
+    <td><b>608</b></td><td>-840</td></tr><tr><td>6</td><td class="l">L5 低预期逆向(增速≤25%且0<PEG≤2)</td>
+    <td><b>227</b></td><td>-381</td></tr><tr><td>7</td><td class="l">Core 通过(全部命中)</td>
+    <td><b>226</b></td><td>-1</td></tr><tr><td>8</td><td class="l">评分 Top40</td>
+    <td><b>40</b></td><td>从226中选40</td></tr><tr><td>9</td><td class="l">Band规避(PB 5y分位>90%剔除)</td>
+    <td><b>39</b></td><td>-1</td></tr>
+</table>
+
+<h2>③ 最终推荐名单（39 只，按评分降序）</h2>
+<p class="sub">评分 = 价值50%(PE30%+PEG20%) + 质量25%(ROE15%+毛利率10%) + 安全25%(股息率15%+OCF/市值10%)
+· Band 规避: PB 5年分位>90% 剔除</p>
+<table>
+<tr>
+  <th>评分排名</th><th class="l">名称</th><th>代码</th><th>现价</th><th>市值(亿)</th>
+  <th>PE</th><th>股息率%</th><th>预期增速%</th><th>PEG</th><th>预期ROE%</th>
+  <th>毛利率%</th><th>OCF/MV%</th><th>总分</th><th>PB分位%</th><th>PE分位%</th><th>Band</th>
+</tr>
+<tr>
+      <td>1</td>
+      <td class="l"><b>周大生</b></td>
+      <td class="mono">002867.SZ</td>
+      <td>12.37</td>
+      <td>133</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>3.26</td>
+      <td>16.6</td>
+      <td>0.78</td>
+      <td>16.6</td>
+      <td>35.0</td>
+      <td>2019.3</td>
+      <td class="score">81.6</td>
+      <td>15.4</td>
+      <td>14.0</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>2</td>
+      <td class="l"><b>南京高科</b></td>
+      <td class="mono">600064.SH</td>
+      <td>7.68</td>
+      <td>131</td>
+      <td class="pe"><b>7.7</b></td>
+      <td>4.88</td>
+      <td>24.4</td>
+      <td>0.29</td>
+      <td>10.9</td>
+      <td>23.5</td>
+      <td>8.4</td>
+      <td class="score">78.6</td>
+      <td>28.9</td>
+      <td>93.5</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>3</td>
+      <td class="l"><b>新奥股份</b></td>
+      <td class="mono">600803.SH</td>
+      <td>17.86</td>
+      <td>544</td>
+      <td class="pe"><b>12.5</b></td>
+      <td>3.53</td>
+      <td>18.9</td>
+      <td>0.58</td>
+      <td>19.1</td>
+      <td>14.1</td>
+      <td>24.7</td>
+      <td class="score">77.6</td>
+      <td>21.2</td>
+      <td>53.1</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>4</td>
+      <td class="l"><b>新 和 成</b></td>
+      <td class="mono">002001.SZ</td>
+      <td>26.32</td>
+      <td>809</td>
+      <td class="pe"><b>11.3</b></td>
+      <td>2.01</td>
+      <td>23.5</td>
+      <td>0.69</td>
+      <td>21.3</td>
+      <td>43.7</td>
+      <td>9.9</td>
+      <td class="score">77.5</td>
+      <td>25.3</td>
+      <td>14.8</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>5</td>
+      <td class="l"><b>苏美达</b></td>
+      <td class="mono">600710.SH</td>
+      <td>10.61</td>
+      <td>136</td>
+      <td class="pe"><b>9.7</b></td>
+      <td>4.00</td>
+      <td>7.9</td>
+      <td>0.94</td>
+      <td>15.1</td>
+      <td>6.7</td>
+      <td>545.5</td>
+      <td class="score">76.4</td>
+      <td>62.3</td>
+      <td>24.8</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>6</td>
+      <td class="l"><b>宇通客车</b></td>
+      <td class="mono">600066.SH</td>
+      <td>29.99</td>
+      <td>672</td>
+      <td class="pe"><b>12.3</b></td>
+      <td>4.49</td>
+      <td>9.8</td>
+      <td>0.99</td>
+      <td>35.4</td>
+      <td>25.4</td>
+      <td>11.2</td>
+      <td class="score">75.1</td>
+      <td>87.0</td>
+      <td>3.2</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>7</td>
+      <td class="l"><b>瀚蓝环境</b></td>
+      <td class="mono">600323.SH</td>
+      <td>29.73</td>
+      <td>241</td>
+      <td class="pe"><b>10.9</b></td>
+      <td>1.87</td>
+      <td>15.9</td>
+      <td>0.68</td>
+      <td>13.5</td>
+      <td>34.5</td>
+      <td>16.0</td>
+      <td class="score">74.6</td>
+      <td>71.7</td>
+      <td>19.0</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>8</td>
+      <td class="l"><b>中材国际</b></td>
+      <td class="mono">600970.SH</td>
+      <td>7.85</td>
+      <td>205</td>
+      <td class="pe"><b>7.7</b></td>
+      <td>3.29</td>
+      <td>8.4</td>
+      <td>0.81</td>
+      <td>11.9</td>
+      <td>18.4</td>
+      <td>12.1</td>
+      <td class="score">74.0</td>
+      <td>2.5</td>
+      <td>4.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>9</td>
+      <td class="l"><b>中创智领</b></td>
+      <td class="mono">601717.SH</td>
+      <td>15.09</td>
+      <td>270</td>
+      <td class="pe"><b>6.6</b></td>
+      <td>4.87</td>
+      <td>-4.3</td>
+      <td>1.16</td>
+      <td>14.5</td>
+      <td>21.7</td>
+      <td>10.5</td>
+      <td class="score">73.7</td>
+      <td>21.2</td>
+      <td>14.7</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>10</td>
+      <td class="l"><b>顾家家居</b></td>
+      <td class="mono">603816.SH</td>
+      <td>25.06</td>
+      <td>229</td>
+      <td class="pe"><b>13.0</b></td>
+      <td>3.89</td>
+      <td>15.0</td>
+      <td>0.80</td>
+      <td>14.2</td>
+      <td>33.1</td>
+      <td>12.7</td>
+      <td class="score">73.1</td>
+      <td>2.9</td>
+      <td>19.1</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>11</td>
+      <td class="l"><b>君正集团</b></td>
+      <td class="mono">601216.SH</td>
+      <td>4.47</td>
+      <td>373</td>
+      <td class="pe"><b>12.3</b></td>
+      <td>4.49</td>
+      <td>14.4</td>
+      <td>0.71</td>
+      <td>11.5</td>
+      <td>21.0</td>
+      <td>14.5</td>
+      <td class="score">72.4</td>
+      <td>28.9</td>
+      <td>62.1</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>12</td>
+      <td class="l"><b>盾安环境</b></td>
+      <td class="mono">002011.SZ</td>
+      <td>10.06</td>
+      <td>105</td>
+      <td class="pe"><b>10.0</b></td>
+      <td>—</td>
+      <td>4.8</td>
+      <td>0.81</td>
+      <td>14.6</td>
+      <td>18.3</td>
+      <td>14.1</td>
+      <td class="score">71.6</td>
+      <td>0.0</td>
+      <td>0.1</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>13</td>
+      <td class="l"><b>中山公用</b></td>
+      <td class="mono">000685.SZ</td>
+      <td>11.13</td>
+      <td>163</td>
+      <td class="pe"><b>7.6</b></td>
+      <td>2.87</td>
+      <td>14.1</td>
+      <td>0.61</td>
+      <td>10.3</td>
+      <td>24.4</td>
+      <td>4.4</td>
+      <td class="score">70.9</td>
+      <td>78.3</td>
+      <td>3.8</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>14</td>
+      <td class="l"><b>中原传媒</b></td>
+      <td class="mono">000719.SZ</td>
+      <td>12.11</td>
+      <td>120</td>
+      <td class="pe"><b>8.9</b></td>
+      <td>4.23</td>
+      <td>6.1</td>
+      <td>1.40</td>
+      <td>11.2</td>
+      <td>42.6</td>
+      <td>17.4</td>
+      <td class="score">70.7</td>
+      <td>40.6</td>
+      <td>40.9</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>15</td>
+      <td class="l"><b>菜百股份</b></td>
+      <td class="mono">605599.SH</td>
+      <td>16.51</td>
+      <td>133</td>
+      <td class="pe"><b>11.0</b></td>
+      <td>3.98</td>
+      <td>10.8</td>
+      <td>0.82</td>
+      <td>21.2</td>
+      <td>7.8</td>
+      <td>5.3</td>
+      <td class="score">70.7</td>
+      <td>68.6</td>
+      <td>6.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>16</td>
+      <td class="l"><b>格力电器</b></td>
+      <td class="mono">000651.SZ</td>
+      <td>41.62</td>
+      <td>2,322</td>
+      <td class="pe"><b>8.0</b></td>
+      <td>3.81</td>
+      <td>3.6</td>
+      <td>1.64</td>
+      <td>17.1</td>
+      <td>29.8</td>
+      <td>18.7</td>
+      <td class="score">70.5</td>
+      <td>8.7</td>
+      <td>64.3</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>17</td>
+      <td class="l"><b>中策橡胶</b></td>
+      <td class="mono">603049.SH</td>
+      <td>49.25</td>
+      <td>429</td>
+      <td class="pe"><b>10.1</b></td>
+      <td>2.78</td>
+      <td>7.5</td>
+      <td>0.95</td>
+      <td>16.4</td>
+      <td>19.8</td>
+      <td>6.3</td>
+      <td class="score">69.7</td>
+      <td>18.7</td>
+      <td>20.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>18</td>
+      <td class="l"><b>东航物流</b></td>
+      <td class="mono">601156.SH</td>
+      <td>18.59</td>
+      <td>296</td>
+      <td class="pe"><b>10.9</b></td>
+      <td>2.52</td>
+      <td>2.8</td>
+      <td>0.89</td>
+      <td>12.3</td>
+      <td>18.9</td>
+      <td>23.8</td>
+      <td class="score">69.2</td>
+      <td>44.2</td>
+      <td>80.0</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>19</td>
+      <td class="l"><b>南方传媒</b></td>
+      <td class="mono">601900.SH</td>
+      <td>11.85</td>
+      <td>104</td>
+      <td class="pe"><b>9.7</b></td>
+      <td>3.63</td>
+      <td>7.1</td>
+      <td>1.40</td>
+      <td>11.8</td>
+      <td>36.7</td>
+      <td>15.2</td>
+      <td class="score">68.9</td>
+      <td>35.9</td>
+      <td>31.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>20</td>
+      <td class="l"><b>羚锐制药</b></td>
+      <td class="mono">600285.SH</td>
+      <td>19.67</td>
+      <td>111</td>
+      <td class="pe"><b>14.2</b></td>
+      <td>3.65</td>
+      <td>10.1</td>
+      <td>1.19</td>
+      <td>23.4</td>
+      <td>78.7</td>
+      <td>8.1</td>
+      <td class="score">68.9</td>
+      <td>30.0</td>
+      <td>0.3</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>21</td>
+      <td class="l"><b>吉比特</b></td>
+      <td class="mono">603444.SH</td>
+      <td>385.09</td>
+      <td>274</td>
+      <td class="pe"><b>12.2</b></td>
+      <td>2.07</td>
+      <td>10.2</td>
+      <td>1.34</td>
+      <td>28.5</td>
+      <td>94.3</td>
+      <td>10.8</td>
+      <td class="score">68.8</td>
+      <td>35.0</td>
+      <td>9.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>22</td>
+      <td class="l"><b>中信特钢</b></td>
+      <td class="mono">000708.SZ</td>
+      <td>13.81</td>
+      <td>704</td>
+      <td class="pe"><b>11.5</b></td>
+      <td>3.35</td>
+      <td>9.3</td>
+      <td>1.04</td>
+      <td>13.6</td>
+      <td>15.1</td>
+      <td>22.2</td>
+      <td class="score">68.5</td>
+      <td>18.3</td>
+      <td>18.8</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>23</td>
+      <td class="l"><b>正泰电器</b></td>
+      <td class="mono">601877.SH</td>
+      <td>25.95</td>
+      <td>564</td>
+      <td class="pe"><b>11.1</b></td>
+      <td>1.99</td>
+      <td>15.8</td>
+      <td>0.82</td>
+      <td>10.8</td>
+      <td>24.4</td>
+      <td>48.3</td>
+      <td class="score">68.4</td>
+      <td>33.8</td>
+      <td>5.9</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>24</td>
+      <td class="l"><b>中国化学</b></td>
+      <td class="mono">601117.SH</td>
+      <td>7.52</td>
+      <td>458</td>
+      <td class="pe"><b>7.0</b></td>
+      <td>1.86</td>
+      <td>8.1</td>
+      <td>0.74</td>
+      <td>9.4</td>
+      <td>10.7</td>
+      <td>33.5</td>
+      <td class="score">68.1</td>
+      <td>3.7</td>
+      <td>3.3</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>25</td>
+      <td class="l"><b>海油发展</b></td>
+      <td class="mono">600968.SH</td>
+      <td>4.01</td>
+      <td>409</td>
+      <td class="pe"><b>10.4</b></td>
+      <td>2.95</td>
+      <td>12.5</td>
+      <td>0.96</td>
+      <td>12.9</td>
+      <td>16.5</td>
+      <td>8.8</td>
+      <td class="score">67.5</td>
+      <td>45.4</td>
+      <td>10.8</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>26</td>
+      <td class="l"><b>新集能源</b></td>
+      <td class="mono">601918.SH</td>
+      <td>10.47</td>
+      <td>283</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>1.63</td>
+      <td>16.5</td>
+      <td>0.82</td>
+      <td>12.8</td>
+      <td>40.5</td>
+      <td>12.0</td>
+      <td class="score">67.4</td>
+      <td>87.7</td>
+      <td>92.8</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>27</td>
+      <td class="l"><b>爱柯迪</b></td>
+      <td class="mono">600933.SH</td>
+      <td>13.85</td>
+      <td>143</td>
+      <td class="pe"><b>12.6</b></td>
+      <td>1.62</td>
+      <td>18.5</td>
+      <td>0.52</td>
+      <td>12.5</td>
+      <td>29.4</td>
+      <td>14.2</td>
+      <td class="score">67.4</td>
+      <td>2.0</td>
+      <td>3.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>28</td>
+      <td class="l"><b>深圳燃气</b></td>
+      <td class="mono">601139.SH</td>
+      <td>6.32</td>
+      <td>181</td>
+      <td class="pe"><b>11.7</b></td>
+      <td>2.22</td>
+      <td>19.6</td>
+      <td>0.70</td>
+      <td>9.3</td>
+      <td>18.4</td>
+      <td>23.9</td>
+      <td class="score">66.7</td>
+      <td>3.2</td>
+      <td>1.7</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>29</td>
+      <td class="l"><b>华润三九</b></td>
+      <td class="mono">000999.SZ</td>
+      <td>24.11</td>
+      <td>393</td>
+      <td class="pe"><b>12.0</b></td>
+      <td>1.80</td>
+      <td>8.3</td>
+      <td>1.13</td>
+      <td>14.9</td>
+      <td>51.8</td>
+      <td>13.7</td>
+      <td class="score">66.6</td>
+      <td>4.2</td>
+      <td>0.5</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>30</td>
+      <td class="l"><b>中煤能源</b></td>
+      <td class="mono">601898.SH</td>
+      <td>15.08</td>
+      <td>1,964</td>
+      <td class="pe"><b>10.7</b></td>
+      <td>2.84</td>
+      <td>8.4</td>
+      <td>1.21</td>
+      <td>10.9</td>
+      <td>27.8</td>
+      <td>18.5</td>
+      <td class="score">66.3</td>
+      <td>86.5</td>
+      <td>88.5</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>32</td>
+      <td class="l"><b>大参林</b></td>
+      <td class="mono">603233.SH</td>
+      <td>18.41</td>
+      <td>198</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>2.08</td>
+      <td>17.7</td>
+      <td>0.86</td>
+      <td>16.5</td>
+      <td>34.6</td>
+      <td>22.3</td>
+      <td class="score">65.6</td>
+      <td>19.2</td>
+      <td>6.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>33</td>
+      <td class="l"><b>中联重科</b></td>
+      <td class="mono">000157.SZ</td>
+      <td>7.07</td>
+      <td>612</td>
+      <td class="pe"><b>14.1</b></td>
+      <td>4.07</td>
+      <td>15.7</td>
+      <td>0.54</td>
+      <td>8.9</td>
+      <td>27.8</td>
+      <td>8.5</td>
+      <td class="score">65.3</td>
+      <td>46.2</td>
+      <td>23.2</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>34</td>
+      <td class="l"><b>川恒股份</b></td>
+      <td class="mono">002895.SZ</td>
+      <td>32.10</td>
+      <td>200</td>
+      <td class="pe"><b>15.6</b></td>
+      <td>3.18</td>
+      <td>19.6</td>
+      <td>0.70</td>
+      <td>18.1</td>
+      <td>29.1</td>
+      <td>4.7</td>
+      <td class="score">65.1</td>
+      <td>51.8</td>
+      <td>51.4</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>35</td>
+      <td class="l"><b>安徽合力</b></td>
+      <td class="mono">600761.SH</td>
+      <td>16.19</td>
+      <td>148</td>
+      <td class="pe"><b>12.1</b></td>
+      <td>2.44</td>
+      <td>12.7</td>
+      <td>0.86</td>
+      <td>11.3</td>
+      <td>23.5</td>
+      <td>12.0</td>
+      <td class="score">64.8</td>
+      <td>12.1</td>
+      <td>35.9</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>36</td>
+      <td class="l"><b>森马服饰</b></td>
+      <td class="mono">002563.SZ</td>
+      <td>5.88</td>
+      <td>157</td>
+      <td class="pe"><b>15.0</b></td>
+      <td>4.26</td>
+      <td>23.2</td>
+      <td>0.87</td>
+      <td>9.1</td>
+      <td>45.6</td>
+      <td>14.2</td>
+      <td class="score">64.7</td>
+      <td>36.3</td>
+      <td>46.0</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>37</td>
+      <td class="l"><b>柳    工</b></td>
+      <td class="mono">000528.SZ</td>
+      <td>8.12</td>
+      <td>164</td>
+      <td class="pe"><b>10.5</b></td>
+      <td>2.07</td>
+      <td>20.8</td>
+      <td>0.37</td>
+      <td>9.5</td>
+      <td>21.9</td>
+      <td>3.6</td>
+      <td class="score">64.1</td>
+      <td>34.0</td>
+      <td>13.5</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>38</td>
+      <td class="l"><b>中国汽研</b></td>
+      <td class="mono">601965.SH</td>
+      <td>14.09</td>
+      <td>139</td>
+      <td class="pe"><b>12.9</b></td>
+      <td>1.28</td>
+      <td>12.0</td>
+      <td>0.74</td>
+      <td>13.1</td>
+      <td>45.9</td>
+      <td>9.7</td>
+      <td class="score">64.0</td>
+      <td>2.6</td>
+      <td>2.2</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>39</td>
+      <td class="l"><b>小商品城</b></td>
+      <td class="mono">600415.SH</td>
+      <td>12.17</td>
+      <td>674</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>1.63</td>
+      <td>19.0</td>
+      <td>0.80</td>
+      <td>17.9</td>
+      <td>31.2</td>
+      <td>16.5</td>
+      <td class="score">63.9</td>
+      <td>69.8</td>
+      <td>8.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>40</td>
+      <td class="l"><b>华友钴业</b></td>
+      <td class="mono">603799.SH</td>
+      <td>39.13</td>
+      <td>761</td>
+      <td class="pe"><b>11.0</b></td>
+      <td>1.38</td>
+      <td>14.6</td>
+      <td>0.41</td>
+      <td>12.9</td>
+      <td>19.3</td>
+      <td>6.1</td>
+      <td class="score">63.6</td>
+      <td>14.0</td>
+      <td>2.7</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr>
+</table>
+
+<h2>④ 福耀玻璃 vs 最终名单（黄色高亮 = 福耀玻璃参照行）</h2>
+<table>
+<tr>
+  <th>评分排名</th><th class="l">名称</th><th>代码</th><th>现价</th><th>市值(亿)</th>
+  <th>PE</th><th>股息率%</th><th>预期增速%</th><th>PEG</th><th>预期ROE%</th>
+  <th>毛利率%</th><th>OCF/MV%</th><th>总分</th><th>PB分位%</th><th>PE分位%</th><th>Band</th>
+</tr>
+<tr style="background:#fff8e1">
+      <td>132/226</td>
+      <td class="l"><b>福耀玻璃</b></td>
+      <td class="mono">600660.SH</td>
+      <td>57.67</td>
+      <td>1,474</td>
+      <td class="pe"><b>17.4</b></td>
+      <td>2.54</td>
+      <td>5.8</td>
+      <td>1.30</td>
+      <td>22.4</td>
+      <td>38.1</td>
+      <td>7.5</td>
+      <td class="score">未入Top40</td>
+      <td>—(未评分)</td>
+      <td>—</td>
+      <td><span style="background:#7d3c98;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">池内但PE偏高</span></td>
+    </tr>
+<tr>
+      <td>1</td>
+      <td class="l"><b>周大生</b></td>
+      <td class="mono">002867.SZ</td>
+      <td>12.37</td>
+      <td>133</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>3.26</td>
+      <td>16.6</td>
+      <td>0.78</td>
+      <td>16.6</td>
+      <td>35.0</td>
+      <td>2019.3</td>
+      <td class="score">81.6</td>
+      <td>15.4</td>
+      <td>14.0</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>2</td>
+      <td class="l"><b>南京高科</b></td>
+      <td class="mono">600064.SH</td>
+      <td>7.68</td>
+      <td>131</td>
+      <td class="pe"><b>7.7</b></td>
+      <td>4.88</td>
+      <td>24.4</td>
+      <td>0.29</td>
+      <td>10.9</td>
+      <td>23.5</td>
+      <td>8.4</td>
+      <td class="score">78.6</td>
+      <td>28.9</td>
+      <td>93.5</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>3</td>
+      <td class="l"><b>新奥股份</b></td>
+      <td class="mono">600803.SH</td>
+      <td>17.86</td>
+      <td>544</td>
+      <td class="pe"><b>12.5</b></td>
+      <td>3.53</td>
+      <td>18.9</td>
+      <td>0.58</td>
+      <td>19.1</td>
+      <td>14.1</td>
+      <td>24.7</td>
+      <td class="score">77.6</td>
+      <td>21.2</td>
+      <td>53.1</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>4</td>
+      <td class="l"><b>新 和 成</b></td>
+      <td class="mono">002001.SZ</td>
+      <td>26.32</td>
+      <td>809</td>
+      <td class="pe"><b>11.3</b></td>
+      <td>2.01</td>
+      <td>23.5</td>
+      <td>0.69</td>
+      <td>21.3</td>
+      <td>43.7</td>
+      <td>9.9</td>
+      <td class="score">77.5</td>
+      <td>25.3</td>
+      <td>14.8</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>5</td>
+      <td class="l"><b>苏美达</b></td>
+      <td class="mono">600710.SH</td>
+      <td>10.61</td>
+      <td>136</td>
+      <td class="pe"><b>9.7</b></td>
+      <td>4.00</td>
+      <td>7.9</td>
+      <td>0.94</td>
+      <td>15.1</td>
+      <td>6.7</td>
+      <td>545.5</td>
+      <td class="score">76.4</td>
+      <td>62.3</td>
+      <td>24.8</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>6</td>
+      <td class="l"><b>宇通客车</b></td>
+      <td class="mono">600066.SH</td>
+      <td>29.99</td>
+      <td>672</td>
+      <td class="pe"><b>12.3</b></td>
+      <td>4.49</td>
+      <td>9.8</td>
+      <td>0.99</td>
+      <td>35.4</td>
+      <td>25.4</td>
+      <td>11.2</td>
+      <td class="score">75.1</td>
+      <td>87.0</td>
+      <td>3.2</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>7</td>
+      <td class="l"><b>瀚蓝环境</b></td>
+      <td class="mono">600323.SH</td>
+      <td>29.73</td>
+      <td>241</td>
+      <td class="pe"><b>10.9</b></td>
+      <td>1.87</td>
+      <td>15.9</td>
+      <td>0.68</td>
+      <td>13.5</td>
+      <td>34.5</td>
+      <td>16.0</td>
+      <td class="score">74.6</td>
+      <td>71.7</td>
+      <td>19.0</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>8</td>
+      <td class="l"><b>中材国际</b></td>
+      <td class="mono">600970.SH</td>
+      <td>7.85</td>
+      <td>205</td>
+      <td class="pe"><b>7.7</b></td>
+      <td>3.29</td>
+      <td>8.4</td>
+      <td>0.81</td>
+      <td>11.9</td>
+      <td>18.4</td>
+      <td>12.1</td>
+      <td class="score">74.0</td>
+      <td>2.5</td>
+      <td>4.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>9</td>
+      <td class="l"><b>中创智领</b></td>
+      <td class="mono">601717.SH</td>
+      <td>15.09</td>
+      <td>270</td>
+      <td class="pe"><b>6.6</b></td>
+      <td>4.87</td>
+      <td>-4.3</td>
+      <td>1.16</td>
+      <td>14.5</td>
+      <td>21.7</td>
+      <td>10.5</td>
+      <td class="score">73.7</td>
+      <td>21.2</td>
+      <td>14.7</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>10</td>
+      <td class="l"><b>顾家家居</b></td>
+      <td class="mono">603816.SH</td>
+      <td>25.06</td>
+      <td>229</td>
+      <td class="pe"><b>13.0</b></td>
+      <td>3.89</td>
+      <td>15.0</td>
+      <td>0.80</td>
+      <td>14.2</td>
+      <td>33.1</td>
+      <td>12.7</td>
+      <td class="score">73.1</td>
+      <td>2.9</td>
+      <td>19.1</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>11</td>
+      <td class="l"><b>君正集团</b></td>
+      <td class="mono">601216.SH</td>
+      <td>4.47</td>
+      <td>373</td>
+      <td class="pe"><b>12.3</b></td>
+      <td>4.49</td>
+      <td>14.4</td>
+      <td>0.71</td>
+      <td>11.5</td>
+      <td>21.0</td>
+      <td>14.5</td>
+      <td class="score">72.4</td>
+      <td>28.9</td>
+      <td>62.1</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>12</td>
+      <td class="l"><b>盾安环境</b></td>
+      <td class="mono">002011.SZ</td>
+      <td>10.06</td>
+      <td>105</td>
+      <td class="pe"><b>10.0</b></td>
+      <td>—</td>
+      <td>4.8</td>
+      <td>0.81</td>
+      <td>14.6</td>
+      <td>18.3</td>
+      <td>14.1</td>
+      <td class="score">71.6</td>
+      <td>0.0</td>
+      <td>0.1</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>13</td>
+      <td class="l"><b>中山公用</b></td>
+      <td class="mono">000685.SZ</td>
+      <td>11.13</td>
+      <td>163</td>
+      <td class="pe"><b>7.6</b></td>
+      <td>2.87</td>
+      <td>14.1</td>
+      <td>0.61</td>
+      <td>10.3</td>
+      <td>24.4</td>
+      <td>4.4</td>
+      <td class="score">70.9</td>
+      <td>78.3</td>
+      <td>3.8</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>14</td>
+      <td class="l"><b>中原传媒</b></td>
+      <td class="mono">000719.SZ</td>
+      <td>12.11</td>
+      <td>120</td>
+      <td class="pe"><b>8.9</b></td>
+      <td>4.23</td>
+      <td>6.1</td>
+      <td>1.40</td>
+      <td>11.2</td>
+      <td>42.6</td>
+      <td>17.4</td>
+      <td class="score">70.7</td>
+      <td>40.6</td>
+      <td>40.9</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>15</td>
+      <td class="l"><b>菜百股份</b></td>
+      <td class="mono">605599.SH</td>
+      <td>16.51</td>
+      <td>133</td>
+      <td class="pe"><b>11.0</b></td>
+      <td>3.98</td>
+      <td>10.8</td>
+      <td>0.82</td>
+      <td>21.2</td>
+      <td>7.8</td>
+      <td>5.3</td>
+      <td class="score">70.7</td>
+      <td>68.6</td>
+      <td>6.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>16</td>
+      <td class="l"><b>格力电器</b></td>
+      <td class="mono">000651.SZ</td>
+      <td>41.62</td>
+      <td>2,322</td>
+      <td class="pe"><b>8.0</b></td>
+      <td>3.81</td>
+      <td>3.6</td>
+      <td>1.64</td>
+      <td>17.1</td>
+      <td>29.8</td>
+      <td>18.7</td>
+      <td class="score">70.5</td>
+      <td>8.7</td>
+      <td>64.3</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>17</td>
+      <td class="l"><b>中策橡胶</b></td>
+      <td class="mono">603049.SH</td>
+      <td>49.25</td>
+      <td>429</td>
+      <td class="pe"><b>10.1</b></td>
+      <td>2.78</td>
+      <td>7.5</td>
+      <td>0.95</td>
+      <td>16.4</td>
+      <td>19.8</td>
+      <td>6.3</td>
+      <td class="score">69.7</td>
+      <td>18.7</td>
+      <td>20.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>18</td>
+      <td class="l"><b>东航物流</b></td>
+      <td class="mono">601156.SH</td>
+      <td>18.59</td>
+      <td>296</td>
+      <td class="pe"><b>10.9</b></td>
+      <td>2.52</td>
+      <td>2.8</td>
+      <td>0.89</td>
+      <td>12.3</td>
+      <td>18.9</td>
+      <td>23.8</td>
+      <td class="score">69.2</td>
+      <td>44.2</td>
+      <td>80.0</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>19</td>
+      <td class="l"><b>南方传媒</b></td>
+      <td class="mono">601900.SH</td>
+      <td>11.85</td>
+      <td>104</td>
+      <td class="pe"><b>9.7</b></td>
+      <td>3.63</td>
+      <td>7.1</td>
+      <td>1.40</td>
+      <td>11.8</td>
+      <td>36.7</td>
+      <td>15.2</td>
+      <td class="score">68.9</td>
+      <td>35.9</td>
+      <td>31.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>20</td>
+      <td class="l"><b>羚锐制药</b></td>
+      <td class="mono">600285.SH</td>
+      <td>19.67</td>
+      <td>111</td>
+      <td class="pe"><b>14.2</b></td>
+      <td>3.65</td>
+      <td>10.1</td>
+      <td>1.19</td>
+      <td>23.4</td>
+      <td>78.7</td>
+      <td>8.1</td>
+      <td class="score">68.9</td>
+      <td>30.0</td>
+      <td>0.3</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>21</td>
+      <td class="l"><b>吉比特</b></td>
+      <td class="mono">603444.SH</td>
+      <td>385.09</td>
+      <td>274</td>
+      <td class="pe"><b>12.2</b></td>
+      <td>2.07</td>
+      <td>10.2</td>
+      <td>1.34</td>
+      <td>28.5</td>
+      <td>94.3</td>
+      <td>10.8</td>
+      <td class="score">68.8</td>
+      <td>35.0</td>
+      <td>9.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>22</td>
+      <td class="l"><b>中信特钢</b></td>
+      <td class="mono">000708.SZ</td>
+      <td>13.81</td>
+      <td>704</td>
+      <td class="pe"><b>11.5</b></td>
+      <td>3.35</td>
+      <td>9.3</td>
+      <td>1.04</td>
+      <td>13.6</td>
+      <td>15.1</td>
+      <td>22.2</td>
+      <td class="score">68.5</td>
+      <td>18.3</td>
+      <td>18.8</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>23</td>
+      <td class="l"><b>正泰电器</b></td>
+      <td class="mono">601877.SH</td>
+      <td>25.95</td>
+      <td>564</td>
+      <td class="pe"><b>11.1</b></td>
+      <td>1.99</td>
+      <td>15.8</td>
+      <td>0.82</td>
+      <td>10.8</td>
+      <td>24.4</td>
+      <td>48.3</td>
+      <td class="score">68.4</td>
+      <td>33.8</td>
+      <td>5.9</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>24</td>
+      <td class="l"><b>中国化学</b></td>
+      <td class="mono">601117.SH</td>
+      <td>7.52</td>
+      <td>458</td>
+      <td class="pe"><b>7.0</b></td>
+      <td>1.86</td>
+      <td>8.1</td>
+      <td>0.74</td>
+      <td>9.4</td>
+      <td>10.7</td>
+      <td>33.5</td>
+      <td class="score">68.1</td>
+      <td>3.7</td>
+      <td>3.3</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>25</td>
+      <td class="l"><b>海油发展</b></td>
+      <td class="mono">600968.SH</td>
+      <td>4.01</td>
+      <td>409</td>
+      <td class="pe"><b>10.4</b></td>
+      <td>2.95</td>
+      <td>12.5</td>
+      <td>0.96</td>
+      <td>12.9</td>
+      <td>16.5</td>
+      <td>8.8</td>
+      <td class="score">67.5</td>
+      <td>45.4</td>
+      <td>10.8</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>26</td>
+      <td class="l"><b>新集能源</b></td>
+      <td class="mono">601918.SH</td>
+      <td>10.47</td>
+      <td>283</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>1.63</td>
+      <td>16.5</td>
+      <td>0.82</td>
+      <td>12.8</td>
+      <td>40.5</td>
+      <td>12.0</td>
+      <td class="score">67.4</td>
+      <td>87.7</td>
+      <td>92.8</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>27</td>
+      <td class="l"><b>爱柯迪</b></td>
+      <td class="mono">600933.SH</td>
+      <td>13.85</td>
+      <td>143</td>
+      <td class="pe"><b>12.6</b></td>
+      <td>1.62</td>
+      <td>18.5</td>
+      <td>0.52</td>
+      <td>12.5</td>
+      <td>29.4</td>
+      <td>14.2</td>
+      <td class="score">67.4</td>
+      <td>2.0</td>
+      <td>3.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>28</td>
+      <td class="l"><b>深圳燃气</b></td>
+      <td class="mono">601139.SH</td>
+      <td>6.32</td>
+      <td>181</td>
+      <td class="pe"><b>11.7</b></td>
+      <td>2.22</td>
+      <td>19.6</td>
+      <td>0.70</td>
+      <td>9.3</td>
+      <td>18.4</td>
+      <td>23.9</td>
+      <td class="score">66.7</td>
+      <td>3.2</td>
+      <td>1.7</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>29</td>
+      <td class="l"><b>华润三九</b></td>
+      <td class="mono">000999.SZ</td>
+      <td>24.11</td>
+      <td>393</td>
+      <td class="pe"><b>12.0</b></td>
+      <td>1.80</td>
+      <td>8.3</td>
+      <td>1.13</td>
+      <td>14.9</td>
+      <td>51.8</td>
+      <td>13.7</td>
+      <td class="score">66.6</td>
+      <td>4.2</td>
+      <td>0.5</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>30</td>
+      <td class="l"><b>中煤能源</b></td>
+      <td class="mono">601898.SH</td>
+      <td>15.08</td>
+      <td>1,964</td>
+      <td class="pe"><b>10.7</b></td>
+      <td>2.84</td>
+      <td>8.4</td>
+      <td>1.21</td>
+      <td>10.9</td>
+      <td>27.8</td>
+      <td>18.5</td>
+      <td class="score">66.3</td>
+      <td>86.5</td>
+      <td>88.5</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>32</td>
+      <td class="l"><b>大参林</b></td>
+      <td class="mono">603233.SH</td>
+      <td>18.41</td>
+      <td>198</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>2.08</td>
+      <td>17.7</td>
+      <td>0.86</td>
+      <td>16.5</td>
+      <td>34.6</td>
+      <td>22.3</td>
+      <td class="score">65.6</td>
+      <td>19.2</td>
+      <td>6.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>33</td>
+      <td class="l"><b>中联重科</b></td>
+      <td class="mono">000157.SZ</td>
+      <td>7.07</td>
+      <td>612</td>
+      <td class="pe"><b>14.1</b></td>
+      <td>4.07</td>
+      <td>15.7</td>
+      <td>0.54</td>
+      <td>8.9</td>
+      <td>27.8</td>
+      <td>8.5</td>
+      <td class="score">65.3</td>
+      <td>46.2</td>
+      <td>23.2</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>34</td>
+      <td class="l"><b>川恒股份</b></td>
+      <td class="mono">002895.SZ</td>
+      <td>32.10</td>
+      <td>200</td>
+      <td class="pe"><b>15.6</b></td>
+      <td>3.18</td>
+      <td>19.6</td>
+      <td>0.70</td>
+      <td>18.1</td>
+      <td>29.1</td>
+      <td>4.7</td>
+      <td class="score">65.1</td>
+      <td>51.8</td>
+      <td>51.4</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>35</td>
+      <td class="l"><b>安徽合力</b></td>
+      <td class="mono">600761.SH</td>
+      <td>16.19</td>
+      <td>148</td>
+      <td class="pe"><b>12.1</b></td>
+      <td>2.44</td>
+      <td>12.7</td>
+      <td>0.86</td>
+      <td>11.3</td>
+      <td>23.5</td>
+      <td>12.0</td>
+      <td class="score">64.8</td>
+      <td>12.1</td>
+      <td>35.9</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>36</td>
+      <td class="l"><b>森马服饰</b></td>
+      <td class="mono">002563.SZ</td>
+      <td>5.88</td>
+      <td>157</td>
+      <td class="pe"><b>15.0</b></td>
+      <td>4.26</td>
+      <td>23.2</td>
+      <td>0.87</td>
+      <td>9.1</td>
+      <td>45.6</td>
+      <td>14.2</td>
+      <td class="score">64.7</td>
+      <td>36.3</td>
+      <td>46.0</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>37</td>
+      <td class="l"><b>柳    工</b></td>
+      <td class="mono">000528.SZ</td>
+      <td>8.12</td>
+      <td>164</td>
+      <td class="pe"><b>10.5</b></td>
+      <td>2.07</td>
+      <td>20.8</td>
+      <td>0.37</td>
+      <td>9.5</td>
+      <td>21.9</td>
+      <td>3.6</td>
+      <td class="score">64.1</td>
+      <td>34.0</td>
+      <td>13.5</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>38</td>
+      <td class="l"><b>中国汽研</b></td>
+      <td class="mono">601965.SH</td>
+      <td>14.09</td>
+      <td>139</td>
+      <td class="pe"><b>12.9</b></td>
+      <td>1.28</td>
+      <td>12.0</td>
+      <td>0.74</td>
+      <td>13.1</td>
+      <td>45.9</td>
+      <td>9.7</td>
+      <td class="score">64.0</td>
+      <td>2.6</td>
+      <td>2.2</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>39</td>
+      <td class="l"><b>小商品城</b></td>
+      <td class="mono">600415.SH</td>
+      <td>12.17</td>
+      <td>674</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>1.63</td>
+      <td>19.0</td>
+      <td>0.80</td>
+      <td>17.9</td>
+      <td>31.2</td>
+      <td>16.5</td>
+      <td class="score">63.9</td>
+      <td>69.8</td>
+      <td>8.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>40</td>
+      <td class="l"><b>华友钴业</b></td>
+      <td class="mono">603799.SH</td>
+      <td>39.13</td>
+      <td>761</td>
+      <td class="pe"><b>11.0</b></td>
+      <td>1.38</td>
+      <td>14.6</td>
+      <td>0.41</td>
+      <td>12.9</td>
+      <td>19.3</td>
+      <td>6.1</td>
+      <td class="score">63.6</td>
+      <td>14.0</td>
+      <td>2.7</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr>
+</table>
+
+<h2>⑤ Band 规避剔除（1 只）</h2>
+<table>
+<tr>
+  <th>原排名</th><th class="l">名称</th><th>代码</th><th>现价</th><th>市值(亿)</th>
+  <th>PE</th><th>股息率%</th><th>预期增速%</th><th>PEG</th><th>预期ROE%</th>
+  <th>毛利率%</th><th>OCF/MV%</th><th>总分</th><th>PB分位%</th><th>PE分位%</th><th>剔除原因</th>
+</tr>
+<tr>
+      <td>31</td>
+      <td class="l"><b>陕西煤业</b></td>
+      <td class="mono">601225.SH</td>
+      <td>26.52</td>
+      <td>2,569</td>
+      <td class="pe"><b>15.9</b></td>
+      <td>4.16</td>
+      <td>22.7</td>
+      <td>0.98</td>
+      <td>17.4</td>
+      <td>28.2</td>
+      <td>15.3</td>
+      <td class="score">65.7</td>
+      <td>92.1</td>
+      <td>99.1</td>
+      <td><span style="background:#c0392b;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">规避</span></td>
+    </tr>
+</table>
+
+<h2>⑥ 与福耀玻璃类似的高质量标的（毛利率≥30%，按毛利率降序）</h2>
+<p class="sub">福耀玻璃 毛利率=38.1%·预期ROE=22.4%·PE=17.4。
+以下标的质量可比但估值更低（PE 全部 < 16）</p>
+<table>
+<tr>
+  <th>评分排名</th><th class="l">名称</th><th>代码</th><th>现价</th><th>市值(亿)</th>
+  <th>PE</th><th>股息率%</th><th>预期增速%</th><th>PEG</th><th>预期ROE%</th>
+  <th>毛利率%</th><th>OCF/MV%</th><th>总分</th><th>PB分位%</th><th>PE分位%</th><th>Band</th>
+</tr>
+<tr>
+      <td>21</td>
+      <td class="l"><b>吉比特</b></td>
+      <td class="mono">603444.SH</td>
+      <td>385.09</td>
+      <td>274</td>
+      <td class="pe"><b>12.2</b></td>
+      <td>2.07</td>
+      <td>10.2</td>
+      <td>1.34</td>
+      <td>28.5</td>
+      <td>94.3</td>
+      <td>10.8</td>
+      <td class="score">68.8</td>
+      <td>35.0</td>
+      <td>9.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>20</td>
+      <td class="l"><b>羚锐制药</b></td>
+      <td class="mono">600285.SH</td>
+      <td>19.67</td>
+      <td>111</td>
+      <td class="pe"><b>14.2</b></td>
+      <td>3.65</td>
+      <td>10.1</td>
+      <td>1.19</td>
+      <td>23.4</td>
+      <td>78.7</td>
+      <td>8.1</td>
+      <td class="score">68.9</td>
+      <td>30.0</td>
+      <td>0.3</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>29</td>
+      <td class="l"><b>华润三九</b></td>
+      <td class="mono">000999.SZ</td>
+      <td>24.11</td>
+      <td>393</td>
+      <td class="pe"><b>12.0</b></td>
+      <td>1.80</td>
+      <td>8.3</td>
+      <td>1.13</td>
+      <td>14.9</td>
+      <td>51.8</td>
+      <td>13.7</td>
+      <td class="score">66.6</td>
+      <td>4.2</td>
+      <td>0.5</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>38</td>
+      <td class="l"><b>中国汽研</b></td>
+      <td class="mono">601965.SH</td>
+      <td>14.09</td>
+      <td>139</td>
+      <td class="pe"><b>12.9</b></td>
+      <td>1.28</td>
+      <td>12.0</td>
+      <td>0.74</td>
+      <td>13.1</td>
+      <td>45.9</td>
+      <td>9.7</td>
+      <td class="score">64.0</td>
+      <td>2.6</td>
+      <td>2.2</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>36</td>
+      <td class="l"><b>森马服饰</b></td>
+      <td class="mono">002563.SZ</td>
+      <td>5.88</td>
+      <td>157</td>
+      <td class="pe"><b>15.0</b></td>
+      <td>4.26</td>
+      <td>23.2</td>
+      <td>0.87</td>
+      <td>9.1</td>
+      <td>45.6</td>
+      <td>14.2</td>
+      <td class="score">64.7</td>
+      <td>36.3</td>
+      <td>46.0</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>4</td>
+      <td class="l"><b>新 和 成</b></td>
+      <td class="mono">002001.SZ</td>
+      <td>26.32</td>
+      <td>809</td>
+      <td class="pe"><b>11.3</b></td>
+      <td>2.01</td>
+      <td>23.5</td>
+      <td>0.69</td>
+      <td>21.3</td>
+      <td>43.7</td>
+      <td>9.9</td>
+      <td class="score">77.5</td>
+      <td>25.3</td>
+      <td>14.8</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>14</td>
+      <td class="l"><b>中原传媒</b></td>
+      <td class="mono">000719.SZ</td>
+      <td>12.11</td>
+      <td>120</td>
+      <td class="pe"><b>8.9</b></td>
+      <td>4.23</td>
+      <td>6.1</td>
+      <td>1.40</td>
+      <td>11.2</td>
+      <td>42.6</td>
+      <td>17.4</td>
+      <td class="score">70.7</td>
+      <td>40.6</td>
+      <td>40.9</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>26</td>
+      <td class="l"><b>新集能源</b></td>
+      <td class="mono">601918.SH</td>
+      <td>10.47</td>
+      <td>283</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>1.63</td>
+      <td>16.5</td>
+      <td>0.82</td>
+      <td>12.8</td>
+      <td>40.5</td>
+      <td>12.0</td>
+      <td class="score">67.4</td>
+      <td>87.7</td>
+      <td>92.8</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>19</td>
+      <td class="l"><b>南方传媒</b></td>
+      <td class="mono">601900.SH</td>
+      <td>11.85</td>
+      <td>104</td>
+      <td class="pe"><b>9.7</b></td>
+      <td>3.63</td>
+      <td>7.1</td>
+      <td>1.40</td>
+      <td>11.8</td>
+      <td>36.7</td>
+      <td>15.2</td>
+      <td class="score">68.9</td>
+      <td>35.9</td>
+      <td>31.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>1</td>
+      <td class="l"><b>周大生</b></td>
+      <td class="mono">002867.SZ</td>
+      <td>12.37</td>
+      <td>133</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>3.26</td>
+      <td>16.6</td>
+      <td>0.78</td>
+      <td>16.6</td>
+      <td>35.0</td>
+      <td>2019.3</td>
+      <td class="score">81.6</td>
+      <td>15.4</td>
+      <td>14.0</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>32</td>
+      <td class="l"><b>大参林</b></td>
+      <td class="mono">603233.SH</td>
+      <td>18.41</td>
+      <td>198</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>2.08</td>
+      <td>17.7</td>
+      <td>0.86</td>
+      <td>16.5</td>
+      <td>34.6</td>
+      <td>22.3</td>
+      <td class="score">65.6</td>
+      <td>19.2</td>
+      <td>6.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>7</td>
+      <td class="l"><b>瀚蓝环境</b></td>
+      <td class="mono">600323.SH</td>
+      <td>29.73</td>
+      <td>241</td>
+      <td class="pe"><b>10.9</b></td>
+      <td>1.87</td>
+      <td>15.9</td>
+      <td>0.68</td>
+      <td>13.5</td>
+      <td>34.5</td>
+      <td>16.0</td>
+      <td class="score">74.6</td>
+      <td>71.7</td>
+      <td>19.0</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>10</td>
+      <td class="l"><b>顾家家居</b></td>
+      <td class="mono">603816.SH</td>
+      <td>25.06</td>
+      <td>229</td>
+      <td class="pe"><b>13.0</b></td>
+      <td>3.89</td>
+      <td>15.0</td>
+      <td>0.80</td>
+      <td>14.2</td>
+      <td>33.1</td>
+      <td>12.7</td>
+      <td class="score">73.1</td>
+      <td>2.9</td>
+      <td>19.1</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>39</td>
+      <td class="l"><b>小商品城</b></td>
+      <td class="mono">600415.SH</td>
+      <td>12.17</td>
+      <td>674</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>1.63</td>
+      <td>19.0</td>
+      <td>0.80</td>
+      <td>17.9</td>
+      <td>31.2</td>
+      <td>16.5</td>
+      <td class="score">63.9</td>
+      <td>69.8</td>
+      <td>8.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr>
+</table>
+
+<h2>⑦ 高 ROE 标的（预期ROE≥15%，按ROE降序）</h2>
+<p class="sub">福耀玻璃 预期ROE=22.4%。以下标的ROE更高或相当，且估值更低</p>
+<table>
+<tr>
+  <th>评分排名</th><th class="l">名称</th><th>代码</th><th>现价</th><th>市值(亿)</th>
+  <th>PE</th><th>股息率%</th><th>预期增速%</th><th>PEG</th><th>预期ROE%</th>
+  <th>毛利率%</th><th>OCF/MV%</th><th>总分</th><th>PB分位%</th><th>PE分位%</th><th>Band</th>
+</tr>
+<tr>
+      <td>6</td>
+      <td class="l"><b>宇通客车</b></td>
+      <td class="mono">600066.SH</td>
+      <td>29.99</td>
+      <td>672</td>
+      <td class="pe"><b>12.3</b></td>
+      <td>4.49</td>
+      <td>9.8</td>
+      <td>0.99</td>
+      <td>35.4</td>
+      <td>25.4</td>
+      <td>11.2</td>
+      <td class="score">75.1</td>
+      <td>87.0</td>
+      <td>3.2</td>
+      <td><span style="background:#b9770e;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">偏高</span></td>
+    </tr><tr>
+      <td>21</td>
+      <td class="l"><b>吉比特</b></td>
+      <td class="mono">603444.SH</td>
+      <td>385.09</td>
+      <td>274</td>
+      <td class="pe"><b>12.2</b></td>
+      <td>2.07</td>
+      <td>10.2</td>
+      <td>1.34</td>
+      <td>28.5</td>
+      <td>94.3</td>
+      <td>10.8</td>
+      <td class="score">68.8</td>
+      <td>35.0</td>
+      <td>9.6</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>20</td>
+      <td class="l"><b>羚锐制药</b></td>
+      <td class="mono">600285.SH</td>
+      <td>19.67</td>
+      <td>111</td>
+      <td class="pe"><b>14.2</b></td>
+      <td>3.65</td>
+      <td>10.1</td>
+      <td>1.19</td>
+      <td>23.4</td>
+      <td>78.7</td>
+      <td>8.1</td>
+      <td class="score">68.9</td>
+      <td>30.0</td>
+      <td>0.3</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>4</td>
+      <td class="l"><b>新 和 成</b></td>
+      <td class="mono">002001.SZ</td>
+      <td>26.32</td>
+      <td>809</td>
+      <td class="pe"><b>11.3</b></td>
+      <td>2.01</td>
+      <td>23.5</td>
+      <td>0.69</td>
+      <td>21.3</td>
+      <td>43.7</td>
+      <td>9.9</td>
+      <td class="score">77.5</td>
+      <td>25.3</td>
+      <td>14.8</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>15</td>
+      <td class="l"><b>菜百股份</b></td>
+      <td class="mono">605599.SH</td>
+      <td>16.51</td>
+      <td>133</td>
+      <td class="pe"><b>11.0</b></td>
+      <td>3.98</td>
+      <td>10.8</td>
+      <td>0.82</td>
+      <td>21.2</td>
+      <td>7.8</td>
+      <td>5.3</td>
+      <td class="score">70.7</td>
+      <td>68.6</td>
+      <td>6.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>3</td>
+      <td class="l"><b>新奥股份</b></td>
+      <td class="mono">600803.SH</td>
+      <td>17.86</td>
+      <td>544</td>
+      <td class="pe"><b>12.5</b></td>
+      <td>3.53</td>
+      <td>18.9</td>
+      <td>0.58</td>
+      <td>19.1</td>
+      <td>14.1</td>
+      <td>24.7</td>
+      <td class="score">77.6</td>
+      <td>21.2</td>
+      <td>53.1</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>34</td>
+      <td class="l"><b>川恒股份</b></td>
+      <td class="mono">002895.SZ</td>
+      <td>32.10</td>
+      <td>200</td>
+      <td class="pe"><b>15.6</b></td>
+      <td>3.18</td>
+      <td>19.6</td>
+      <td>0.70</td>
+      <td>18.1</td>
+      <td>29.1</td>
+      <td>4.7</td>
+      <td class="score">65.1</td>
+      <td>51.8</td>
+      <td>51.4</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>39</td>
+      <td class="l"><b>小商品城</b></td>
+      <td class="mono">600415.SH</td>
+      <td>12.17</td>
+      <td>674</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>1.63</td>
+      <td>19.0</td>
+      <td>0.80</td>
+      <td>17.9</td>
+      <td>31.2</td>
+      <td>16.5</td>
+      <td class="score">63.9</td>
+      <td>69.8</td>
+      <td>8.3</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr><tr>
+      <td>16</td>
+      <td class="l"><b>格力电器</b></td>
+      <td class="mono">000651.SZ</td>
+      <td>41.62</td>
+      <td>2,322</td>
+      <td class="pe"><b>8.0</b></td>
+      <td>3.81</td>
+      <td>3.6</td>
+      <td>1.64</td>
+      <td>17.1</td>
+      <td>29.8</td>
+      <td>18.7</td>
+      <td class="score">70.5</td>
+      <td>8.7</td>
+      <td>64.3</td>
+      <td><span style="background:#2874a6;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">自身低位</span></td>
+    </tr><tr>
+      <td>1</td>
+      <td class="l"><b>周大生</b></td>
+      <td class="mono">002867.SZ</td>
+      <td>12.37</td>
+      <td>133</td>
+      <td class="pe"><b>11.6</b></td>
+      <td>3.26</td>
+      <td>16.6</td>
+      <td>0.78</td>
+      <td>16.6</td>
+      <td>35.0</td>
+      <td>2019.3</td>
+      <td class="score">81.6</td>
+      <td>15.4</td>
+      <td>14.0</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>32</td>
+      <td class="l"><b>大参林</b></td>
+      <td class="mono">603233.SH</td>
+      <td>18.41</td>
+      <td>198</td>
+      <td class="pe"><b>15.4</b></td>
+      <td>2.08</td>
+      <td>17.7</td>
+      <td>0.86</td>
+      <td>16.5</td>
+      <td>34.6</td>
+      <td>22.3</td>
+      <td class="score">65.6</td>
+      <td>19.2</td>
+      <td>6.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>17</td>
+      <td class="l"><b>中策橡胶</b></td>
+      <td class="mono">603049.SH</td>
+      <td>49.25</td>
+      <td>429</td>
+      <td class="pe"><b>10.1</b></td>
+      <td>2.78</td>
+      <td>7.5</td>
+      <td>0.95</td>
+      <td>16.4</td>
+      <td>19.8</td>
+      <td>6.3</td>
+      <td class="score">69.7</td>
+      <td>18.7</td>
+      <td>20.4</td>
+      <td><span style="background:#1e8449;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">安全边际</span></td>
+    </tr><tr>
+      <td>5</td>
+      <td class="l"><b>苏美达</b></td>
+      <td class="mono">600710.SH</td>
+      <td>10.61</td>
+      <td>136</td>
+      <td class="pe"><b>9.7</b></td>
+      <td>4.00</td>
+      <td>7.9</td>
+      <td>0.94</td>
+      <td>15.1</td>
+      <td>6.7</td>
+      <td>545.5</td>
+      <td class="score">76.4</td>
+      <td>62.3</td>
+      <td>24.8</td>
+      <td><span style="background:#566573;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">中性</span></td>
+    </tr>
+</table>
+
+<div class="card warn">
+<b>结论：</b>福耀玻璃是优质公司（毛利率38.1%、ROE 22.4%、PEG 1.3），<b>通过了框架全部筛选条件</b>，
+但因 PE 17.4 排第 132/226 位（偏中后），未进入评分 Top40。框架回测证据显示
+<b>"PE 升序（便宜优先）"是核心 alpha 来源</b>——同一筛选器 PE 升序超额 +14.4pp，质量优先反而跑输。
+因此名单中选择了质量可比但更便宜的标的，如：
+<span class="tag">新和成 PE11.3 毛利43.7% ROE21.3%</span>
+<span class="tag">华润三九 PE12.0 毛利51.8% ROE14.9%</span>
+<span class="tag">吉比特 PE12.2 毛利94.3% ROE28.5%</span>
+<span class="tag">宇通客车 PE12.3 ROE35.4%</span>
+<span class="tag">中原传媒 PE8.9 毛利42.6%</span>
+</div>
+
+<p class="note">
+<b>方法诚实性：</b>① 数据来自 juzi 估值面板/HF因子/一致预期 PIT 快照 + 腾讯实时行情，无合成数据；
+② 剔除金融是用户指定偏好约束（2026-08-25 定稿），回测口径含银行股，本名单属"策略+行业约束"衍生口径；
+③ con_roe/con_np_yoy/con_peg 为分析师一致预期，小盘无覆盖股在 L5 层即被剔除；
+④ 毛利率中位数用全市场口径（非行业中位数），与回测一致；
+⑤ Band 规避以 PB 5年分位为准（PE 被盈利下滑污染）；
+⑥ 本名单由数值化筛选器产生，<b>不构成投资建议</b>；
+⑦ 框架回测区间 2021-08~2026-06 超额等权全A +14.4pp（core），过去表现不代表未来。
+</p>
+
+</div></body></html>

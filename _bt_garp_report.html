@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>L5 增速门控放松实验 · 紫金矿业案例（2026-08-24）</title>
+<style>
+ body { font-family: "Microsoft YaHei", sans-serif; margin: 28px 40px;
+        background: #fafafa; color: #222; line-height: 1.65; }
+ h1 { font-size: 23px; margin-bottom: 4px; }
+ h2 { font-size: 16px; margin-top: 32px; border-left: 4px solid #b8860b;
+        padding-left: 10px; }
+ h3 { font-size: 14px; margin-top: 20px; }
+ .sub { color: #666; font-size: 13px; }
+ table { border-collapse: collapse; margin: 12px 0; font-size: 13px;
+          background: #fff; }
+ th, td { border: 1px solid #ddd; padding: 5px 9px; text-align: right;
+           white-space: nowrap; }
+ th { background: #f0f0f0; position: sticky; top: 0; }
+ td.l { text-align: left; } .mono { font-family: Consolas, monospace; }
+ .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+          padding: 14px 18px; margin: 12px 0; font-size: 13.5px; }
+ .kpi { font-size: 21px; font-weight: 800; }
+ .good { color: #c0392b; } .bad { color: #1e8449; }
+ .warn { color: #b9770e; }
+ .note { color: #888; font-size: 12px; margin-top: 20px;
+          border-top: 1px dashed #ccc; padding-top: 10px; }
+ .tag { display: inline-block; background: #b8860b; color: #fff;
+         border-radius: 4px; padding: 1px 8px; font-size: 11px; }
+ .tag-r { background: #c62828; }
+ .grid { display: flex; gap: 14px; flex-wrap: wrap; }
+ .box { flex: 1; min-width: 280px; background: #fff; border: 1px solid #e0e0e0;
+         border-radius: 8px; padding: 12px 16px; }
+ .big { font-size: 15px; font-weight: 700; }
+</style></head><body>
+
+<h1>L5 增速门控放松实验 · "紫金矿业这种公司"该不该放进来</h1>
+<p class="sub">数据截至 <b>2026-08-24</b> · 回测 2021-08 ~ 2026-08 日频+复权 ·
+池子 = 万得全A PIT 成分剔除金融（core_finex 口径）· 半年调仓 · 5bp+10bp 成本</p>
+
+<div class="card">
+<b>核心发现：紫金矿业不是"贵"，是被 L5 增速门控冤枉了。</b><br>
+福耀玻璃的失败模式是"中 PE 中质量排不进 top40"（排序问题）；紫金矿业完全不同——
+PE_TTM <b>13.6</b>（便宜）、预期 ROE <b>32.9%</b>（顶级）、毛利率 <b>31.1%</b>（过质量层）、
+PEG <b>0.31</b>（极便宜），但一致预期净利增速 <b>58%</b> 撞上 L5 的 <b>增速≤25%</b> 上限，
+在筛选层被直接剔除。它属于"GARP 型公司"——高增长，但价格相对于增长仍然便宜。
+</div>
+
+<h2>① 紫金矿业档案（2026-08-24）</h2>
+<table>
+<tr><th>指标</th><th>数值</th><th>解读</th></tr>
+<tr><td class="l">PE_TTM / 预期PE</td><td><b>13.58</b> / 11.22</td>
+<td class="l">不贵——低于 L4 上限 25</td></tr>
+<tr><td class="l">预期 ROE</td><td><b>32.93%</b></td>
+<td class="l">池内顶级（top ~5%）</td></tr>
+<tr><td class="l">毛利率</td><td>31.06%</td>
+<td class="l">高于全市场中位数 26.4%，过 gm 质量层</td></tr>
+<tr><td class="l">一致预期净利增速</td><td><b class="warn">58.1%</b></td>
+<td class="l">🔥 撞 L5 上限 25%，被剔除的直接原因</td></tr>
+<tr><td class="l">PEG</td><td><b>0.31</b></td>
+<td class="l">增速虽高，估值相对增长极便宜</td></tr>
+<tr><td class="l">PB / 总市值</td><td>4.81 / 9184亿</td>
+<td class="l">PB 4.8 不便宜，但 ROE 33% 支撑</td></tr>
+<tr><td class="l">OCF/市值 / 股息率</td><td>10.42% / 1.16%</td>
+<td class="l">现金流健康</td></tr>
+</table>
+
+<h2>② 回测：增速门控放松 8 变体（日频+复权，等权全A/中证全指对比）</h2>
+<table>
+<tr><th>门控口径</th><th>类别</th><th>总收益</th><th>年化</th><th>MDD</th>
+<th>超额(中证全指)</th><th>vs 基线</th></tr>
+<tr>
+      <td class="l">L5 增速≤25% + PEG≤2</td>
+      <td class="l" style="color:#888">基线</td>
+      <td style="color:#c0392b;font-weight:700">+29.45%</td>
+      <td>+5.26%</td>
+      <td style="color:#1e8449">22.12%</td>
+      <td style="color:#c0392b">+29.33%</td>
+      <td style="color:#1e8449">← 基线</td></tr><tr>
+      <td class="l">增速≤40% + PEG≤2</td>
+      <td class="l" style="color:#888">适度放松</td>
+      <td style="color:#c0392b;font-weight:700">+34.43%</td>
+      <td>+6.05%</td>
+      <td style="color:#1e8449">22.04%</td>
+      <td style="color:#c0392b">+34.31%</td>
+      <td style="color:#c0392b">+0.05pp</td></tr><tr>
+      <td class="l">增速≤60% + PEG≤2</td>
+      <td class="l" style="color:#888">大放松</td>
+      <td style="color:#c0392b;font-weight:700">+28.33%</td>
+      <td>+5.07%</td>
+      <td style="color:#1e8449">22.49%</td>
+      <td style="color:#c0392b">+28.21%</td>
+      <td style="color:#1e8449">-0.01pp</td></tr><tr>
+      <td class="l">增速≤99%(≈不限) + PEG≤2</td>
+      <td class="l" style="color:#888">完全放开</td>
+      <td style="color:#c0392b;font-weight:700">+26.10%</td>
+      <td>+4.71%</td>
+      <td style="color:#1e8449">23.23%</td>
+      <td style="color:#c0392b">+25.98%</td>
+      <td style="color:#1e8449">-0.03pp</td></tr><tr style="background:#eafaf1">
+      <td class="l">增速≤60% + PEG≤1 ★</td>
+      <td class="l" style="color:#888">★ 最优</td>
+      <td style="color:#c0392b;font-weight:700">+34.57%</td>
+      <td>+6.07%</td>
+      <td style="color:#1e8449">18.54%</td>
+      <td style="color:#c0392b">+34.44%</td>
+      <td style="color:#c0392b">+0.05pp</td></tr><tr>
+      <td class="l">增速≤60% + PEG≤2, PEG升序</td>
+      <td class="l" style="color:#888">GARP排序</td>
+      <td style="color:#c0392b;font-weight:700">+6.90%</td>
+      <td>+1.33%</td>
+      <td style="color:#1e8449">14.89%</td>
+      <td style="color:#c0392b">+6.78%</td>
+      <td style="color:#1e8449">-0.23pp</td></tr><tr>
+      <td class="l">增速≤60% + PEG≤1, 80%PE+20%质量</td>
+      <td class="l" style="color:#888">组合A</td>
+      <td style="color:#c0392b;font-weight:700">+32.14%</td>
+      <td>+5.69%</td>
+      <td style="color:#1e8449">18.01%</td>
+      <td style="color:#c0392b">+32.02%</td>
+      <td style="color:#c0392b">+0.03pp</td></tr><tr>
+      <td class="l">增速≤60% + PEG≤1, 50%PE+50%质量</td>
+      <td class="l" style="color:#888">组合B</td>
+      <td style="color:#c0392b;font-weight:700">+23.84%</td>
+      <td>+4.33%</td>
+      <td style="color:#1e8449">14.74%</td>
+      <td style="color:#c0392b">+23.71%</td>
+      <td style="color:#1e8449">-0.06pp</td></tr>
+</table>
+<div class="card">
+<b>倒 U 型规律：门控不是越松越好，存在最优区间。</b><br>
+<span class="good">增速≤25%（基线）</span> → <span class="good">≤40%（+4.98pp）</span> →
+<span class="warn">≤60%（-1.12pp）</span> → <span class="bad">≈不限（-3.35pp）</span>：
+完全放开混入高增速高 PEG 的投机股。<br>
+<span class="tag">最优解</span> <b>garp（增速≤60% + PEG≤1 + PE升序）</b>：
+总收益 <span class="good">+34.57%</span>（vs 基线 <span class="good">+5.12pp</span>），
+MDD <span class="good">18.54%</span>（vs 基线 22.12%，<b>-3.6pp</b>）——<b>收益更高、回撤更低，双赢</b>。
+它的机制：允许高增速，但用 <b>PEG≤1</b> 严格补偿（增速可以高，估值必须匹配）。
+</div>
+
+<h3>排序实验：PEG 排序与混合排序都稀释收益</h3>
+<div class="card">
+<b>PE 升序信念在 garp 池里依然成立，甚至更强：</b>
+PEG 升序（peg_sort）<span class="bad">-22.55pp</span> 灾难——PEG 排序把"增速高但 PE 高"的股票
+优先，直接违背便宜优先信念；混合排序（garp_q20 +2.69pp / garp_q50 -5.61pp）都低于
+纯 PE 排序的 garp（+5.12pp）。<b>在 garp 池里，质量信息已隐含在 PEG≤1 门控中，
+排序层不需要再叠加质量权重。</b>
+</div>
+
+<h2>③ garp 换入了什么（回测常驻新增，≥2 期）</h2>
+<table>
+<tr><th>名称</th><th>代码</th><th>行业</th><th>PE</th><th>增速%</th><th>PEG</th>
+<th>毛利%</th><th>ROE%</th></tr>
+<tr><td class="l">招商南油</td><td class="l mono">601975.SH</td>
+    <td>13.8</td><td>14.4</td><td>42.5</td><td>0.49</td>
+    <td>29.4</td><td>航运</td></tr><tr><td class="l">兰花科创</td><td class="l mono">600123.SH</td>
+    <td>22.5</td><td>4.6</td><td>52.9</td><td>0.17</td>
+    <td>54.8</td><td>煤炭</td></tr><tr><td class="l">潞安环能</td><td class="l mono">601699.SH</td>
+    <td>23.2</td><td>5.1</td><td>52.9</td><td>0.18</td>
+    <td>49.9</td><td>煤炭</td></tr><tr><td class="l">淮北矿业</td><td class="l mono">600985.SH</td>
+    <td>21.2</td><td>6.3</td><td>46.8</td><td>0.2</td>
+    <td>20.7</td><td>煤炭</td></tr><tr><td class="l">电投能源</td><td class="l mono">002128.SZ</td>
+    <td>16.3</td><td>12.4</td><td>38.9</td><td>0.45</td>
+    <td>39.8</td><td>煤炭/电解铝</td></tr><tr><td class="l">陕建股份</td><td class="l mono">600248.SH</td>
+    <td>12.2</td><td>5.2</td><td>48.7</td><td>0.15</td>
+    <td>12.0</td><td>建筑</td></tr><tr><td class="l">赛轮轮胎</td><td class="l mono">601058.SH</td>
+    <td>17.7</td><td>12.9</td><td>32.6</td><td>0.38</td>
+    <td>25.2</td><td>轮胎</td></tr><tr><td class="l">中国海防</td><td class="l mono">600938.SH</td>
+    <td>19.0</td><td>10.0</td><td>21.1</td><td>0.74</td>
+    <td>51.2</td><td>军工电子</td></tr><tr><td class="l">山东路桥</td><td class="l mono">000498.SZ</td>
+    <td>16.8</td><td>5.9</td><td>25.6</td><td>0.21</td>
+    <td>11.7</td><td>建筑</td></tr><tr><td class="l">华新水泥</td><td class="l mono">600801.SH</td>
+    <td>10.4</td><td>13.8</td><td>30.4</td><td>0.53</td>
+    <td>31.2</td><td>水泥</td></tr>
+</table>
+<div class="card">
+<b>全部是"紫金同类"：高增速周期资源/制造龙头</b>——煤炭（兰花科创、潞安环能、淮北矿业、
+电投能源）、航运（招商南油）、水泥（华新水泥）、轮胎（赛轮轮胎）等。
+它们是 core（增速≤25%）池里被误杀、garp 池里以 PE 个位数~13 的便宜价进入的组合成员。
+<b>这就是"包括紫金矿业这种公司"的正解：不是为紫金开后门，而是修正门控，让整个
+"高增长+便宜"类别（紫金是其中一员）回到池子里。</b>
+</div>
+
+<h2>④ 当前时点三名单对比（2026-08-24，top40 等权 2.5%）</h2>
+<h3>garp 名单（推荐落地版 · 回测最优）· 池 183 只 ·
+紫金矿业排 <b>47/183</b> <span class="warn">❌ 差 7 名未进</span></h3>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>PE</th><th>增速%</th><th>PEG</th>
+<th>ROE%</th><th>毛利%</th><th>OCF%</th><th>过gm</th></tr>
+<tr>
+          <td>1</td><td class="l">601117.SH</td>
+          <td class="l"><b>中国化学</b></td>
+          <td>7.0</td>
+          <td>8.1</td>
+          <td>0.74</td>
+          <td>9.4</td>
+          <td>10.7</td>
+          <td>33.49</td>
+          <td>—</td></tr><tr>
+          <td>2</td><td class="l">000685.SZ</td>
+          <td class="l"><b>中山公用</b></td>
+          <td>7.6</td>
+          <td>14.1</td>
+          <td>0.61</td>
+          <td>10.3</td>
+          <td>24.4</td>
+          <td>4.38</td>
+          <td>—</td></tr><tr>
+          <td>3</td><td class="l">600064.SH</td>
+          <td class="l"><b>南京高科</b></td>
+          <td>7.7</td>
+          <td>24.4</td>
+          <td>0.29</td>
+          <td>10.9</td>
+          <td>23.5</td>
+          <td>8.44</td>
+          <td>—</td></tr><tr>
+          <td>4</td><td class="l">600970.SH</td>
+          <td class="l"><b>中材国际</b></td>
+          <td>7.7</td>
+          <td>8.4</td>
+          <td>0.81</td>
+          <td>11.9</td>
+          <td>18.4</td>
+          <td>12.09</td>
+          <td>—</td></tr><tr>
+          <td>5</td><td class="l">601677.SH</td>
+          <td class="l"><b>明泰铝业</b></td>
+          <td>8.4</td>
+          <td>28.2</td>
+          <td>0.49</td>
+          <td>11.7</td>
+          <td>8.9</td>
+          <td>4.38</td>
+          <td>—</td></tr><tr>
+          <td>6</td><td class="l">000612.SZ</td>
+          <td class="l"><b>焦作万方</b></td>
+          <td>9.3</td>
+          <td>32.6</td>
+          <td>0.62</td>
+          <td>16.5</td>
+          <td>28.5</td>
+          <td>11.87</td>
+          <td>✓</td></tr><tr>
+          <td>7</td><td class="l">600710.SH</td>
+          <td class="l"><b>苏美达</b></td>
+          <td>9.7</td>
+          <td>7.9</td>
+          <td>0.94</td>
+          <td>15.1</td>
+          <td>6.7</td>
+          <td>545.52</td>
+          <td>—</td></tr><tr>
+          <td>8</td><td class="l">002011.SZ</td>
+          <td class="l"><b>盾安环境</b></td>
+          <td>10.0</td>
+          <td>4.8</td>
+          <td>0.81</td>
+          <td>14.6</td>
+          <td>18.3</td>
+          <td>14.13</td>
+          <td>—</td></tr><tr>
+          <td>9</td><td class="l">603049.SH</td>
+          <td class="l"><b>中策橡胶</b></td>
+          <td>10.1</td>
+          <td>7.5</td>
+          <td>0.95</td>
+          <td>16.4</td>
+          <td>19.8</td>
+          <td>6.31</td>
+          <td>—</td></tr><tr>
+          <td>10</td><td class="l">600968.SH</td>
+          <td class="l"><b>海油发展</b></td>
+          <td>10.4</td>
+          <td>12.5</td>
+          <td>0.96</td>
+          <td>12.9</td>
+          <td>16.5</td>
+          <td>8.8</td>
+          <td>—</td></tr><tr>
+          <td>11</td><td class="l">600233.SH</td>
+          <td class="l"><b>圆通速递</b></td>
+          <td>10.5</td>
+          <td>46.2</td>
+          <td>0.31</td>
+          <td>15.7</td>
+          <td>10.1</td>
+          <td>13.17</td>
+          <td>—</td></tr><tr>
+          <td>12</td><td class="l">000528.SZ</td>
+          <td class="l"><b>柳    工</b></td>
+          <td>10.5</td>
+          <td>20.8</td>
+          <td>0.37</td>
+          <td>9.5</td>
+          <td>21.9</td>
+          <td>3.64</td>
+          <td>—</td></tr><tr>
+          <td>13</td><td class="l">002170.SZ</td>
+          <td class="l"><b>芭田股份</b></td>
+          <td>10.6</td>
+          <td>40.9</td>
+          <td>0.26</td>
+          <td>25.4</td>
+          <td>37.2</td>
+          <td>14.12</td>
+          <td>✓</td></tr><tr>
+          <td>14</td><td class="l">601156.SH</td>
+          <td class="l"><b>东航物流</b></td>
+          <td>10.9</td>
+          <td>2.8</td>
+          <td>0.89</td>
+          <td>12.3</td>
+          <td>18.9</td>
+          <td>23.77</td>
+          <td>—</td></tr><tr>
+          <td>15</td><td class="l">600323.SH</td>
+          <td class="l"><b>瀚蓝环境</b></td>
+          <td>10.9</td>
+          <td>15.9</td>
+          <td>0.68</td>
+          <td>13.5</td>
+          <td>34.5</td>
+          <td>16.01</td>
+          <td>✓</td></tr><tr>
+          <td>16</td><td class="l">605599.SH</td>
+          <td class="l"><b>菜百股份</b></td>
+          <td>11.0</td>
+          <td>10.8</td>
+          <td>0.82</td>
+          <td>21.2</td>
+          <td>7.8</td>
+          <td>5.34</td>
+          <td>—</td></tr><tr>
+          <td>17</td><td class="l">603799.SH</td>
+          <td class="l"><b>华友钴业</b></td>
+          <td>11.0</td>
+          <td>14.6</td>
+          <td>0.41</td>
+          <td>12.9</td>
+          <td>19.3</td>
+          <td>6.06</td>
+          <td>—</td></tr><tr>
+          <td>18</td><td class="l">600989.SH</td>
+          <td class="l"><b>宝丰能源</b></td>
+          <td>11.1</td>
+          <td>50.1</td>
+          <td>0.39</td>
+          <td>27.3</td>
+          <td>39.7</td>
+          <td>12.0</td>
+          <td>✓</td></tr><tr>
+          <td>19</td><td class="l">601877.SH</td>
+          <td class="l"><b>正泰电器</b></td>
+          <td>11.1</td>
+          <td>15.8</td>
+          <td>0.82</td>
+          <td>10.8</td>
+          <td>24.4</td>
+          <td>48.29</td>
+          <td>—</td></tr><tr>
+          <td>20</td><td class="l">002001.SZ</td>
+          <td class="l"><b>新 和 成</b></td>
+          <td>11.3</td>
+          <td>23.5</td>
+          <td>0.69</td>
+          <td>21.3</td>
+          <td>43.7</td>
+          <td>9.92</td>
+          <td>✓</td></tr><tr>
+          <td>21</td><td class="l">000550.SZ</td>
+          <td class="l"><b>江铃汽车</b></td>
+          <td>11.3</td>
+          <td>40.3</td>
+          <td>0.3</td>
+          <td>12.9</td>
+          <td>14.3</td>
+          <td>19.49</td>
+          <td>—</td></tr><tr>
+          <td>22</td><td class="l">000680.SZ</td>
+          <td class="l"><b>山推股份</b></td>
+          <td>11.6</td>
+          <td>21.3</td>
+          <td>0.49</td>
+          <td>19.7</td>
+          <td>22.5</td>
+          <td>5.65</td>
+          <td>—</td></tr><tr>
+          <td>23</td><td class="l">301219.SZ</td>
+          <td class="l"><b>腾远钴业</b></td>
+          <td>11.6</td>
+          <td>47.6</td>
+          <td>0.38</td>
+          <td>15.3</td>
+          <td>30.7</td>
+          <td>257.74</td>
+          <td>✓</td></tr><tr>
+          <td>24</td><td class="l">601918.SH</td>
+          <td class="l"><b>新集能源</b></td>
+          <td>11.6</td>
+          <td>16.5</td>
+          <td>0.82</td>
+          <td>12.8</td>
+          <td>40.5</td>
+          <td>11.97</td>
+          <td>✓</td></tr><tr>
+          <td>25</td><td class="l">002867.SZ</td>
+          <td class="l"><b>周大生</b></td>
+          <td>11.6</td>
+          <td>16.6</td>
+          <td>0.78</td>
+          <td>16.6</td>
+          <td>35.0</td>
+          <td>2019.35</td>
+          <td>✓</td></tr><tr>
+          <td>26</td><td class="l">601139.SH</td>
+          <td class="l"><b>深圳燃气</b></td>
+          <td>11.7</td>
+          <td>19.6</td>
+          <td>0.7</td>
+          <td>9.3</td>
+          <td>18.4</td>
+          <td>23.9</td>
+          <td>—</td></tr><tr>
+          <td>27</td><td class="l">002078.SZ</td>
+          <td class="l"><b>太阳纸业</b></td>
+          <td>12.0</td>
+          <td>14.5</td>
+          <td>0.8</td>
+          <td>10.9</td>
+          <td>15.3</td>
+          <td>14.27</td>
+          <td>—</td></tr><tr>
+          <td>28</td><td class="l">600761.SH</td>
+          <td class="l"><b>安徽合力</b></td>
+          <td>12.1</td>
+          <td>12.7</td>
+          <td>0.86</td>
+          <td>11.3</td>
+          <td>23.5</td>
+          <td>11.98</td>
+          <td>—</td></tr><tr>
+          <td>29</td><td class="l">600066.SH</td>
+          <td class="l"><b>宇通客车</b></td>
+          <td>12.3</td>
+          <td>9.8</td>
+          <td>0.99</td>
+          <td>35.4</td>
+          <td>25.4</td>
+          <td>11.25</td>
+          <td>—</td></tr><tr>
+          <td>30</td><td class="l">601216.SH</td>
+          <td class="l"><b>君正集团</b></td>
+          <td>12.3</td>
+          <td>14.4</td>
+          <td>0.71</td>
+          <td>11.5</td>
+          <td>21.0</td>
+          <td>14.51</td>
+          <td>—</td></tr><tr>
+          <td>31</td><td class="l">601019.SH</td>
+          <td class="l"><b>山东出版</b></td>
+          <td>12.3</td>
+          <td>17.4</td>
+          <td>0.9</td>
+          <td>8.2</td>
+          <td>36.1</td>
+          <td>7.45</td>
+          <td>✓</td></tr><tr>
+          <td>32</td><td class="l">600803.SH</td>
+          <td class="l"><b>新奥股份</b></td>
+          <td>12.5</td>
+          <td>18.9</td>
+          <td>0.58</td>
+          <td>19.1</td>
+          <td>14.1</td>
+          <td>24.73</td>
+          <td>—</td></tr><tr>
+          <td>33</td><td class="l">600933.SH</td>
+          <td class="l"><b>爱柯迪</b></td>
+          <td>12.6</td>
+          <td>18.5</td>
+          <td>0.52</td>
+          <td>12.5</td>
+          <td>29.4</td>
+          <td>14.18</td>
+          <td>✓</td></tr><tr>
+          <td>34</td><td class="l">600219.SH</td>
+          <td class="l"><b>南山铝业</b></td>
+          <td>12.6</td>
+          <td>4.7</td>
+          <td>0.94</td>
+          <td>9.4</td>
+          <td>22.3</td>
+          <td>10.64</td>
+          <td>—</td></tr><tr>
+          <td>35</td><td class="l">000951.SZ</td>
+          <td class="l"><b>中国重汽</b></td>
+          <td>12.7</td>
+          <td>22.1</td>
+          <td>0.55</td>
+          <td>11.2</td>
+          <td>7.6</td>
+          <td>13.16</td>
+          <td>—</td></tr><tr>
+          <td>36</td><td class="l">601975.SH</td>
+          <td class="l"><b>招商南油</b></td>
+          <td>12.8</td>
+          <td>52.5</td>
+          <td>0.4</td>
+          <td>14.8</td>
+          <td>29.4</td>
+          <td>11.3</td>
+          <td>✓</td></tr><tr>
+          <td>37</td><td class="l">601058.SH</td>
+          <td class="l"><b>赛轮轮胎</b></td>
+          <td>12.9</td>
+          <td>26.8</td>
+          <td>0.41</td>
+          <td>17.3</td>
+          <td>25.2</td>
+          <td>10.3</td>
+          <td>—</td></tr><tr>
+          <td>38</td><td class="l">601965.SH</td>
+          <td class="l"><b>中国汽研</b></td>
+          <td>12.9</td>
+          <td>12.0</td>
+          <td>0.74</td>
+          <td>13.1</td>
+          <td>45.9</td>
+          <td>9.72</td>
+          <td>✓</td></tr><tr>
+          <td>39</td><td class="l">603816.SH</td>
+          <td class="l"><b>顾家家居</b></td>
+          <td>13.0</td>
+          <td>15.0</td>
+          <td>0.8</td>
+          <td>14.2</td>
+          <td>33.1</td>
+          <td>12.69</td>
+          <td>✓</td></tr><tr>
+          <td>40</td><td class="l">600583.SH</td>
+          <td class="l"><b>海油工程</b></td>
+          <td>13.0</td>
+          <td>11.7</td>
+          <td>0.87</td>
+          <td>7.7</td>
+          <td>13.3</td>
+          <td>10.76</td>
+          <td>—</td></tr>
+</table>
+
+<h3>garp + q20 混合排序（为纳入紫金的变通版）· 紫金排 39/183 <span class="tag tag-r">✅ 进 top40</span></h3>
+<p class="sub">代价：回测收益从 garp 的 +5.12pp 降至 +2.69pp——为纳入紫金单票付约 2.4pp 超额成本。</p>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>PE</th><th>增速%</th><th>PEG</th>
+<th>ROE%</th><th>毛利%</th><th>OCF%</th><th>过gm</th></tr>
+<tr>
+          <td>1</td><td class="l">000612.SZ</td>
+          <td class="l"><b>焦作万方</b></td>
+          <td>9.3</td>
+          <td>32.6</td>
+          <td>0.62</td>
+          <td>16.5</td>
+          <td>28.5</td>
+          <td>11.87</td>
+          <td>✓</td></tr><tr>
+          <td>2</td><td class="l">002170.SZ</td>
+          <td class="l"><b>芭田股份</b></td>
+          <td>10.6</td>
+          <td>40.9</td>
+          <td>0.26</td>
+          <td>25.4</td>
+          <td>37.2</td>
+          <td>14.12</td>
+          <td>✓</td></tr><tr>
+          <td>3</td><td class="l">600989.SH</td>
+          <td class="l"><b>宝丰能源</b></td>
+          <td>11.1</td>
+          <td>50.1</td>
+          <td>0.39</td>
+          <td>27.3</td>
+          <td>39.7</td>
+          <td>12.0</td>
+          <td>✓</td></tr><tr>
+          <td>4</td><td class="l">600710.SH</td>
+          <td class="l"><b>苏美达</b></td>
+          <td>9.7</td>
+          <td>7.9</td>
+          <td>0.94</td>
+          <td>15.1</td>
+          <td>6.7</td>
+          <td>545.52</td>
+          <td>—</td></tr><tr>
+          <td>5</td><td class="l">002011.SZ</td>
+          <td class="l"><b>盾安环境</b></td>
+          <td>10.0</td>
+          <td>4.8</td>
+          <td>0.81</td>
+          <td>14.6</td>
+          <td>18.3</td>
+          <td>14.13</td>
+          <td>—</td></tr><tr>
+          <td>6</td><td class="l">601117.SH</td>
+          <td class="l"><b>中国化学</b></td>
+          <td>7.0</td>
+          <td>8.1</td>
+          <td>0.74</td>
+          <td>9.4</td>
+          <td>10.7</td>
+          <td>33.49</td>
+          <td>—</td></tr><tr>
+          <td>7</td><td class="l">600970.SH</td>
+          <td class="l"><b>中材国际</b></td>
+          <td>7.7</td>
+          <td>8.4</td>
+          <td>0.81</td>
+          <td>11.9</td>
+          <td>18.4</td>
+          <td>12.09</td>
+          <td>—</td></tr><tr>
+          <td>8</td><td class="l">600323.SH</td>
+          <td class="l"><b>瀚蓝环境</b></td>
+          <td>10.9</td>
+          <td>15.9</td>
+          <td>0.68</td>
+          <td>13.5</td>
+          <td>34.5</td>
+          <td>16.01</td>
+          <td>✓</td></tr><tr>
+          <td>9</td><td class="l">600064.SH</td>
+          <td class="l"><b>南京高科</b></td>
+          <td>7.7</td>
+          <td>24.4</td>
+          <td>0.29</td>
+          <td>10.9</td>
+          <td>23.5</td>
+          <td>8.44</td>
+          <td>—</td></tr><tr>
+          <td>10</td><td class="l">002001.SZ</td>
+          <td class="l"><b>新 和 成</b></td>
+          <td>11.3</td>
+          <td>23.5</td>
+          <td>0.69</td>
+          <td>21.3</td>
+          <td>43.7</td>
+          <td>9.92</td>
+          <td>✓</td></tr><tr>
+          <td>11</td><td class="l">002867.SZ</td>
+          <td class="l"><b>周大生</b></td>
+          <td>11.6</td>
+          <td>16.6</td>
+          <td>0.78</td>
+          <td>16.6</td>
+          <td>35.0</td>
+          <td>2019.35</td>
+          <td>✓</td></tr><tr>
+          <td>12</td><td class="l">000685.SZ</td>
+          <td class="l"><b>中山公用</b></td>
+          <td>7.6</td>
+          <td>14.1</td>
+          <td>0.61</td>
+          <td>10.3</td>
+          <td>24.4</td>
+          <td>4.38</td>
+          <td>—</td></tr><tr>
+          <td>13</td><td class="l">603049.SH</td>
+          <td class="l"><b>中策橡胶</b></td>
+          <td>10.1</td>
+          <td>7.5</td>
+          <td>0.95</td>
+          <td>16.4</td>
+          <td>19.8</td>
+          <td>6.31</td>
+          <td>—</td></tr><tr>
+          <td>14</td><td class="l">301219.SZ</td>
+          <td class="l"><b>腾远钴业</b></td>
+          <td>11.6</td>
+          <td>47.6</td>
+          <td>0.38</td>
+          <td>15.3</td>
+          <td>30.7</td>
+          <td>257.74</td>
+          <td>✓</td></tr><tr>
+          <td>15</td><td class="l">600233.SH</td>
+          <td class="l"><b>圆通速递</b></td>
+          <td>10.5</td>
+          <td>46.2</td>
+          <td>0.31</td>
+          <td>15.7</td>
+          <td>10.1</td>
+          <td>13.17</td>
+          <td>—</td></tr><tr>
+          <td>16</td><td class="l">601156.SH</td>
+          <td class="l"><b>东航物流</b></td>
+          <td>10.9</td>
+          <td>2.8</td>
+          <td>0.89</td>
+          <td>12.3</td>
+          <td>18.9</td>
+          <td>23.77</td>
+          <td>—</td></tr><tr>
+          <td>17</td><td class="l">600968.SH</td>
+          <td class="l"><b>海油发展</b></td>
+          <td>10.4</td>
+          <td>12.5</td>
+          <td>0.96</td>
+          <td>12.9</td>
+          <td>16.5</td>
+          <td>8.8</td>
+          <td>—</td></tr><tr>
+          <td>18</td><td class="l">601877.SH</td>
+          <td class="l"><b>正泰电器</b></td>
+          <td>11.1</td>
+          <td>15.8</td>
+          <td>0.82</td>
+          <td>10.8</td>
+          <td>24.4</td>
+          <td>48.29</td>
+          <td>—</td></tr><tr>
+          <td>19</td><td class="l">601918.SH</td>
+          <td class="l"><b>新集能源</b></td>
+          <td>11.6</td>
+          <td>16.5</td>
+          <td>0.82</td>
+          <td>12.8</td>
+          <td>40.5</td>
+          <td>11.97</td>
+          <td>✓</td></tr><tr>
+          <td>20</td><td class="l">601677.SH</td>
+          <td class="l"><b>明泰铝业</b></td>
+          <td>8.4</td>
+          <td>28.2</td>
+          <td>0.49</td>
+          <td>11.7</td>
+          <td>8.9</td>
+          <td>4.38</td>
+          <td>—</td></tr><tr>
+          <td>21</td><td class="l">600066.SH</td>
+          <td class="l"><b>宇通客车</b></td>
+          <td>12.3</td>
+          <td>9.8</td>
+          <td>0.99</td>
+          <td>35.4</td>
+          <td>25.4</td>
+          <td>11.25</td>
+          <td>—</td></tr><tr>
+          <td>22</td><td class="l">000550.SZ</td>
+          <td class="l"><b>江铃汽车</b></td>
+          <td>11.3</td>
+          <td>40.3</td>
+          <td>0.3</td>
+          <td>12.9</td>
+          <td>14.3</td>
+          <td>19.49</td>
+          <td>—</td></tr><tr>
+          <td>23</td><td class="l">000680.SZ</td>
+          <td class="l"><b>山推股份</b></td>
+          <td>11.6</td>
+          <td>21.3</td>
+          <td>0.49</td>
+          <td>19.7</td>
+          <td>22.5</td>
+          <td>5.65</td>
+          <td>—</td></tr><tr>
+          <td>24</td><td class="l">605599.SH</td>
+          <td class="l"><b>菜百股份</b></td>
+          <td>11.0</td>
+          <td>10.8</td>
+          <td>0.82</td>
+          <td>21.2</td>
+          <td>7.8</td>
+          <td>5.34</td>
+          <td>—</td></tr><tr>
+          <td>25</td><td class="l">603799.SH</td>
+          <td class="l"><b>华友钴业</b></td>
+          <td>11.0</td>
+          <td>14.6</td>
+          <td>0.41</td>
+          <td>12.9</td>
+          <td>19.3</td>
+          <td>6.06</td>
+          <td>—</td></tr><tr>
+          <td>26</td><td class="l">000528.SZ</td>
+          <td class="l"><b>柳    工</b></td>
+          <td>10.5</td>
+          <td>20.8</td>
+          <td>0.37</td>
+          <td>9.5</td>
+          <td>21.9</td>
+          <td>3.64</td>
+          <td>—</td></tr><tr>
+          <td>27</td><td class="l">600803.SH</td>
+          <td class="l"><b>新奥股份</b></td>
+          <td>12.5</td>
+          <td>18.9</td>
+          <td>0.58</td>
+          <td>19.1</td>
+          <td>14.1</td>
+          <td>24.73</td>
+          <td>—</td></tr><tr>
+          <td>28</td><td class="l">600933.SH</td>
+          <td class="l"><b>爱柯迪</b></td>
+          <td>12.6</td>
+          <td>18.5</td>
+          <td>0.52</td>
+          <td>12.5</td>
+          <td>29.4</td>
+          <td>14.18</td>
+          <td>✓</td></tr><tr>
+          <td>29</td><td class="l">601139.SH</td>
+          <td class="l"><b>深圳燃气</b></td>
+          <td>11.7</td>
+          <td>19.6</td>
+          <td>0.7</td>
+          <td>9.3</td>
+          <td>18.4</td>
+          <td>23.9</td>
+          <td>—</td></tr><tr>
+          <td>30</td><td class="l">600761.SH</td>
+          <td class="l"><b>安徽合力</b></td>
+          <td>12.1</td>
+          <td>12.7</td>
+          <td>0.86</td>
+          <td>11.3</td>
+          <td>23.5</td>
+          <td>11.98</td>
+          <td>—</td></tr><tr>
+          <td>31</td><td class="l">601216.SH</td>
+          <td class="l"><b>君正集团</b></td>
+          <td>12.3</td>
+          <td>14.4</td>
+          <td>0.71</td>
+          <td>11.5</td>
+          <td>21.0</td>
+          <td>14.51</td>
+          <td>—</td></tr><tr>
+          <td>32</td><td class="l">601975.SH</td>
+          <td class="l"><b>招商南油</b></td>
+          <td>12.8</td>
+          <td>52.5</td>
+          <td>0.4</td>
+          <td>14.8</td>
+          <td>29.4</td>
+          <td>11.3</td>
+          <td>✓</td></tr><tr>
+          <td>33</td><td class="l">002078.SZ</td>
+          <td class="l"><b>太阳纸业</b></td>
+          <td>12.0</td>
+          <td>14.5</td>
+          <td>0.8</td>
+          <td>10.9</td>
+          <td>15.3</td>
+          <td>14.27</td>
+          <td>—</td></tr><tr>
+          <td>34</td><td class="l">603816.SH</td>
+          <td class="l"><b>顾家家居</b></td>
+          <td>13.0</td>
+          <td>15.0</td>
+          <td>0.8</td>
+          <td>14.2</td>
+          <td>33.1</td>
+          <td>12.69</td>
+          <td>✓</td></tr><tr>
+          <td>35</td><td class="l">601965.SH</td>
+          <td class="l"><b>中国汽研</b></td>
+          <td>12.9</td>
+          <td>12.0</td>
+          <td>0.74</td>
+          <td>13.1</td>
+          <td>45.9</td>
+          <td>9.72</td>
+          <td>✓</td></tr><tr>
+          <td>36</td><td class="l">601058.SH</td>
+          <td class="l"><b>赛轮轮胎</b></td>
+          <td>12.9</td>
+          <td>26.8</td>
+          <td>0.41</td>
+          <td>17.3</td>
+          <td>25.2</td>
+          <td>10.3</td>
+          <td>—</td></tr><tr>
+          <td>37</td><td class="l">002432.SZ</td>
+          <td class="l"><b>九安医疗</b></td>
+          <td>13.7</td>
+          <td>48.2</td>
+          <td>0.33</td>
+          <td>13.6</td>
+          <td>62.3</td>
+          <td>188.85</td>
+          <td>✓</td></tr><tr>
+          <td>38</td><td class="l">601019.SH</td>
+          <td class="l"><b>山东出版</b></td>
+          <td>12.3</td>
+          <td>17.4</td>
+          <td>0.9</td>
+          <td>8.2</td>
+          <td>36.1</td>
+          <td>7.45</td>
+          <td>✓</td></tr><tr style="background:#fef9e7">
+          <td>39</td><td class="l">601899.SH</td>
+          <td class="l"><b>紫金矿业</b></td>
+          <td>13.6</td>
+          <td>58.1</td>
+          <td>0.31</td>
+          <td>32.9</td>
+          <td>31.1</td>
+          <td>10.42</td>
+          <td>✓</td></tr><tr>
+          <td>40</td><td class="l">600219.SH</td>
+          <td class="l"><b>南山铝业</b></td>
+          <td>12.6</td>
+          <td>4.7</td>
+          <td>0.94</td>
+          <td>9.4</td>
+          <td>22.3</td>
+          <td>10.64</td>
+          <td>—</td></tr>
+</table>
+<p class="sub" style="color:#b9770e">黄底 = 紫金矿业（601899.SH）</p>
+
+<h2>⑤ 结论：紫金矿业怎么才能进名单</h2>
+<div class="grid">
+<div class="box">
+<span class="big">方案 A · 采纳 garp 门控（推荐）</span><br>
+增速≤60% + PEG≤1 + PE 升序。<br>
+回测 <span class="good">+5.12pp / MDD -3.6pp</span> 双赢，池内已有一整批"紫金同类"
+（煤炭/航运/有色）以更便宜价格入选。<br>
+<b>紫金本身差 7 名不进</b>——PE 13.6 略高于 top40 截止线 13.0。这是框架的诚实暴露：
+它修正了"增速门控误杀"，但"PE 升序"依然把它排在更便宜的高增长股之后。
+</div>
+<div class="box">
+<span class="big">方案 B · garp + q20 混合排序</span><br>
+紫金当前排 39 恰好进名单。<br>
+代价：回测超额从 +5.12pp 降到 +2.69pp（每期换入的质量倾斜在 garp 池里是净稀释）。<br>
+<b>适合"我就想要紫金"的主观偏好，代价是 ~2.4pp 回测超额。</b>
+</div>
+<div class="box">
+<span class="big">方案 C · 白名单插队</span><br>
+在 garp top40 之上人工放行 1-2 只超高质量龙头（如紫金）。<br>
+单票权重 2.5% 的扰动很小，但<b>超出回测证据</b>，属于主观判断层。<br>
+建议仅用于"质量确信度极高+当前处于周期盈利上行"的标的。
+</div>
+</div>
+
+<div class="card">
+<b>方法论备忘：</b>① garp 门控 = L5 从"增速≤25% 且 PEG≤2"改为"增速≤60% 且 PEG≤1"，
+其他层（市值/PE>0/L4/金融剔除/PE升序）全部不变；② 紫金档案中增速 58% > 60% 上限?
+不——58% ≤ 60%，它 <b>在</b> garp 池内（183 只），只是 PE 排序 47 未进 top40；
+③ 若未来紫金增速预期继续上调超过 60%（当前分析师仍在大幅上调：4w 修正 +81%），
+将滑出 garp 池——这是"高增长+高预期"的固有风险；④ 回测区间 2021-08~2026-08，
+过去表现不代表未来。</div>
+
+<p class="note">数据来源：juzi 估值面板 / HF 因子 / 朝阳永续一致预期（PIT 快照）+ 腾讯行情，
+无合成数据。本报告由数值化筛选器+回测引擎产生，不构成投资建议。</p>
+
+</body></html>

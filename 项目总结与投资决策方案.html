@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fund Framework — 项目总结与投资决策方案</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --primary: #1a56db;
+    --primary-light: #e0e7ff;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --text-light: #6b7280;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 24px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1a56db 100%);
+    color: white;
+    padding: 40px 32px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .header .subtitle { font-size: 15px; opacity: 0.85; }
+  .header .meta { margin-top: 16px; display: flex; gap: 24px; font-size: 13px; opacity: 0.75; }
+  .header .meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* Section */
+  .section {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* Formula box */
+  .formula-box {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d4a7a 100%);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .formula-box .label { font-size: 12px; opacity: 0.6; margin-bottom: 6px; font-weight: 400; }
+
+  /* Status badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-verified { background: var(--green-light); color: var(--green); }
+  .badge-candidate { background: var(--amber-light); color: var(--amber); }
+  .badge-rejected { background: var(--red-light); color: var(--red); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--gray-light);
+    font-weight: 600;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:hover td { background: var(--gray-light); }
+  .num-cell { font-family: 'SF Mono', 'Cascadia Code', monospace; font-size: 13px; }
+  .pos { color: var(--green); font-weight: 600; }
+  .neg { color: var(--red); font-weight: 600; }
+
+  /* Cards grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .mini-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--card);
+  }
+  .mini-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .mini-card .value { font-size: 24px; font-weight: 700; }
+  .mini-card .desc { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+  /* Layer blocks */
+  .layer-block {
+    border-left: 4px solid;
+    padding: 16px 20px;
+    margin: 12px 0;
+    border-radius: 0 8px 8px 0;
+    background: var(--card);
+  }
+  .layer-l1 { border-color: #3b82f6; background: #eff6ff; }
+  .layer-l2 { border-color: #8b5cf6; background: #f5f3ff; }
+  .layer-l3 { border-color: #f59e0b; background: #fffbeb; }
+  .layer-block h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .layer-block p { font-size: 13px; color: var(--text-light); }
+
+  /* Decision card */
+  .decision-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 12px 0;
+    background: var(--card);
+    transition: box-shadow 0.2s;
+  }
+  .decision-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .decision-card .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .decision-card h4 { font-size: 16px; font-weight: 700; }
+  .decision-card .body { font-size: 14px; color: var(--text); }
+  .decision-card .body p { margin-bottom: 8px; }
+  .decision-card ul { padding-left: 20px; margin: 8px 0; }
+  .decision-card li { margin-bottom: 4px; font-size: 13px; }
+
+  /* Callout */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .callout-warning { background: var(--amber-light); border-left: 4px solid var(--amber); }
+  .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+  .callout-danger { background: var(--red-light); border-left: 4px solid var(--red); }
+  .callout-success { background: var(--green-light); border-left: 4px solid var(--green); }
+
+  /* Highlight */
+  .highlight { background: #fef9c3; padding: 2px 4px; border-radius: 3px; font-weight: 600; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+
+  /* Tag list */
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .tag {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--gray-light);
+    color: var(--text-light);
+  }
+  .tag-blue { background: #dbeafe; color: #1e40af; }
+  .tag-green { background: #dcfce7; color: #166534; }
+  .tag-red { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>AI Fund Framework — 项目总结与投资决策方案</h1>
+    <div class="subtitle">A股量化投资框架 · 基于 LangGraph 架构 · 全市场诚实回测验证</div>
+    <div class="meta">
+      <span>📅 2026-08-25 整理</span>
+      <span>📊 回测区间 2021-06 ~ 2026-08 (5.2年)</span>
+      <span>🏛 万得全A PIT 成分池</span>
+    </div>
+  </div>
+
+  <!-- 0. 核心公式 -->
+  <div class="section">
+    <div class="section-title"><span class="num">0</span> 核心命题：投资收益的三层来源</div>
+    <div class="formula-box">
+      <div class="label">框架顶层公式</div>
+      A股投资收益 = 基准(池子) + 数据端(因子) + 方法论 + 卖出时点
+    </div>
+    <p style="text-align:center; color:var(--text-light); font-size:14px;">
+      池子决定收益的高度（靠长远判断） · 因子决定超额的可量化性（一致预期已验证） ·<br>
+      方法论决定 alpha 能否被稳定提取（当前只有刘旭式） · 卖出决定 alpha 的兑现率（估值类有效）
+    </p>
+    <div class="callout callout-info" style="margin-top:16px;">
+      <strong>三条铁律：</strong>
+      ① 每笔 alpha 只记一层（禁止重复记账）② 先对比等权万得全A 再下结论 ③ 无效实验也记账（防重复踩坑）
+    </div>
+  </div>
+
+  <!-- 1. 数据基础设施 -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> 数据基础设施</div>
+
+    <div class="grid-3">
+      <div class="mini-card">
+        <h4>SQLite 数据库</h4>
+        <div class="value" style="color:var(--primary);">60.5 MB</div>
+        <div class="desc">data/a_share_market.db · DBBrowser 可直接打开</div>
+      </div>
+      <div class="mini-card">
+        <h4>PIT 成分池</h4>
+        <div class="value" style="color:var(--primary);">11 期</div>
+        <div class="desc">万得全A 881001.WI · 4,441 → 5,529 只</div>
+      </div>
+      <div class="mini-card">
+        <h4>月K 数据</h4>
+        <div class="value" style="color:var(--primary);">313K 条</div>
+        <div class="desc">全市场月K · 腾讯 16线程 5-8分钟</div>
+      </div>
+    </div>
+
+    <table style="margin-top:16px;">
+      <thead>
+        <tr>
+          <th>表名</th>
+          <th>行数</th>
+          <th>关键字段</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>pit_universe</code></td>
+          <td class="num-cell">57,061</td>
+          <td>month, ticker, as_of</td>
+          <td>万得全A PIT 成分（消除幸存者偏差）</td>
+        </tr>
+        <tr>
+          <td><code>monthly_close</code></td>
+          <td class="num-cell">313,239</td>
+          <td>ticker, month, close</td>
+          <td>全市场月K收盘价</td>
+        </tr>
+        <tr>
+          <td><code>consensus</code></td>
+          <td class="num-cell">57,060</td>
+          <td>con_np, con_roe, con_np_yoy, np_revision_4w/13w/26w</td>
+          <td>一致预期快照（13字段，含修正幅度）</td>
+        </tr>
+        <tr>
+          <td><code>factor_panel</code></td>
+          <td class="num-cell">57,060</td>
+          <td>gpm, cetop, npyoy, roes, dtop5, oryoy, lncap</td>
+          <td>申万金工 HF 因子面板（7因子）</td>
+        </tr>
+        <tr>
+          <td><code>valuation</code></td>
+          <td class="num-cell">57,056</td>
+          <td>pe_ttm, pb, total_mv, turnover</td>
+          <td>估值面板（PE/PB/市值/换手率）</td>
+        </tr>
+        <tr>
+          <td><code>gbm_factor</code></td>
+          <td class="num-cell">51,518</td>
+          <td>gbm</td>
+          <td>申万金工 LightGBM 周频量价因子</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-info" style="margin-top:12px;">
+      <strong>数据源：</strong>juzi-mcp（PIT成分/一致预期/估值面板）+ 腾讯月K（qt.gtimg.cn 16线程）+ 申万金工因子库（直连服务器）<br>
+      <strong>关键规则：</strong>非交易日 as_of 估值面板返回 count=0；HF因子面板滞后1个交易日；文件尾部旧常量会静默覆盖头部定义
+    </div>
+  </div>
+
+  <!-- 2. L1 数据层 -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> L1 数据层 — 超额的天花板</div>
+    <div class="formula-box" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
+      <div class="label">数据增量 = 同方法论下 新数据源 vs 基线数据源</div>
+      L1 Data Edge · 接入什么数据，决定 alpha 的天花板
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>数据源/信息源</th><th>状态</th><th>实测超额</th><th>核心证据</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>一致预期 PIT 数据</strong><br><span style="font-size:12px;color:var(--text-light);">juzi-mcp con_forecast_stk</span></td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell pos">+18.1pp</td>
+          <td>C-Score +30.7% / 超额+26.2pp（10期8期跑赢）· 数据层核心资产</td>
+        </tr>
+        <tr>
+          <td><strong>万得全A PIT 成分池</strong><br><span style="font-size:12px;color:var(--text-light);">881001.WI 11期点时成分</span></td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell">~53pp</td>
+          <td>消除幸存者偏差：龙头池等权+455% vs 全A等权+52.9% → 池子beta占绝大部分</td>
+        </tr>
+        <tr>
+          <td><strong>腾讯月K 全市场行情</strong><br><span style="font-size:12px;color:var(--text-light);">qt.gtimg.cn 线程池</span></td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell">基础设施</td>
+          <td>支撑全市场 5.2年回测的基础数据管线</td>
+        </tr>
+        <tr>
+          <td><strong>52周高点距离 dist52</strong><br><span style="font-size:12px;color:var(--text-light);">Li&Yu 2012 锚定效应</span></td>
+          <td><span class="badge badge-candidate">CANDIDATE</span></td>
+          <td class="num-cell pos">+12.3pp</td>
+          <td>唯一跑赢等权全A的行为金融信号（裸测 +12.3pp / MDD -16.6%）· 近高点=反应不足</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. L2 方法论层 -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> L2 方法论层 — 决策框架</div>
+    <div class="formula-box" style="background: linear-gradient(135deg, #5b21b6, #8b5cf6);">
+      <div class="label">方法论增量 = 新方法 vs 当前最强基准（LX-core +60%）</div>
+      L2 Methodology Edge · 怎么决策，决定 alpha 能否被稳定提取
+    </div>
+
+    <!-- LX-core 最强基准 -->
+    <div class="layer-block layer-l2">
+      <h4>🏆 刘旭式框架（LX-core）— 当前最强方法论基准</h4>
+      <p>5年 +60.0% / 超额等权全A +7.1pp / MDD -24.9%</p>
+      <table style="margin-top:8px;">
+        <tbody>
+          <tr><td><strong>筛选规则</strong></td><td>市值≥100亿 + PE(TTM)>0 + L4估值安全(PE≤25或股息率≥2%) + L5低预期(一致预期增速≤25%且0<PEG≤2)</td></tr>
+          <tr><td><strong>排序信念</strong></td><td><span class="highlight">PE升序（便宜优先）</span> — 回测实证的决定性变量（+60% vs 质量优先 -12%，72pp差距）</td></tr>
+          <tr><td><strong>可选增强</strong></td><td>LX-gm层：毛利率≥市场中位数 → MDD -24.9% → -13.9%（回撤砍半），收益持平</td></tr>
+          <tr><td><strong>申万交叉验证</strong></td><td>申万金工月度调仓复现 +23.7% / 超额沪深300 +26.3pp（缺L5致绝对收益降）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table style="margin-top:12px;">
+      <thead>
+        <tr><th>方法论</th><th>状态</th><th>总收益</th><th>超额</th><th>MDD</th><th>核心结论</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>LX-core</strong> 刘旭式+PE升序+mv100</td>
+          <td><span class="badge badge-verified">最强基准</span></td>
+          <td class="num-cell pos">+60.0%</td>
+          <td class="num-cell pos">+7.1pp</td>
+          <td class="num-cell">-24.9%</td>
+          <td>便宜优先完胜质量优先（72pp差距）</td>
+        </tr>
+        <tr>
+          <td><strong>F-Score</strong> Piotroski-So + 刘旭纪律</td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell pos">+12.6%</td>
+          <td class="num-cell pos">+8.1pp</td>
+          <td class="num-cell">-14.4%</td>
+          <td>9因子×BM矩阵 · 低估值=熊市防御</td>
+        </tr>
+        <tr>
+          <td><strong>C-Score</strong> 一致预期替代财报</td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell pos">+30.7%</td>
+          <td class="num-cell pos">+26.2pp</td>
+          <td class="num-cell">-22.9%</td>
+          <td>前瞻性替代滞后财报 · 10期8期跑赢</td>
+        </tr>
+        <tr>
+          <td><strong>ZHF 否决制</strong> 只否决不打分</td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell neg">-2.6%</td>
+          <td class="num-cell pos">+4.7pp</td>
+          <td class="num-cell">-38.4%</td>
+          <td>否决>打分 · 预期信息量在方向变动非水平排序</td>
+        </tr>
+        <tr>
+          <td><strong>章宏帆框架</strong> rotation_growth</td>
+          <td><span class="badge badge-candidate">CANDIDATE</span></td>
+          <td class="num-cell pos">+329.1%</td>
+          <td class="num-cell neg">-126pp</td>
+          <td class="num-cell">-27.0%</td>
+          <td>绝对高但跑输池子 · 纪律价值=回撤控制非选股</td>
+        </tr>
+        <tr>
+          <td><strong>Growth Loop</strong> GOAL→HOOK→LOOP</td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell neg">-14.0%</td>
+          <td class="num-cell neg">-66.9pp</td>
+          <td class="num-cell neg">-56.6%</td>
+          <td>Growth Trap · 买入点=YoY峰值 → 追高接盘循环</td>
+        </tr>
+        <tr>
+          <td><strong>ROA 加权</strong> F-Score变体</td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td>-</td>
+          <td class="num-cell neg">-3.7pp</td>
+          <td>-</td>
+          <td>周期股盈利峰值偏误 · 叠加绝对值=重复暴露周期风险</td>
+        </tr>
+        <tr>
+          <td><strong>GBM 量价</strong> LightGBM周频</td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell pos">+52.5%</td>
+          <td class="num-cell neg">-0.4pp</td>
+          <td>-</td>
+          <td>IC 0.114/IR 0.85 但超额归零 · 90%+是小市值暴露 · 不能择时小盘</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4. L3 卖出时点 -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> L3 卖出时点 — 卖得好比买得好重要</div>
+    <div class="formula-box" style="background: linear-gradient(135deg, #b45309, #f59e0b);">
+      <div class="label">信号增量 = 加信号组合 vs 无信号基线组合</div>
+      L3 Signal Edge · 什么时候买卖，决定 alpha 的兑现率
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>信号</th><th>状态</th><th>增量</th><th>证据</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>估值卖出</strong> PE上限/高估降权</td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td class="num-cell pos">+11pp</td>
+          <td>A股最有效的单一改进 · 均值回归逻辑有效</td>
+        </tr>
+        <tr>
+          <td><strong>BSADF 调仓月叠加</strong></td>
+          <td><span class="badge badge-verified">VERIFIED(弱)</span></td>
+          <td class="num-cell pos">+0.9pp</td>
+          <td>泡沫破裂期正确减仓 · 幅度有限</td>
+        </tr>
+        <tr>
+          <td><strong>涨幅分解 G5</strong> ΔPE主导降信念</td>
+          <td><span class="badge badge-verified">VERIFIED</span></td>
+          <td>内置</td>
+          <td>框架内置过热降温 · 随 rotation_growth 使用</td>
+        </tr>
+        <tr>
+          <td><strong>BSADF 逐月出场</strong></td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell neg">-2.9pp</td>
+          <td>主升段卖飞赢家 · 过灵敏=卖飞</td>
+        </tr>
+        <tr>
+          <td><strong>yoy_drop 下修清仓</strong></td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell neg">MDD -66.3%</td>
+          <td>超灵敏砍太狠 → 清仓接刀循环</td>
+        </tr>
+        <tr>
+          <td><strong>回撤止损</strong> dd50%/yoy50pp</td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell neg">MDD -73.0%</td>
+          <td>止损太晚 · 无甜蜜点</td>
+        </tr>
+        <tr>
+          <td><strong>深跌抄底</strong> 距52周高点远</td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell neg">-36.9pp</td>
+          <td>8期最差 · 接飞刀 · 反向用作规避：距高点过远不买入</td>
+        </tr>
+        <tr>
+          <td><strong>12月动量 / 反转排序</strong></td>
+          <td><span class="badge badge-rejected">REJECTED</span></td>
+          <td class="num-cell neg">-18.8/-20.8pp</td>
+          <td>纯价格外推与反外推在半年调仓下均无 alpha</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-warning">
+      <strong>关键教训：</strong>卖出纪律 = 收益换回撤，非免费午餐。机械清仓在持续下修期会"清仓接刀→割肉换血"循环。
+      <strong>信号质量决定一切</strong>：估值类信号（均值回归逻辑）有效；增长类机械信号（增速下修）无效。
+    </div>
+  </div>
+
+  <!-- 5. 框架源码架构 -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> 框架源码架构（src/）</div>
+
+    <div class="grid-2">
+      <div class="mini-card">
+        <h4>src/core/ — 数据契约</h4>
+        <div class="tag-list">
+          <span class="tag tag-blue">Signal</span>
+          <span class="tag tag-blue">BlendResult</span>
+          <span class="tag tag-blue">AlphaModel</span>
+          <span class="tag tag-blue">DataClient</span>
+          <span class="tag tag-blue">BlendPolicy</span>
+          <span class="tag tag-blue">RiskModel</span>
+          <span class="tag tag-blue">Broker</span>
+        </div>
+        <div class="desc">不可修改的抽象接口与数据结构</div>
+      </div>
+      <div class="mini-card">
+        <h4>src/signals/ — 九大Alpha模型</h4>
+        <div class="tag-list">
+          <span class="tag tag-green">F-Score ✅</span>
+          <span class="tag tag-green">C-Score ✅</span>
+          <span class="tag tag-green">SerenityGate ✅</span>
+          <span class="tag tag-green">RotationGrowth ✅</span>
+          <span class="tag tag-red">GrowthLoop ❌</span>
+          <span class="tag tag-red">ROA加权 ❌</span>
+          <span class="tag">PEAD</span>
+          <span class="tag">BSADF</span>
+          <span class="tag">TechConfluence</span>
+          <span class="tag">AshareValue</span>
+        </div>
+      </div>
+      <div class="mini-card">
+        <h4>src/backtest/ — 回测引擎</h4>
+        <div class="desc">vnpy式回测 · union-of-dates月频循环<br>N月末下单 N+1月成交（无前视）</div>
+      </div>
+      <div class="mini-card">
+        <h4>src/workflow/ — LangGraph工作流</h4>
+        <div class="desc">fetch_data → run_analysts → blend_signals → apply_risk → build_orders → execute_orders → record_cycle</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. 投资决策方案 -->
+  <div class="section">
+    <div class="section-title"><span class="num">6</span> 当前可用的投资决策方案</div>
+
+    <!-- 决策1：选股 -->
+    <div class="decision-card">
+      <div class="header-row">
+        <h4>📋 决策1：当前选股推荐（刘旭框架）</h4>
+        <span class="badge badge-verified">回测验证 · 5.2年+7.1pp</span>
+      </div>
+      <div class="body">
+        <p><strong>运行入口：</strong><code>_lx_now_fetch.py → _lx_now_screen.py → _lx_now_score.py → _lx_now_dist52.py</code></p>
+        <ul>
+          <li><strong>第一层筛选</strong>：市值≥100亿 + PE>0 + L4估值安全(PE≤25或股息率≥2%) + L5低预期(增速≤25%且0<PEG≤2)</li>
+          <li><strong>排序信念</strong>：PE升序（便宜优先）→ top-40 等权组合</li>
+          <li><strong>质量过滤</strong>：可选 LX-gm 层（毛利率≥中位 → 回撤砍半 -13.9%）</li>
+          <li><strong>六维度评分</strong>：价值50%(PE30%+PEG20%) + 质量25%(ROE15%+毛利10%) + 安全25%(股息15%+OCF10%)</li>
+          <li><strong>52周检查</strong>：近高点(≥0.95)=反应不足偏多 · 过远(<0.70)=规避</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 决策2：C-Score -->
+    <div class="decision-card">
+      <div class="header-row">
+        <h4>📊 决策2：C-Score 一致预期策略</h4>
+        <span class="badge badge-verified">回测验证 · +26.2pp</span>
+      </div>
+      <div class="body">
+        <p>用分析师一致预期替代滞后财报的前瞻性选股，C1预期ROE>12% / C2预期增速>0 / C3 4周修正>0 / C4 13周修正>0，配合 BM(1/PB) 三分位矩阵。</p>
+        <ul>
+          <li><strong>运行入口：</strong><code>examples/backtest_c_score.py</code> / <code>_cs_now_*.py</code></li>
+          <li><strong>优势：</strong>前瞻性替代滞后财报 · 10期8期跑赢等权全A</li>
+          <li><strong>输出：</strong>当前推荐名单（可剔除金融股）</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 决策3：筹码筛选 -->
+    <div class="decision-card">
+      <div class="header-row">
+        <h4>🎯 决策3：行业内筹码集中度筛选（个股层）</h4>
+        <span class="badge badge-verified">IC验证 · 行业内Q1端+6.8%单调</span>
+      </div>
+      <div class="body">
+        <p>申万筹码合成因子：个股层集中=机构锁仓(好)，Q1端（最集中）单调跑赢Q5端+6.8%/月。</p>
+        <div class="callout callout-danger" style="margin-top:8px;">
+          <strong>⚠️ 铁律：</strong>筹码集中度<strong>只做行业内个股筛选/负面清单</strong>，禁止跨行业配置。
+          行业层集中=拥挤度过热(坏)，Q1−Q5平均 -3.97pp/月（4/6期集中端跑输）。
+        </div>
+      </div>
+    </div>
+
+    <!-- 决策4：52周高点 -->
+    <div class="decision-card">
+      <div class="header-row">
+        <h4>📈 决策4：52周高点距离检查（锚定效应）</h4>
+        <span class="badge badge-candidate">裸测验证 · 待升格</span>
+      </div>
+      <div class="body">
+        <p>Li&Yu 2012 反应不足机制：近52周高点 → 市场反应不足 → 偏多信号。</p>
+        <ul>
+          <li><strong>近高点 (≥0.95)：</strong>反应不足，偏多信号 — 唯一裸测跑赢等权全A的行为信号(+12.3pp)</li>
+          <li><strong>较近 (≥0.85)：</strong>次优</li>
+          <li><strong>中等 (≥0.70)：</strong>中性</li>
+          <li><strong>过远 (<0.70)：</strong>L3规避 — 距高点过远的股票不买入（深跌抄底 -36.9pp）</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 决策5：数据库查询 -->
+    <div class="decision-card">
+      <div class="header-row">
+        <h4>🗄️ 决策5：SQLite 全市场查询</h4>
+        <span class="badge badge-verified">直接可用</span>
+      </div>
+      <div class="body">
+        <p><code>data/a_share_market.db</code> 可直接用 DBBrowser / SQL 查询：</p>
+        <ul>
+          <li>任意时点 PIT 成分池（避免幸存者偏差）</li>
+          <li>全市场月K收盘价（313K条）</li>
+          <li>一致预期快照（含4/13/26周修正幅度）</li>
+          <li>估值面板（PE/PB/市值/换手率）</li>
+          <li>申万金工因子面板（7因子）</li>
+          <li>GBM量价因子（已验证：alpha主要来自小市值暴露，不可用于择时）</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 决策6：Alpha归因 -->
+    <div class="decision-card">
+      <div class="header-row">
+        <h4>📝 决策6：Alpha 归因记账</h4>
+        <span class="badge badge-verified">框架内置</span>
+      </div>
+      <div class="body">
+        <p>每次回测改进必须归因到 L1/L2/L3 三层之一，<code>alpha_ledger/ledger.json</code> 已记录 17 条实验（4+6+7）。</p>
+        <p><strong>已验证有效（VERIFIED）：</strong>一致预期 PIT(+18.1pp) · 万得全A PIT · 刘旭式(+7.1pp) · F-Score(+8.1pp) · C-Score(+26.2pp) · ZHF否决(+4.7pp) · 估值卖出(+11pp) · BSADF调仓(+0.9pp) · G5涨幅分解</p>
+        <p><strong>已验证无效（REJECTED）：</strong>Growth Loop(-14%) · ROA加权(-3.7pp) · GBM量价(-0.4pp) · yoy_drop清仓(MDD-66%) · 回撤止损(MDD-73%) · 深跌抄底(-36.9pp) · 12月动量/反转</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. 申万因子扫描 -->
+  <div class="section">
+    <div class="section-title"><span class="num">7</span> 申万金工因子库扫描结果</div>
+    <div class="callout callout-danger">
+      <strong>铁律：IC≠alpha</strong> — 月频 Spearman IC 高不代表有超额收益。筹码成本 IC 0.038 被 2026-07 极端值污染，多空实际 -1.6%。
+      估值月频 IC≈0 与刘旭 PE升序半年频 +60% 不矛盾（口径不可互推）。
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>T1 类别</th><th>代表因子</th><th>IC 表现</th><th>多空收益</th><th>结论</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>成长</strong></td>
+          <td>npyoy, oryoy</td>
+          <td>低IC高兑现</td>
+          <td class="num-cell pos">+12.4%/年</td>
+          <td>行业轮动维度有效 · 但不能替代刘旭式选股</td>
+        </tr>
+        <tr>
+          <td><strong>筹码合成</strong></td>
+          <td>筹码集中度</td>
+          <td>负向 IC</td>
+          <td class="num-cell pos">Q1端 +6.8% 单调</td>
+          <td>行业内个股层最稳 · 行业层证伪（拥挤度过热）</td>
+        </tr>
+        <tr>
+          <td><strong>行业轮动</strong></td>
+          <td>行业动量/反转</td>
+          <td>唯一独立源 |ρ|<0.03</td>
+          <td class="num-cell pos">+12.6%</td>
+          <td>与其他因子正交 · 可作独立信号源</td>
+        </tr>
+        <tr>
+          <td><strong>GBM 量价</strong></td>
+          <td>LightGBM 周频</td>
+          <td>IC 0.114 / IR 0.85</td>
+          <td class="num-cell">打平</td>
+          <td>90%+ 是小市值暴露 · mv≥100亿后超额归零 · 不能择时小盘</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 8. 推荐操作 -->
+  <div class="section">
+    <div class="section-title"><span class="num">8</span> 推荐操作清单</div>
+
+    <div class="layer-block layer-l1">
+      <h4>日常选股（每月调仓）</h4>
+      <p>
+        <code>_lx_now_fetch.py</code>（更新CANDIDATE_DATES为最新交易日）→
+        <code>_lx_now_screen.py</code>（core+gm层筛选）→
+        <code>_lx_now_score.py</code>（六维度评分）→
+        <code>_lx_now_dist52.py</code>（52周检查）
+      </p>
+    </div>
+
+    <div class="layer-block layer-l2">
+      <h4>策略验证（新方法论 A/B）</h4>
+      <p>
+        ① 从 SQLite 读取 PIT 成分池 → ② 跑等权全A基准 → ③ 跑新策略 → ④ 对比超额/MDD → ⑤ 归因到L1/L2/L3 → ⑥ 写入 alpha_ledger
+      </p>
+    </div>
+
+    <div class="layer-block layer-l3">
+      <h4>规避清单（不可使用）</h4>
+      <p>
+        Growth Loop纯增速(-14%) · 质量优先排序(-12.2%) · ROA加权(-3.7pp) · IRR门控 · 减速清仓 · yoy_drop(-66%) · 回撤止损(-73%) · 深跌抄底(-36.9pp) · 12月动量/反转 · GBM择时小盘 · 筹码行业层配置 · F×C乘数混合
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    AI Fund Framework · 项目路径 D:\workspace\ai_fund_framework<br>
+    整理日期 2026-08-25 · 基于全项目回测实证 · 万得全A PIT 成分池
+  </div>
+
+</div>
+</body>
+</html>

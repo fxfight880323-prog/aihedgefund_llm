@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBM量价 × 万得全A 回测报告</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  body{font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+    margin:0;padding:32px 24px;background:#fafafa;color:#222;line-height:1.55}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px}
+  .meta{color:#666;font-size:13px;margin-bottom:24px}
+  h2{font-size:16px;margin:28px 0 10px;border-left:4px solid #c62828;padding-left:10px}
+  table{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+  th,td{border:1px solid #e3e3e3;padding:7px 10px;text-align:right}
+  th{background:#f5f5f5;font-weight:500}
+  td:first-child,th:first-child{text-align:left}
+  tr.hl td{background:#fdf0ef}
+  tr.ref td{background:#eef4fc}
+  .sub{color:#888;font-size:11px}
+  .verdict{background:#fff;border:1px solid #e3e3e3;border-radius:8px;
+    padding:14px 18px;margin:10px 0;font-size:14px}
+  .verdict b{color:#a32d2d}
+  .warn{background:#fdf6ec;border:1px solid #f0d9a8;border-radius:8px;
+    padding:14px 18px;margin:14px 0;font-size:14px}
+  .chartbox{background:#fff;border:1px solid #e3e3e3;border-radius:8px;padding:12px}
+  .foot{color:#999;font-size:12px;margin-top:24px}
+</style></head><body><div class="wrap">
+<h1>GBM量价因子 × 万得全A PIT 池 全市场回测</h1>
+<div class="meta">2021-06 ~ 2026-08 · 池子=万得全A(881001.WI) PIT 成分 ·
+半年度, 同引擎同成本 5bp+10bp · 2026-08-24</div>
+
+<h2>总览（相对收益列：vs 等权全A / vs LX-core）</h2>
+<table><tr><th>组合</th><th>总收益</th><th>年化</th><th>最大回撤</th>
+<th>超额 vs EW</th><th>超额 vs LX</th></tr>
+
+        <tr class='hl'><td><b>GBM top-40 等权</b></td>
+          <td>+52.5%</td><td>+8.4%</td>
+          <td>-36.6%</td>
+          <td>-0.4%</td><td>-7.5%</td></tr>
+        <tr><td><b>GBM top-20</b></td>
+          <td>+62.5%</td><td>+9.7%</td>
+          <td>-42.0%</td>
+          <td>+9.6%</td><td>+2.5%</td></tr>
+        <tr><td><b>GBM top-60</b></td>
+          <td>+63.7%</td><td>+9.8%</td>
+          <td>-35.0%</td>
+          <td>+10.7%</td><td>+3.7%</td></tr>
+        <tr><td><b>GBM 最低 40（对照）</b></td>
+          <td>-29.4%</td><td>-6.4%</td>
+          <td>-64.7%</td>
+          <td>-82.3%</td><td>-89.4%</td></tr>
+        <tr><td><b>GBM top-40 · 市值≥100亿</b></td>
+          <td>+12.4%</td><td>+2.2%</td>
+          <td>-36.6%</td>
+          <td>-40.6%</td><td>-47.7%</td></tr>
+        <tr><td>EW-全A（等权基准）</td><td>+52.9%</td>
+          <td>+8.4%</td><td>—</td><td>0.0%</td><td>-60.0%</td></tr>
+        <tr><td>CSI-全指（中证全指 000985.SH）</td><td>+0.2%</td>
+          <td>+0.0%</td><td>—</td><td>—</td><td>-59.8%</td></tr>
+        <tr class='ref'><td>LX-core（刘旭式 · 便宜优先）</td><td>+60.0%</td>
+          <td>+9.4%</td><td>-24.9%</td>
+          <td>+7.1%</td><td>0.0%</td></tr></table>
+
+<h2>NAV 曲线（累计收益 %）</h2>
+<div class="chartbox"><div style="position:relative;width:100%;height:420px">
+<canvas id="nav" role="img" aria-label="GBM各变体与基准NAV曲线">NAV 曲线</canvas>
+</div></div>
+
+<h2>分年度收益（组合 vs 等权全A）</h2>
+<table><tr><th>年度</th><th>GBM top-40 等权</th><th>GBM top-20</th><th>GBM top-60</th><th>GBM 最低 40（对照）</th><th>GBM top-40 · 市值≥100亿</th></tr>
+<tr><td>2021</td><td>+14.0%<br><span class='sub'>+3.4% vs EW</span></td><td>+19.0%<br><span class='sub'>+8.4% vs EW</span></td><td>+17.0%<br><span class='sub'>+6.5% vs EW</span></td><td>+5.0%<br><span class='sub'>-5.6% vs EW</span></td><td>+12.4%<br><span class='sub'>+1.8% vs EW</span></td></tr><tr><td>2022</td><td>-2.5%<br><span class='sub'>-2.0% vs EW</span></td><td>-6.8%<br><span class='sub'>-6.2% vs EW</span></td><td>+0.8%<br><span class='sub'>+1.4% vs EW</span></td><td>-15.9%<br><span class='sub'>-15.3% vs EW</span></td><td>-10.7%<br><span class='sub'>-10.1% vs EW</span></td></tr><tr><td>2023</td><td>+11.8%<br><span class='sub'>+12.6% vs EW</span></td><td>+20.1%<br><span class='sub'>+20.9% vs EW</span></td><td>+10.1%<br><span class='sub'>+10.9% vs EW</span></td><td>-34.0%<br><span class='sub'>-33.2% vs EW</span></td><td>+0.4%<br><span class='sub'>+1.2% vs EW</span></td></tr><tr><td>2024</td><td>+20.5%<br><span class='sub'>-6.5% vs EW</span></td><td>+12.5%<br><span class='sub'>-14.5% vs EW</span></td><td>+18.2%<br><span class='sub'>-8.8% vs EW</span></td><td>+12.6%<br><span class='sub'>-14.5% vs EW</span></td><td>+21.3%<br><span class='sub'>-5.7% vs EW</span></td></tr><tr><td>2025</td><td>+38.4%<br><span class='sub'>-2.8% vs EW</span></td><td>+40.2%<br><span class='sub'>-1.0% vs EW</span></td><td>+34.8%<br><span class='sub'>-6.5% vs EW</span></td><td>+23.2%<br><span class='sub'>-18.1% vs EW</span></td><td>+21.9%<br><span class='sub'>-19.4% vs EW</span></td></tr><tr><td>2026</td><td>+2.2%<br><span class='sub'>+9.5% vs EW</span></td><td>+11.8%<br><span class='sub'>+19.2% vs EW</span></td><td>+6.3%<br><span class='sub'>+13.6% vs EW</span></td><td>+15.3%<br><span class='sub'>+22.6% vs EW</span></td><td>-1.3%<br><span class='sub'>+6.0% vs EW</span></td></tr></table>
+
+<h2>每期组合诊断（gbm40）</h2>
+<table><tr><th>期</th><th>成分</th><th>GBM覆盖</th><th>top40中位市值</th>
+<th>小盘&lt;30亿</th><th>大盘≥100亿</th><th>换手</th><th>mv100版中位市值</th></tr>
+
+        <tr><td>2021-08</td><td>4441</td>
+          <td>4439 (100%)</td>
+          <td>28亿</td>
+          <td>52%</td><td>18%</td>
+          <td>None</td>
+          <td>382亿</td></tr>
+        <tr><td>2022-04</td><td>4780</td>
+          <td>4776 (100%)</td>
+          <td>40亿</td>
+          <td>38%</td><td>12%</td>
+          <td>98%</td>
+          <td>187亿</td></tr>
+        <tr><td>2022-08</td><td>4869</td>
+          <td>4869 (100%)</td>
+          <td>68亿</td>
+          <td>28%</td><td>30%</td>
+          <td>100%</td>
+          <td>251亿</td></tr>
+        <tr><td>2023-04</td><td>5148</td>
+          <td>5147 (100%)</td>
+          <td>71亿</td>
+          <td>8%</td><td>38%</td>
+          <td>100%</td>
+          <td>198亿</td></tr>
+        <tr><td>2023-08</td><td>5255</td>
+          <td>5255 (100%)</td>
+          <td>56亿</td>
+          <td>12%</td><td>22%</td>
+          <td>100%</td>
+          <td>165亿</td></tr>
+        <tr><td>2024-04</td><td>5361</td>
+          <td>5361 (100%)</td>
+          <td>37亿</td>
+          <td>28%</td><td>5%</td>
+          <td>100%</td>
+          <td>200亿</td></tr>
+        <tr><td>2024-08</td><td>5344</td>
+          <td>5341 (100%)</td>
+          <td>19亿</td>
+          <td>78%</td><td>2%</td>
+          <td>98%</td>
+          <td>145亿</td></tr>
+        <tr><td>2025-04</td><td>5407</td>
+          <td>5404 (100%)</td>
+          <td>28亿</td>
+          <td>60%</td><td>8%</td>
+          <td>98%</td>
+          <td>160亿</td></tr>
+        <tr><td>2025-08</td><td>5424</td>
+          <td>5423 (100%)</td>
+          <td>17亿</td>
+          <td>88%</td><td>0%</td>
+          <td>100%</td>
+          <td>147亿</td></tr>
+        <tr><td>2026-04</td><td>5503</td>
+          <td>5503 (100%)</td>
+          <td>14亿</td>
+          <td>90%</td><td>0%</td>
+          <td>82%</td>
+          <td>137亿</td></tr></table>
+
+<h2>结论</h2>
+<div class="verdict"><b>GBM top-40 跑输等权全A -0.4%</b>（+52.5% vs +52.9%）——单因子裸排序在成分池内无超额</div>
+<div class="verdict">方向正确：GBM 最低 40 只 -29.4% 显著跑输 top-40 +52.5%，因子排序方向在成分池内成立</div>
+<div class="verdict"><b>组合显著偏小市值</b>：top-40 中位市值平均 38 亿，与扫描结论（市值 ρ=-0.27）一致；若 gbm40_mv100（市值≥100亿）总收益 +12.4% 大幅缩水，说明超额主要来自小市值 beta</div>
+<div class="verdict">跑输 LX-core（+60.0%，差 -7.5%）；MDD -36.6% vs -24.9%——便宜优先仍是更强方法论</div>
+<div class="warn"><b>衰减监控提示</b>：GBM 分年 IC 2021-2026 为 0.094/0.157/0.135/0.118/0.095/<b>0.052</b>，2026 年已降至全段均值(0.114)一半以下。扫描建议滚动 12 月 IC&lt;0.03 即降权，若本回测 2025-08/2026-04 两期超额已转负，则监控规则应触发。</div>
+
+<div class="foot">数据：申万金工 MCP（GBM量价因子值，月末快照）+ 万得全A PIT 成分（juzi 缓存）
++ 腾讯月K（前复权）。同引擎同成本（5bp 佣金 + 10bp 滑点），半年度调仓。
+本报告仅供研究参考，不构成投资建议。</div>
+</div>
+<script>
+new Chart(document.getElementById('nav'), {
+  type: 'line',
+  data: { labels: ["2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12", "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"], datasets: [{"label": "GBM top-40 \u7b49\u6743", "data": [0.0, 0.0, 0.0, -0.13, 3.2, 12.08, 13.97, 5.61, 9.43, 4.49, -12.05, -3.45, 5.38, 15.89, 7.62, -3.72, -3.61, 5.15, 2.93, 7.91, 24.93, 22.77, 23.54, 23.54, 32.71, 31.74, 19.72, 19.61, 18.52, 18.03, 20.68, -12.92, -5.93, -4.3, -5.97, -6.12, -14.87, -15.13, -15.92, 2.16, 5.57, 8.37, 4.96, 5.89, 8.97, 13.31, 15.38, 19.38, 28.65, 40.4, 46.68, 47.65, 49.05, 49.96, 46.61, 49.24, 54.85, 55.72, 57.55, 57.82, 52.16, 51.62, 52.51], "borderColor": "#c62828", "backgroundColor": "#c6282822", "fill": false, "tension": 0.15, "borderWidth": 2.4, "borderDash": []},{"label": "GBM top-20", "data": [0.0, 0.0, 0.0, -0.14, 9.15, 15.8, 19.0, 9.57, 12.1, 7.61, -10.0, -1.67, 6.79, 17.67, 8.35, -3.11, -3.93, 4.67, 2.14, 6.99, 35.19, 30.31, 33.37, 32.7, 42.17, 40.67, 26.55, 25.7, 22.36, 22.1, 28.49, -9.12, -0.79, -1.18, -6.54, -7.11, -15.65, -16.74, -17.56, 0.5, 2.14, 4.76, 2.27, 1.59, 4.16, 11.49, 11.72, 14.78, 23.98, 37.89, 45.16, 40.59, 44.9, 47.78, 42.45, 45.34, 54.47, 61.41, 63.18, 63.75, 61.41, 60.15, 62.54], "borderColor": "#e67e22", "backgroundColor": "#e67e2222", "fill": false, "tension": 0.15, "borderWidth": 2.4, "borderDash": []},{"label": "GBM top-60", "data": [0.0, 0.0, 0.0, -0.13, 1.26, 12.91, 17.04, 10.18, 15.52, 10.62, -7.42, 5.5, 15.16, 24.85, 16.44, 4.97, 5.19, 15.31, 11.09, 17.01, 31.59, 28.93, 29.28, 27.81, 38.51, 38.17, 27.87, 27.55, 26.43, 28.31, 28.88, -5.51, 0.69, 2.64, 1.05, 1.1, -8.73, -8.91, -9.94, 9.31, 11.66, 14.85, 11.7, 12.89, 16.1, 19.96, 21.46, 25.91, 35.76, 45.38, 51.67, 51.7, 54.93, 55.15, 52.16, 53.99, 59.04, 58.32, 62.41, 67.92, 63.4, 63.03, 63.67], "borderColor": "#8a6d3b", "backgroundColor": "#8a6d3b22", "fill": false, "tension": 0.15, "borderWidth": 2.4, "borderDash": []},{"label": "GBM \u6700\u4f4e 40\uff08\u5bf9\u7167\uff09", "data": [0.0, 0.0, 0.0, -0.12, -1.12, 10.36, 4.98, -10.86, -2.53, -14.53, -24.94, -16.03, -13.76, -14.22, -18.2, -26.06, -20.7, -19.11, -25.03, -16.54, -16.27, -20.39, -26.45, -26.43, -30.1, -37.83, -40.9, -41.12, -44.93, -41.99, -44.92, -55.91, -54.84, -51.77, -54.76, -54.81, -58.16, -57.12, -61.07, -52.25, -46.4, -46.31, -50.37, -51.86, -47.88, -50.4, -52.74, -50.12, -48.41, -47.4, -40.48, -41.92, -43.57, -45.62, -40.71, -38.71, -33.08, -42.0, -33.79, -27.93, -24.93, -37.12, -29.36], "borderColor": "#7f8c8d", "backgroundColor": "#7f8c8d22", "fill": false, "tension": 0.15, "borderWidth": 2.4, "borderDash": [4,3]},{"label": "GBM top-40 \u00b7 \u5e02\u503c\u2265100\u4ebf", "data": [0.0, 0.0, 0.0, -0.12, 5.71, 9.93, 12.4, 1.86, 2.87, -10.88, -18.45, -9.19, 1.83, 5.5, -1.1, -10.9, -12.76, -3.08, -9.02, -3.8, 0.15, -0.89, 5.33, 2.94, 9.4, 10.52, 1.23, 1.21, -1.66, -2.99, -3.44, -25.98, -16.88, -20.9, -20.8, -23.0, -28.78, -26.62, -27.92, -9.94, -7.56, -7.74, -10.21, -12.14, -11.23, -10.69, -12.62, -10.9, -6.47, -0.59, 6.32, 6.39, 8.33, 6.15, 7.06, 13.86, 19.17, 8.26, 17.5, 20.18, 11.68, 15.36, 12.36], "borderColor": "#8250df", "backgroundColor": "#8250df22", "fill": false, "tension": 0.15, "borderWidth": 2.4, "borderDash": []},{"label": "LX-core", "data": [0.0, 0.0, 0.0, -0.14, -5.53, -6.65, -0.46, 2.16, 1.72, 9.11, 7.03, -1.26, 1.18, -4.0, -5.85, -10.38, -18.03, -4.14, -9.29, -6.38, -5.05, -6.21, 1.69, -2.61, -4.29, 4.74, 0.03, 6.1, 0.73, -1.36, -1.32, 6.64, 12.11, 13.05, 17.67, 23.76, 19.18, 19.63, 14.09, 35.52, 33.11, 35.67, 39.99, 38.64, 34.21, 38.94, 39.41, 49.09, 54.18, 56.81, 59.05, 54.69, 62.09, 60.46, 61.38, 64.91, 64.97, 60.44, 61.38, 56.46, 45.75, 64.26, 60.02], "borderColor": "#0b6bcb", "backgroundColor": "#0b6bcb22", "fill": false, "tension": 0.15, "borderWidth": 1.8, "borderDash": [6,3]},{"label": "EW-全A", "data": [0.0, 0.0, 0.0, -1.94, -4.09, 6.96, 10.58, -0.06, 5.02, -0.52, -16.2, -6.61, 1.4, 4.66, 1.46, -7.84, -4.33, 3.69, -0.61, 7.73, 11.46, 10.13, 6.93, 7.08, 9.87, 11.21, 6.61, 6.43, 5.38, 9.23, 6.87, -13.38, -8.11, -3.65, -5.26, -6.5, -14.64, -13.95, -17.17, 2.38, 9.74, 15.05, 10.05, 8.19, 16.41, 16.68, 13.79, 19.77, 27.42, 34.54, 46.31, 48.1, 50.39, 50.02, 52.83, 65.02, 71.94, 55.78, 66.33, 61.65, 55.25, 45.26, 52.94], "borderColor": "#666", "backgroundColor": "#66622", "fill": false, "tension": 0.1, "borderWidth": 1.6, "borderDash": [6,4]},{"label": "CSI-全指", "data": [0.0, -3.88, -1.28, -1.9, -1.61, 0.98, 2.32, -7.34, -4.79, -11.99, -20.35, -15.98, -8.28, -11.3, -14.0, -20.61, -22.87, -16.73, -18.47, -12.37, -12.32, -13.03, -14.32, -17.47, -16.7, -14.98, -19.92, -20.79, -22.61, -22.49, -24.21, -33.59, -27.13, -26.11, -25.37, -26.5, -30.75, -31.09, -33.93, -19.32, -17.83, -16.94, -18.57, -20.59, -16.91, -17.27, -20.01, -18.33, -15.08, -11.41, -1.89, 0.71, 0.56, -1.74, 1.46, 7.28, 9.67, 0.14, 8.71, 9.16, 12.3, -2.62, 0.21], "borderColor": "#999", "backgroundColor": "#99922", "fill": false, "tension": 0.1, "borderWidth": 1.4, "borderDash": [3,3]}] },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 14, font: { size: 11 } } } },
+    scales: {
+      x: { ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 12 } },
+      y: { ticks: { callback: v => v + '%' } }
+    }
+  }
+});
+</script>
+</body></html>

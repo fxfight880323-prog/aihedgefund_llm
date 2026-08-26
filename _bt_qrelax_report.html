@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高质量放松PE排序实验</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: #f5f6fa; color: #2c3e50; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 24px; color: #1a1a2e; margin-bottom: 8px; }
+h2 { font-size: 18px; color: #1a1a2e; margin: 28px 0 12px; border-left: 4px solid #e74c3c; padding-left: 12px; }
+h3 { font-size: 15px; color: #34495e; margin: 16px 0 8px; }
+.subtitle { color: #7f8c8d; font-size: 13px; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin: 12px 0; }
+th { background: #2c3e50; color: #fff; padding: 10px 8px; text-align: center; font-size: 13px; font-weight: 600; }
+td { padding: 8px; text-align: center; font-size: 13px; border-bottom: 1px solid #ecf0f1; }
+td.l { text-align: left; }
+.mono { font-family: "Cascadia Code", "Consolas", monospace; }
+.card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 16px 0; }
+.highlight { background: #fff3cd; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; color: #fff; }
+.badge-win { background: #1e8449; }
+.badge-lose { background: #c0392b; }
+.badge-neutral { background: #566573; }
+.chart-box { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 12px 0; height: 420px; }
+.insight { background: #fff; border-left: 4px solid #e74c3c; padding: 14px 18px; margin: 12px 0; border-radius: 0 8px 8px 0; font-size: 14px; }
+.insight strong { color: #c0392b; }
+.formula { background: #1a1a2e; color: #e8e8e8; padding: 12px 16px; border-radius: 8px; font-family: monospace; font-size: 13px; margin: 8px 0; }
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+.summary-card { background: #fff; border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+.summary-card .num { font-size: 28px; font-weight: 700; font-family: monospace; }
+.summary-card .label { font-size: 12px; color: #7f8c8d; margin-top: 4px; }
+.positive { color: #c0392b; }
+.negative { color: #1e8449; }
+footer { text-align: center; color: #95a5a6; font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid #ecf0f1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>高质量放松 PE 排序实验</h1>
+  <p class="subtitle">日频 + 复权口径 · core_finex 基线 · 10 期半年度调仓 · 2021-08 ~ 2026-08 · 万得全A PIT 池</p>
+
+  <div class="insight">
+    <strong>核心问题：</strong>福耀玻璃（PE 17.4, gpm 38%, ROE 22%）通过了全部质量筛选但 PE 排名第 132/226，无法进入最终名单。
+    能否对高质量公司放松 PE 排序，让它们进入组合？答案是：<strong>小幅质量倾斜有效（+3.4pp），大幅放松或强制纳入有害（-4~-13pp）</strong>。
+  </div>
+
+  <h2>① 六变体总览</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>变体</th><th>总收益</th><th>年化</th><th>MDD</th>
+        <th>Δ收益(vs基线)</th><th>ΔMDD</th><th>收益/MDD</th><th>Δ风险调整</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr style="background:#fff3cd">
+      <td><b>纯PE升序(基线)</b> ← 基线</td>
+      <td class="mono" style="color:#566573">≈ +29.45%</td>
+      <td class="mono">+5.26%</td>
+      <td class="mono">22.12%</td>
+      <td class="mono" style="color:#566573">+0.00%</td>
+      <td class="mono" style="color:">+0.00%</td>
+      <td class="mono"><b>1.33</b></td>
+      <td class="mono" style="color:">+0.00</td>
+    </tr>
+
+    <tr style="">
+      <td><b>80%PE+20%质量</b></td>
+      <td class="mono" style="color:#566573">≈ +32.85%</td>
+      <td class="mono">+5.80%</td>
+      <td class="mono">22.03%</td>
+      <td class="mono" style="color:#566573">+3.40%</td>
+      <td class="mono" style="color:">-0.09%</td>
+      <td class="mono"><b>1.49</b></td>
+      <td class="mono" style="color:green">+0.16</td>
+    </tr>
+
+    <tr style="">
+      <td><b>60%PE+40%质量</b></td>
+      <td class="mono" style="color:#566573">≈ +30.30%</td>
+      <td class="mono">+5.39%</td>
+      <td class="mono">20.42%</td>
+      <td class="mono" style="color:#566573">+0.84%</td>
+      <td class="mono" style="color:">-1.70%</td>
+      <td class="mono"><b>1.48</b></td>
+      <td class="mono" style="color:green">+0.15</td>
+    </tr>
+
+    <tr style="">
+      <td><b>50%PE+50%质量</b></td>
+      <td class="mono" style="color:#566573">≈ +30.53%</td>
+      <td class="mono">+5.43%</td>
+      <td class="mono">19.05%</td>
+      <td class="mono" style="color:#566573">+1.08%</td>
+      <td class="mono" style="color:">-3.07%</td>
+      <td class="mono"><b>1.60</b></td>
+      <td class="mono" style="color:green">+0.27</td>
+    </tr>
+
+    <tr style="">
+      <td><b>30便宜+10质量</b></td>
+      <td class="mono" style="color:#566573">≈ +16.29%</td>
+      <td class="mono">+3.04%</td>
+      <td class="mono">23.42%</td>
+      <td class="mono" style="color:#566573">-13.16%</td>
+      <td class="mono" style="color:">+1.29%</td>
+      <td class="mono"><b>0.70</b></td>
+      <td class="mono" style="color:red">-0.64</td>
+    </tr>
+
+    <tr style="">
+      <td><b>质量调整PE</b></td>
+      <td class="mono" style="color:#566573">≈ +25.13%</td>
+      <td class="mono">+4.55%</td>
+      <td class="mono">21.64%</td>
+      <td class="mono" style="color:#566573">-4.33%</td>
+      <td class="mono" style="color:">-0.48%</td>
+      <td class="mono"><b>1.16</b></td>
+      <td class="mono" style="color:red">-0.17</td>
+    </tr></tbody>
+  </table>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="num positive">+3.40pp</div>
+      <div class="label">q20 收益提升</div>
+    </div>
+    <div class="summary-card">
+      <div class="num positive">-3.07pp</div>
+      <div class="label">q50 MDD 降低</div>
+    </div>
+    <div class="summary-card">
+      <div class="num negative">-13.16pp</div>
+      <div class="label">two_bucket 灾难</div>
+    </div>
+  </div>
+
+  <h2>② NAV 曲线对比</h2>
+  <div class="chart-box"><canvas id="navChart"></canvas></div>
+
+  <h2>③ 收益与回撤对比</h2>
+  <div class="chart-box"><canvas id="barChart"></canvas></div>
+
+  <h2>④ 关键发现</h2>
+
+  <div class="card">
+    <h3>✅ q20（80%PE + 20%质量）= 最优增量</h3>
+    <div class="formula">blend_rank = 0.80 × pe_percentile + 0.20 × quality_percentile</div>
+    <p style="font-size: 14px; margin-top: 8px;">
+      收益 <span class="positive">+32.85%</span> vs 基线 +29.45%（<b>+3.40pp</b>）<br>
+      MDD 22.03% vs 22.12%（几乎不变）<br>
+      风险调整收益 1.49 vs 1.33（<b>+12%</b> 提升）<br>
+      每期仅替换 1~6 只股票，与基线重叠 34~39/40
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>⚠️ q50 = 最佳风险控制器</h3>
+    <p style="font-size: 14px;">
+      收益 +30.53%（仅 +1.08pp），但 MDD 降至 <b>19.05%</b>（-3.07pp）<br>
+      风险调整收益 1.60 = 全场最高<br>
+      适合追求低波动的配置需求
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>❌ two_bucket（30便宜 + 10质量）= 灾难</h3>
+    <p style="font-size: 14px;">
+      收益 <span class="negative">仅 +16.29%</span>（-13.16pp）<br>
+      原因：从"最便宜30只"之外选"最高质量10只" = 选了 PE 最高的质量股<br>
+      这本质上是"质量优先"排序的退化版——而回测已证实质量优先跑输等权全A
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>❌ qadj_pe（PE×质量折扣）= 负贡献</h3>
+    <div class="formula">adj_pe = PE × (1 - 0.15 × quality_z_score)</div>
+    <p style="font-size: 14px;">
+      收益 +25.13%（-4.33pp）<br>
+      乘法调整过度放大利高质量因子，把太多贵股拉入组合
+    </p>
+  </div>
+
+  <h2>⑤ q20 的选股逻辑：替换了什么？</h2>
+  <p style="font-size: 14px; margin-bottom: 12px;">
+    q20 每期替换 1~6 只，替换方向一致：<b>踢出"便宜但低质"的边缘股，换成"稍贵但高质"的股票</b>。
+  </p>
+  <table>
+    <thead>
+      <tr><th>调仓期</th><th>方向</th><th>代码</th><th>PE</th><th>毛利率</th><th>ROE</th><th>质量分</th></tr>
+    </thead>
+    <tbody>
+    <tr style="background:#eaf7ea">
+      <td class="mono">2021-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">601216.SH</td>
+      <td class="mono">8.6</td>
+      <td class="mono">33.8%</td>
+      <td class="mono">23.9%</td>
+      <td class="mono"><b>73.4</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2021-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600170.SH</td>
+      <td class="mono">7.1</td>
+      <td class="mono">9.6%</td>
+      <td class="mono">9.4%</td>
+      <td class="mono"><b>9.6</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000672.SZ</td>
+      <td class="mono">7.8</td>
+      <td class="mono">42.2%</td>
+      <td class="mono">23.1%</td>
+      <td class="mono"><b>82.5</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">002978.SZ</td>
+      <td class="mono">8.5</td>
+      <td class="mono">74.0%</td>
+      <td class="mono">24.2%</td>
+      <td class="mono"><b>82.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600012.SH</td>
+      <td class="mono">7.9</td>
+      <td class="mono">59.7%</td>
+      <td class="mono">12.8%</td>
+      <td class="mono"><b>70.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600955.SH</td>
+      <td class="mono">8.1</td>
+      <td class="mono">27.5%</td>
+      <td class="mono">21.5%</td>
+      <td class="mono"><b>71.5</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600153.SH</td>
+      <td class="mono">6.8</td>
+      <td class="mono">3.6%</td>
+      <td class="mono">11.6%</td>
+      <td class="mono"><b>14.4</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600170.SH</td>
+      <td class="mono">7.7</td>
+      <td class="mono">9.4%</td>
+      <td class="mono">9.2%</td>
+      <td class="mono"><b>38.9</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601598.SH</td>
+      <td class="mono">7.2</td>
+      <td class="mono">4.8%</td>
+      <td class="mono">10.8%</td>
+      <td class="mono"><b>36.2</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">603225.SH</td>
+      <td class="mono">7.1</td>
+      <td class="mono">10.3%</td>
+      <td class="mono">11.4%</td>
+      <td class="mono"><b>34.4</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">002601.SZ</td>
+      <td class="mono">9.3</td>
+      <td class="mono">41.2%</td>
+      <td class="mono">21.1%</td>
+      <td class="mono"><b>77.4</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">601019.SH</td>
+      <td class="mono">8.8</td>
+      <td class="mono">37.8%</td>
+      <td class="mono">11.9%</td>
+      <td class="mono"><b>61.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2022-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">601678.SH</td>
+      <td class="mono">8.9</td>
+      <td class="mono">33.4%</td>
+      <td class="mono">14.9%</td>
+      <td class="mono"><b>67.3</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">000002.SZ</td>
+      <td class="mono">8.2</td>
+      <td class="mono">20.9%</td>
+      <td class="mono">10.0%</td>
+      <td class="mono"><b>26.9</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">000402.SZ</td>
+      <td class="mono">7.4</td>
+      <td class="mono">19.8%</td>
+      <td class="mono">4.4%</td>
+      <td class="mono"><b>11.2</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2022-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600057.SH</td>
+      <td class="mono">8.6</td>
+      <td class="mono">2.3%</td>
+      <td class="mono">14.8%</td>
+      <td class="mono"><b>36.6</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2023-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000598.SZ</td>
+      <td class="mono">9.5</td>
+      <td class="mono">38.4%</td>
+      <td class="mono">11.0%</td>
+      <td class="mono"><b>63.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2023-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600325.SH</td>
+      <td class="mono">9.3</td>
+      <td class="mono">19.7%</td>
+      <td class="mono">13.8%</td>
+      <td class="mono"><b>62.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2023-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600803.SH</td>
+      <td class="mono">9.6</td>
+      <td class="mono">15.3%</td>
+      <td class="mono">28.8%</td>
+      <td class="mono"><b>70.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2023-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">601168.SH</td>
+      <td class="mono">9.3</td>
+      <td class="mono">17.8%</td>
+      <td class="mono">17.8%</td>
+      <td class="mono"><b>65.3</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2023-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">002061.SZ</td>
+      <td class="mono">8.4</td>
+      <td class="mono">8.1%</td>
+      <td class="mono">11.1%</td>
+      <td class="mono"><b>28.2</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2023-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600048.SH</td>
+      <td class="mono">9.0</td>
+      <td class="mono">22.0%</td>
+      <td class="mono">9.6%</td>
+      <td class="mono"><b>47.5</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2023-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600755.SH</td>
+      <td class="mono">5.5</td>
+      <td class="mono">1.6%</td>
+      <td class="mono">10.0%</td>
+      <td class="mono"><b>10.6</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2023-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601618.SH</td>
+      <td class="mono">8.5</td>
+      <td class="mono">9.4%</td>
+      <td class="mono">8.0%</td>
+      <td class="mono"><b>27.2</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2023-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">600012.SH</td>
+      <td class="mono">11.0</td>
+      <td class="mono">53.9%</td>
+      <td class="mono">14.1%</td>
+      <td class="mono"><b>72.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2023-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">601827.SH</td>
+      <td class="mono">10.4</td>
+      <td class="mono">31.0%</td>
+      <td class="mono">12.4%</td>
+      <td class="mono"><b>61.1</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2023-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600528.SH</td>
+      <td class="mono">9.9</td>
+      <td class="mono">18.7%</td>
+      <td class="mono">8.3%</td>
+      <td class="mono"><b>30.3</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2023-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601800.SH</td>
+      <td class="mono">7.9</td>
+      <td class="mono">11.9%</td>
+      <td class="mono">7.1%</td>
+      <td class="mono"><b>6.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000598.SZ</td>
+      <td class="mono">11.1</td>
+      <td class="mono">40.8%</td>
+      <td class="mono">11.5%</td>
+      <td class="mono"><b>64.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600938.SH</td>
+      <td class="mono">10.8</td>
+      <td class="mono">51.0%</td>
+      <td class="mono">18.2%</td>
+      <td class="mono"><b>81.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">601298.SH</td>
+      <td class="mono">10.6</td>
+      <td class="mono">35.6%</td>
+      <td class="mono">11.7%</td>
+      <td class="mono"><b>56.5</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">601918.SH</td>
+      <td class="mono">11.0</td>
+      <td class="mono">40.1%</td>
+      <td class="mono">14.7%</td>
+      <td class="mono"><b>74.9</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">000581.SZ</td>
+      <td class="mono">9.4</td>
+      <td class="mono">18.7%</td>
+      <td class="mono">10.2%</td>
+      <td class="mono"><b>30.4</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600048.SH</td>
+      <td class="mono">9.2</td>
+      <td class="mono">15.7%</td>
+      <td class="mono">6.0%</td>
+      <td class="mono"><b>9.0</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600528.SH</td>
+      <td class="mono">10.3</td>
+      <td class="mono">19.1%</td>
+      <td class="mono">6.8%</td>
+      <td class="mono"><b>18.2</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601618.SH</td>
+      <td class="mono">8.5</td>
+      <td class="mono">9.4%</td>
+      <td class="mono">6.0%</td>
+      <td class="mono"><b>3.8</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">600938.SH</td>
+      <td class="mono">10.0</td>
+      <td class="mono">51.2%</td>
+      <td class="mono">19.0%</td>
+      <td class="mono"><b>82.2</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">601958.SH</td>
+      <td class="mono">10.2</td>
+      <td class="mono">43.7%</td>
+      <td class="mono">18.8%</td>
+      <td class="mono"><b>72.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2024-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">603816.SH</td>
+      <td class="mono">10.0</td>
+      <td class="mono">33.5%</td>
+      <td class="mono">19.8%</td>
+      <td class="mono"><b>70.5</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">002078.SZ</td>
+      <td class="mono">9.8</td>
+      <td class="mono">17.3%</td>
+      <td class="mono">11.5%</td>
+      <td class="mono"><b>47.6</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600528.SH</td>
+      <td class="mono">9.0</td>
+      <td class="mono">19.1%</td>
+      <td class="mono">6.8%</td>
+      <td class="mono"><b>19.0</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2024-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600642.SH</td>
+      <td class="mono">9.9</td>
+      <td class="mono">19.8%</td>
+      <td class="mono">10.0%</td>
+      <td class="mono"><b>47.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000598.SZ</td>
+      <td class="mono">10.3</td>
+      <td class="mono">42.0%</td>
+      <td class="mono">10.7%</td>
+      <td class="mono"><b>65.3</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000791.SZ</td>
+      <td class="mono">10.3</td>
+      <td class="mono">37.1%</td>
+      <td class="mono">12.2%</td>
+      <td class="mono"><b>69.8</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600729.SH</td>
+      <td class="mono">10.3</td>
+      <td class="mono">26.8%</td>
+      <td class="mono">15.6%</td>
+      <td class="mono"><b>65.9</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600873.SH</td>
+      <td class="mono">10.4</td>
+      <td class="mono">21.4%</td>
+      <td class="mono">18.2%</td>
+      <td class="mono"><b>66.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">601872.SH</td>
+      <td class="mono">10.4</td>
+      <td class="mono">27.5%</td>
+      <td class="mono">13.4%</td>
+      <td class="mono"><b>63.9</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">601958.SH</td>
+      <td class="mono">10.4</td>
+      <td class="mono">40.7%</td>
+      <td class="mono">15.7%</td>
+      <td class="mono"><b>68.3</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">000685.SZ</td>
+      <td class="mono">9.6</td>
+      <td class="mono">18.3%</td>
+      <td class="mono">7.3%</td>
+      <td class="mono"><b>13.8</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600027.SH</td>
+      <td class="mono">10.1</td>
+      <td class="mono">9.4%</td>
+      <td class="mono">9.1%</td>
+      <td class="mono"><b>42.4</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600528.SH</td>
+      <td class="mono">10.0</td>
+      <td class="mono">18.9%</td>
+      <td class="mono">7.1%</td>
+      <td class="mono"><b>13.3</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600801.SH</td>
+      <td class="mono">10.1</td>
+      <td class="mono">25.6%</td>
+      <td class="mono">7.7%</td>
+      <td class="mono"><b>51.4</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601117.SH</td>
+      <td class="mono">7.8</td>
+      <td class="mono">10.4%</td>
+      <td class="mono">9.0%</td>
+      <td class="mono"><b>12.8</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601137.SH</td>
+      <td class="mono">10.0</td>
+      <td class="mono">17.6%</td>
+      <td class="mono">14.2%</td>
+      <td class="mono"><b>36.7</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">000933.SZ</td>
+      <td class="mono">11.1</td>
+      <td class="mono">19.1%</td>
+      <td class="mono">20.2%</td>
+      <td class="mono"><b>71.5</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">002714.SZ</td>
+      <td class="mono">10.9</td>
+      <td class="mono">23.1%</td>
+      <td class="mono">23.3%</td>
+      <td class="mono"><b>71.0</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2025-08</td>
+      <td>↗ 新增</td>
+      <td class="mono">601600.SH</td>
+      <td class="mono">10.8</td>
+      <td class="mono">15.6%</td>
+      <td class="mono">18.4%</td>
+      <td class="mono"><b>68.1</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600039.SH</td>
+      <td class="mono">10.4</td>
+      <td class="mono">15.4%</td>
+      <td class="mono">14.9%</td>
+      <td class="mono"><b>38.9</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600170.SH</td>
+      <td class="mono">10.5</td>
+      <td class="mono">9.3%</td>
+      <td class="mono">4.9%</td>
+      <td class="mono"><b>35.8</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2025-08</td>
+      <td>↘ 踢出</td>
+      <td class="mono">601677.SH</td>
+      <td class="mono">10.3</td>
+      <td class="mono">6.0%</td>
+      <td class="mono">10.2%</td>
+      <td class="mono"><b>25.1</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2026-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000791.SZ</td>
+      <td class="mono">12.7</td>
+      <td class="mono">42.3%</td>
+      <td class="mono">13.3%</td>
+      <td class="mono"><b>75.2</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2026-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">000999.SZ</td>
+      <td class="mono">13.4</td>
+      <td class="mono">51.8%</td>
+      <td class="mono">14.2%</td>
+      <td class="mono"><b>74.5</b></td>
+    </tr>
+
+    <tr style="background:#eaf7ea">
+      <td class="mono">2026-04</td>
+      <td>↗ 新增</td>
+      <td class="mono">600211.SH</td>
+      <td class="mono">13.5</td>
+      <td class="mono">93.8%</td>
+      <td class="mono">20.8%</td>
+      <td class="mono"><b>81.6</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2026-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">000028.SZ</td>
+      <td class="mono">12.5</td>
+      <td class="mono">10.6%</td>
+      <td class="mono">6.1%</td>
+      <td class="mono"><b>9.9</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2026-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">002078.SZ</td>
+      <td class="mono">12.6</td>
+      <td class="mono">15.3%</td>
+      <td class="mono">10.5%</td>
+      <td class="mono"><b>42.8</b></td>
+    </tr>
+
+    <tr style="background:#fdedec">
+      <td class="mono">2026-04</td>
+      <td>↘ 踢出</td>
+      <td class="mono">600710.SH</td>
+      <td class="mono">11.6</td>
+      <td class="mono">6.7%</td>
+      <td class="mono">14.9%</td>
+      <td class="mono"><b>23.7</b></td>
+    </tr></tbody>
+  </table>
+
+  <h2>⑥ 福耀玻璃为什么没被救回来？</h2>
+  <div class="insight">
+    <p style="font-size: 14px;">
+      福耀玻璃在 <strong>所有变体、所有 10 期</strong> 中均未进入 top 40。原因：
+    </p>
+    <ol style="margin-left: 20px; font-size: 14px; margin-top: 8px;">
+      <li><strong>池子太大</strong>：每期通过筛选的候选池 173~312 只，PE 排名 ~130/200+</li>
+      <li><strong>PE 差距太大</strong>：top40 的 PE 在 6~14 区间，福耀 PE 17.4，差距 >3pp</li>
+      <li><strong>质量分不突出</strong>：gpm 38% / ROE 22% 是"好"但不是"极好"——池内有 gpm 50-90% / ROE 25-35% 的股票质量分更高</li>
+      <li><strong>即使 50% 质量权重</strong>：PE 百分位 ~35% × 0.5 + 质量分 ~65% × 0.5 = 50，仍低于 top40 阈值 ~55</li>
+    </ol>
+    <p style="font-size: 14px; margin-top: 8px;">
+      <strong>结论</strong>：质量放松是对 top40 边缘股的微调，不是对 PE 中段股的拯救。福耀属于"中PE中质量"——比 top40 贵，但质量在池内也不拔尖。
+    </p>
+  </div>
+
+  <h2>⑦ 实操建议</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>方案</th><th>排序公式</th><th>收益</th><th>MDD</th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr style="background:#eaf7ea">
+          <td><b>推荐 q20</b></td>
+          <td class="mono">0.8×PE分位 + 0.2×质量分</td>
+          <td class="mono positive">+32.85%</td>
+          <td class="mono">22.03%</td>
+          <td>默认增强层</td>
+        </tr>
+        <tr>
+          <td>备选 q50</td>
+          <td class="mono">0.5×PE分位 + 0.5×质量分</td>
+          <td class="mono">+30.53%</td>
+          <td class="mono">19.05%</td>
+          <td>低波动需求</td>
+        </tr>
+        <tr>
+          <td>基线 core</td>
+          <td class="mono">纯 PE 升序</td>
+          <td class="mono">+29.45%</td>
+          <td class="mono">22.12%</td>
+          <td>最简实现</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight">
+    <p style="font-size: 14px;">
+      <strong>落地方式</strong>：在现有管线 <code>_lx_now_score.py</code> 的评分函数中，将排序权重从
+      <code>sort_by = pe_asc</code> 改为 <code>sort_by = 0.8*pe_pct + 0.2*q_score</code>。
+      筛选/质量层/band 规避层不变。福耀玻璃仍不会入选——但那是正确的行为：它的 PE 确实不在 alpha 区间。
+    </p>
+  </div>
+
+  <footer>
+    高质量放松PE排序实验 · 数据截至 2026-08-24 · 日频+复权口径 · core_finex 基线<br>
+    回测引擎: vnpy BacktestingEngine · 成本 5bp+10bp · 半年度调仓 · 单票5%上限
+  </footer>
+</div>
+
+<script>
+const navData = [{"name": "纯PE升序(基线)", "color": "#566573", "data": [{"date": "2021-06-01", "nav": 1.0}, {"date": "2021-06-09", "nav": 1.0}, {"date": "2021-06-18", "nav": 1.0}, {"date": "2021-06-29", "nav": 1.0}, {"date": "2021-07-07", "nav": 1.0}, {"date": "2021-07-15", "nav": 1.0}, {"date": "2021-07-26", "nav": 1.0}, {"date": "2021-08-03", "nav": 1.0}, {"date": "2021-08-11", "nav": 1.0}, {"date": "2021-08-20", "nav": 1.0}, {"date": "2021-08-30", "nav": 1.0}, {"date": "2021-09-07", "nav": 1.0755}, {"date": "2021-09-16", "nav": 1.0633}, {"date": "2021-09-28", "nav": 1.077}, {"date": "2021-10-13", "nav": 1.0375}, {"date": "2021-10-22", "nav": 1.0194}, {"date": "2021-11-01", "nav": 0.9534}, {"date": "2021-11-09", "nav": 0.9226}, {"date": "2021-11-18", "nav": 0.9524}, {"date": "2021-11-26", "nav": 0.9547}, {"date": "2021-12-07", "nav": 1.0066}, {"date": "2021-12-15", "nav": 0.9991}, {"date": "2021-12-23", "nav": 1.0296}, {"date": "2022-01-04", "nav": 1.0535}, {"date": "2022-01-12", "nav": 1.0833}, {"date": "2022-01-20", "nav": 1.0876}, {"date": "2022-02-07", "nav": 1.0552}, {"date": "2022-02-15", "nav": 1.0569}, {"date": "2022-02-23", "nav": 1.0676}, {"date": "2022-03-04", "nav": 1.061}, {"date": "2022-03-14", "nav": 0.9959}, {"date": "2022-03-22", "nav": 1.0293}, {"date": "2022-03-31", "nav": 1.0949}, {"date": "2022-04-12", "nav": 1.1007}, {"date": "2022-04-20", "nav": 1.0495}, {"date": "2022-04-29", "nav": 1.052}, {"date": "2022-05-12", "nav": 1.0144}, {"date": "2022-05-20", "nav": 1.0613}, {"date": "2022-05-31", "nav": 1.0711}, {"date": "2022-06-09", "nav": 1.093}, {"date": "2022-06-20", "nav": 1.077}, {"date": "2022-06-28", "nav": 1.0863}, {"date": "2022-07-06", "nav": 1.0703}, {"date": "2022-07-15", "nav": 1.0111}, {"date": "2022-07-25", "nav": 1.013}, {"date": "2022-08-02", "nav": 0.9877}, {"date": "2022-08-11", "nav": 1.0179}, {"date": "2022-08-19", "nav": 1.0325}, {"date": "2022-08-29", "nav": 1.042}, {"date": "2022-09-07", "nav": 1.0557}, {"date": "2022-09-16", "nav": 1.0188}, {"date": "2022-09-26", "nav": 0.9887}, {"date": "2022-10-12", "nav": 0.9912}, {"date": "2022-10-20", "nav": 0.9706}, {"date": "2022-10-28", "nav": 0.9204}, {"date": "2022-11-08", "nav": 0.9521}, {"date": "2022-11-16", "nav": 0.9845}, {"date": "2022-11-24", "nav": 1.001}, {"date": "2022-12-05", "nav": 1.0752}, {"date": "2022-12-13", "nav": 1.0459}, {"date": "2022-12-22", "nav": 0.9888}, {"date": "2022-12-30", "nav": 0.987}, {"date": "2023-01-10", "nav": 0.994}, {"date": "2023-01-19", "nav": 1.0176}, {"date": "2023-02-03", "nav": 1.0316}, {"date": "2023-02-13", "nav": 1.0484}, {"date": "2023-02-22", "nav": 1.0618}, {"date": "2023-03-02", "nav": 1.0752}, {"date": "2023-03-10", "nav": 1.0407}, {"date": "2023-03-21", "nav": 1.0526}, {"date": "2023-03-29", "nav": 1.0285}, {"date": "2023-04-07", "nav": 1.0688}, {"date": "2023-04-18", "nav": 1.1103}, {"date": "2023-04-26", "nav": 1.061}, {"date": "2023-05-09", "nav": 1.0876}, {"date": "2023-05-18", "nav": 1.0584}, {"date": "2023-05-26", "nav": 1.0095}, {"date": "2023-06-05", "nav": 1.0158}, {"date": "2023-06-14", "nav": 1.0142}, {"date": "2023-06-26", "nav": 0.9763}, {"date": "2023-07-05", "nav": 1.0211}, {"date": "2023-07-13", "nav": 1.0262}, {"date": "2023-07-21", "nav": 1.0219}, {"date": "2023-08-01", "nav": 1.0762}, {"date": "2023-08-09", "nav": 1.0541}, {"date": "2023-08-17", "nav": 1.0395}, {"date": "2023-08-28", "nav": 1.0343}, {"date": "2023-09-05", "nav": 1.0381}, {"date": "2023-09-13", "nav": 1.0318}, {"date": "2023-09-22", "nav": 1.0323}, {"date": "2023-10-10", "nav": 0.9996}, {"date": "2023-10-18", "nav": 0.987}, {"date": "2023-10-27", "nav": 0.9824}, {"date": "2023-11-06", "nav": 0.9692}, {"date": "2023-11-14", "nav": 0.9643}, {"date": "2023-11-23", "nav": 0.9726}, {"date": "2023-12-01", "nav": 0.9659}, {"date": "2023-12-11", "nav": 0.962}, {"date": "2023-12-20", "nav": 0.9398}, {"date": "2023-12-28", "nav": 0.9524}, {"date": "2024-01-09", "nav": 0.9743}, {"date": "2024-01-17", "nav": 0.9619}, {"date": "2024-01-25", "nav": 1.0022}, {"date": "2024-02-05", "nav": 0.9487}, {"date": "2024-02-21", "nav": 1.0375}, {"date": "2024-02-29", "nav": 1.0583}, {"date": "2024-03-11", "nav": 1.0715}, {"date": "2024-03-19", "nav": 1.0582}, {"date": "2024-03-27", "nav": 1.0444}, {"date": "2024-04-09", "nav": 1.0829}, {"date": "2024-04-17", "nav": 1.1358}, {"date": "2024-04-25", "nav": 1.0957}, {"date": "2024-05-09", "nav": 1.1271}, {"date": "2024-05-17", "nav": 1.1492}, {"date": "2024-05-27", "nav": 1.1538}, {"date": "2024-06-05", "nav": 1.1312}, {"date": "2024-06-14", "nav": 1.1174}, {"date": "2024-06-24", "nav": 1.0789}, {"date": "2024-07-03", "nav": 1.0863}, {"date": "2024-07-11", "nav": 1.0692}, {"date": "2024-07-22", "nav": 1.0495}, {"date": "2024-07-30", "nav": 1.0302}, {"date": "2024-08-07", "nav": 1.0381}, {"date": "2024-08-16", "nav": 1.0261}, {"date": "2024-08-26", "nav": 0.9923}, {"date": "2024-09-03", "nav": 0.9604}, {"date": "2024-09-12", "nav": 0.914}, {"date": "2024-09-24", "nav": 0.9727}, {"date": "2024-10-09", "nav": 1.1156}, {"date": "2024-10-18", "nav": 1.1296}, {"date": "2024-10-28", "nav": 1.1703}, {"date": "2024-11-05", "nav": 1.1708}, {"date": "2024-11-14", "nav": 1.1647}, {"date": "2024-11-22", "nav": 1.1239}, {"date": "2024-12-02", "nav": 1.1538}, {"date": "2024-12-11", "nav": 1.1676}, {"date": "2024-12-19", "nav": 1.1451}, {"date": "2024-12-27", "nav": 1.1593}, {"date": "2025-01-08", "nav": 1.0958}, {"date": "2025-01-16", "nav": 1.0903}, {"date": "2025-01-27", "nav": 1.1005}, {"date": "2025-02-12", "nav": 1.0952}, {"date": "2025-02-20", "nav": 1.0781}, {"date": "2025-03-03", "nav": 1.0936}, {"date": "2025-03-11", "nav": 1.1235}, {"date": "2025-03-19", "nav": 1.1391}, {"date": "2025-03-28", "nav": 1.1243}, {"date": "2025-04-08", "nav": 1.0583}, {"date": "2025-04-16", "nav": 1.0735}, {"date": "2025-04-25", "nav": 1.0844}, {"date": "2025-05-08", "nav": 1.0869}, {"date": "2025-05-16", "nav": 1.0934}, {"date": "2025-05-27", "nav": 1.0839}, {"date": "2025-06-05", "nav": 1.0933}, {"date": "2025-06-13", "nav": 1.1095}, {"date": "2025-06-24", "nav": 1.1016}, {"date": "2025-07-02", "nav": 1.1292}, {"date": "2025-07-10", "nav": 1.1516}, {"date": "2025-07-21", "nav": 1.1888}, {"date": "2025-07-29", "nav": 1.2136}, {"date": "2025-08-07", "nav": 1.2133}, {"date": "2025-08-15", "nav": 1.256}, {"date": "2025-08-25", "nav": 1.2887}, {"date": "2025-09-03", "nav": 1.2617}, {"date": "2025-09-11", "nav": 1.2896}, {"date": "2025-09-19", "nav": 1.2867}, {"date": "2025-09-30", "nav": 1.28}, {"date": "2025-10-16", "nav": 1.3066}, {"date": "2025-10-24", "nav": 1.317}, {"date": "2025-11-04", "nav": 1.3335}, {"date": "2025-11-12", "nav": 1.3706}, {"date": "2025-11-20", "nav": 1.3154}, {"date": "2025-12-01", "nav": 1.3058}, {"date": "2025-12-09", "nav": 1.2979}, {"date": "2025-12-17", "nav": 1.2992}, {"date": "2025-12-26", "nav": 1.322}, {"date": "2026-01-07", "nav": 1.3376}, {"date": "2026-01-15", "nav": 1.3469}, {"date": "2026-01-26", "nav": 1.3876}, {"date": "2026-02-03", "nav": 1.3512}, {"date": "2026-02-12", "nav": 1.3679}, {"date": "2026-03-02", "nav": 1.4364}, {"date": "2026-03-10", "nav": 1.4262}, {"date": "2026-03-19", "nav": 1.4046}, {"date": "2026-03-27", "nav": 1.3933}, {"date": "2026-04-07", "nav": 1.3779}, {"date": "2026-04-16", "nav": 1.4021}, {"date": "2026-04-24", "nav": 1.3845}, {"date": "2026-05-07", "nav": 1.3671}, {"date": "2026-05-18", "nav": 1.3262}, {"date": "2026-05-26", "nav": 1.3286}, {"date": "2026-06-03", "nav": 1.3476}, {"date": "2026-06-12", "nav": 1.3043}, {"date": "2026-06-23", "nav": 1.2589}, {"date": "2026-07-01", "nav": 1.2221}, {"date": "2026-07-10", "nav": 1.2324}, {"date": "2026-07-20", "nav": 1.2993}, {"date": "2026-07-28", "nav": 1.2992}, {"date": "2026-08-06", "nav": 1.3143}, {"date": "2026-08-14", "nav": 1.2872}, {"date": "2026-08-24", "nav": 1.2945}]}, {"name": "80%PE+20%质量", "color": "#e74c3c", "data": [{"date": "2021-06-01", "nav": 1.0}, {"date": "2021-06-09", "nav": 1.0}, {"date": "2021-06-18", "nav": 1.0}, {"date": "2021-06-29", "nav": 1.0}, {"date": "2021-07-07", "nav": 1.0}, {"date": "2021-07-15", "nav": 1.0}, {"date": "2021-07-26", "nav": 1.0}, {"date": "2021-08-03", "nav": 1.0}, {"date": "2021-08-11", "nav": 1.0}, {"date": "2021-08-20", "nav": 1.0}, {"date": "2021-08-30", "nav": 1.0}, {"date": "2021-09-07", "nav": 1.0742}, {"date": "2021-09-16", "nav": 1.061}, {"date": "2021-09-28", "nav": 1.0665}, {"date": "2021-10-13", "nav": 1.0337}, {"date": "2021-10-22", "nav": 1.0148}, {"date": "2021-11-01", "nav": 0.9481}, {"date": "2021-11-09", "nav": 0.919}, {"date": "2021-11-18", "nav": 0.9496}, {"date": "2021-11-26", "nav": 0.9519}, {"date": "2021-12-07", "nav": 1.0011}, {"date": "2021-12-15", "nav": 0.9946}, {"date": "2021-12-23", "nav": 1.022}, {"date": "2022-01-04", "nav": 1.0463}, {"date": "2022-01-12", "nav": 1.076}, {"date": "2022-01-20", "nav": 1.081}, {"date": "2022-02-07", "nav": 1.0489}, {"date": "2022-02-15", "nav": 1.0502}, {"date": "2022-02-23", "nav": 1.0615}, {"date": "2022-03-04", "nav": 1.0561}, {"date": "2022-03-14", "nav": 0.9928}, {"date": "2022-03-22", "nav": 1.0263}, {"date": "2022-03-31", "nav": 1.0906}, {"date": "2022-04-12", "nav": 1.0949}, {"date": "2022-04-20", "nav": 1.0464}, {"date": "2022-04-29", "nav": 1.0479}, {"date": "2022-05-12", "nav": 1.0099}, {"date": "2022-05-20", "nav": 1.0526}, {"date": "2022-05-31", "nav": 1.0603}, {"date": "2022-06-09", "nav": 1.0822}, {"date": "2022-06-20", "nav": 1.0676}, {"date": "2022-06-28", "nav": 1.0786}, {"date": "2022-07-06", "nav": 1.0632}, {"date": "2022-07-15", "nav": 1.0097}, {"date": "2022-07-25", "nav": 1.0101}, {"date": "2022-08-02", "nav": 0.9853}, {"date": "2022-08-11", "nav": 1.016}, {"date": "2022-08-19", "nav": 1.0297}, {"date": "2022-08-29", "nav": 1.0378}, {"date": "2022-09-07", "nav": 1.0518}, {"date": "2022-09-16", "nav": 1.012}, {"date": "2022-09-26", "nav": 0.9825}, {"date": "2022-10-12", "nav": 0.9847}, {"date": "2022-10-20", "nav": 0.963}, {"date": "2022-10-28", "nav": 0.9153}, {"date": "2022-11-08", "nav": 0.9456}, {"date": "2022-11-16", "nav": 0.9753}, {"date": "2022-11-24", "nav": 0.991}, {"date": "2022-12-05", "nav": 1.0553}, {"date": "2022-12-13", "nav": 1.0279}, {"date": "2022-12-22", "nav": 0.9746}, {"date": "2022-12-30", "nav": 0.9743}, {"date": "2023-01-10", "nav": 0.9815}, {"date": "2023-01-19", "nav": 1.0039}, {"date": "2023-02-03", "nav": 1.0194}, {"date": "2023-02-13", "nav": 1.0362}, {"date": "2023-02-22", "nav": 1.051}, {"date": "2023-03-02", "nav": 1.0649}, {"date": "2023-03-10", "nav": 1.0321}, {"date": "2023-03-21", "nav": 1.0496}, {"date": "2023-03-29", "nav": 1.028}, {"date": "2023-04-07", "nav": 1.0664}, {"date": "2023-04-18", "nav": 1.1076}, {"date": "2023-04-26", "nav": 1.0683}, {"date": "2023-05-09", "nav": 1.0984}, {"date": "2023-05-18", "nav": 1.0771}, {"date": "2023-05-26", "nav": 1.0255}, {"date": "2023-06-05", "nav": 1.0277}, {"date": "2023-06-14", "nav": 1.0263}, {"date": "2023-06-26", "nav": 0.9886}, {"date": "2023-07-05", "nav": 1.0349}, {"date": "2023-07-13", "nav": 1.043}, {"date": "2023-07-21", "nav": 1.0385}, {"date": "2023-08-01", "nav": 1.0932}, {"date": "2023-08-09", "nav": 1.0717}, {"date": "2023-08-17", "nav": 1.0569}, {"date": "2023-08-28", "nav": 1.0549}, {"date": "2023-09-05", "nav": 1.0585}, {"date": "2023-09-13", "nav": 1.0537}, {"date": "2023-09-22", "nav": 1.0553}, {"date": "2023-10-10", "nav": 1.0255}, {"date": "2023-10-18", "nav": 1.0121}, {"date": "2023-10-27", "nav": 1.0056}, {"date": "2023-11-06", "nav": 0.9935}, {"date": "2023-11-14", "nav": 0.9889}, {"date": "2023-11-23", "nav": 0.999}, {"date": "2023-12-01", "nav": 0.9942}, {"date": "2023-12-11", "nav": 0.9922}, {"date": "2023-12-20", "nav": 0.9704}, {"date": "2023-12-28", "nav": 0.9812}, {"date": "2024-01-09", "nav": 1.0078}, {"date": "2024-01-17", "nav": 0.9952}, {"date": "2024-01-25", "nav": 1.0325}, {"date": "2024-02-05", "nav": 0.9819}, {"date": "2024-02-21", "nav": 1.0719}, {"date": "2024-02-29", "nav": 1.0911}, {"date": "2024-03-11", "nav": 1.1074}, {"date": "2024-03-19", "nav": 1.0941}, {"date": "2024-03-27", "nav": 1.0813}, {"date": "2024-04-09", "nav": 1.1195}, {"date": "2024-04-17", "nav": 1.1731}, {"date": "2024-04-25", "nav": 1.133}, {"date": "2024-05-09", "nav": 1.1648}, {"date": "2024-05-17", "nav": 1.1816}, {"date": "2024-05-27", "nav": 1.1918}, {"date": "2024-06-05", "nav": 1.1708}, {"date": "2024-06-14", "nav": 1.1623}, {"date": "2024-06-24", "nav": 1.1276}, {"date": "2024-07-03", "nav": 1.1388}, {"date": "2024-07-11", "nav": 1.1217}, {"date": "2024-07-22", "nav": 1.0955}, {"date": "2024-07-30", "nav": 1.0765}, {"date": "2024-08-07", "nav": 1.0812}, {"date": "2024-08-16", "nav": 1.0734}, {"date": "2024-08-26", "nav": 1.0381}, {"date": "2024-09-03", "nav": 1.0034}, {"date": "2024-09-12", "nav": 0.9583}, {"date": "2024-09-24", "nav": 1.0137}, {"date": "2024-10-09", "nav": 1.1567}, {"date": "2024-10-18", "nav": 1.1703}, {"date": "2024-10-28", "nav": 1.2117}, {"date": "2024-11-05", "nav": 1.2114}, {"date": "2024-11-14", "nav": 1.2052}, {"date": "2024-11-22", "nav": 1.1631}, {"date": "2024-12-02", "nav": 1.1928}, {"date": "2024-12-11", "nav": 1.2049}, {"date": "2024-12-19", "nav": 1.1814}, {"date": "2024-12-27", "nav": 1.1953}, {"date": "2025-01-08", "nav": 1.1335}, {"date": "2025-01-16", "nav": 1.1294}, {"date": "2025-01-27", "nav": 1.1393}, {"date": "2025-02-12", "nav": 1.1338}, {"date": "2025-02-20", "nav": 1.1165}, {"date": "2025-03-03", "nav": 1.1321}, {"date": "2025-03-11", "nav": 1.1625}, {"date": "2025-03-19", "nav": 1.1775}, {"date": "2025-03-28", "nav": 1.1617}, {"date": "2025-04-08", "nav": 1.0936}, {"date": "2025-04-16", "nav": 1.1094}, {"date": "2025-04-25", "nav": 1.1192}, {"date": "2025-05-08", "nav": 1.1239}, {"date": "2025-05-16", "nav": 1.1278}, {"date": "2025-05-27", "nav": 1.1182}, {"date": "2025-06-05", "nav": 1.1295}, {"date": "2025-06-13", "nav": 1.146}, {"date": "2025-06-24", "nav": 1.1392}, {"date": "2025-07-02", "nav": 1.1655}, {"date": "2025-07-10", "nav": 1.1877}, {"date": "2025-07-21", "nav": 1.2191}, {"date": "2025-07-29", "nav": 1.2334}, {"date": "2025-08-07", "nav": 1.2365}, {"date": "2025-08-15", "nav": 1.2656}, {"date": "2025-08-25", "nav": 1.2958}, {"date": "2025-09-03", "nav": 1.2697}, {"date": "2025-09-11", "nav": 1.2991}, {"date": "2025-09-19", "nav": 1.2811}, {"date": "2025-09-30", "nav": 1.2835}, {"date": "2025-10-16", "nav": 1.3147}, {"date": "2025-10-24", "nav": 1.3273}, {"date": "2025-11-04", "nav": 1.3451}, {"date": "2025-11-12", "nav": 1.3907}, {"date": "2025-11-20", "nav": 1.3336}, {"date": "2025-12-01", "nav": 1.3248}, {"date": "2025-12-09", "nav": 1.3193}, {"date": "2025-12-17", "nav": 1.3185}, {"date": "2025-12-26", "nav": 1.3469}, {"date": "2026-01-07", "nav": 1.377}, {"date": "2026-01-15", "nav": 1.3818}, {"date": "2026-01-26", "nav": 1.419}, {"date": "2026-02-03", "nav": 1.3797}, {"date": "2026-02-12", "nav": 1.3977}, {"date": "2026-03-02", "nav": 1.4721}, {"date": "2026-03-10", "nav": 1.4642}, {"date": "2026-03-19", "nav": 1.4363}, {"date": "2026-03-27", "nav": 1.419}, {"date": "2026-04-07", "nav": 1.4056}, {"date": "2026-04-16", "nav": 1.4371}, {"date": "2026-04-24", "nav": 1.4084}, {"date": "2026-05-07", "nav": 1.3982}, {"date": "2026-05-18", "nav": 1.3665}, {"date": "2026-05-26", "nav": 1.3662}, {"date": "2026-06-03", "nav": 1.395}, {"date": "2026-06-12", "nav": 1.3423}, {"date": "2026-06-23", "nav": 1.2987}, {"date": "2026-07-01", "nav": 1.2642}, {"date": "2026-07-10", "nav": 1.2671}, {"date": "2026-07-20", "nav": 1.3322}, {"date": "2026-07-28", "nav": 1.3318}, {"date": "2026-08-06", "nav": 1.3484}, {"date": "2026-08-14", "nav": 1.3215}, {"date": "2026-08-24", "nav": 1.3285}]}, {"name": "60%PE+40%质量", "color": "#f39c12", "data": [{"date": "2021-06-01", "nav": 1.0}, {"date": "2021-06-09", "nav": 1.0}, {"date": "2021-06-18", "nav": 1.0}, {"date": "2021-06-29", "nav": 1.0}, {"date": "2021-07-07", "nav": 1.0}, {"date": "2021-07-15", "nav": 1.0}, {"date": "2021-07-26", "nav": 1.0}, {"date": "2021-08-03", "nav": 1.0}, {"date": "2021-08-11", "nav": 1.0}, {"date": "2021-08-20", "nav": 1.0}, {"date": "2021-08-30", "nav": 1.0}, {"date": "2021-09-07", "nav": 1.0647}, {"date": "2021-09-16", "nav": 1.0496}, {"date": "2021-09-28", "nav": 1.0523}, {"date": "2021-10-13", "nav": 1.0295}, {"date": "2021-10-22", "nav": 1.0115}, {"date": "2021-11-01", "nav": 0.9542}, {"date": "2021-11-09", "nav": 0.9312}, {"date": "2021-11-18", "nav": 0.9617}, {"date": "2021-11-26", "nav": 0.9625}, {"date": "2021-12-07", "nav": 1.0032}, {"date": "2021-12-15", "nav": 0.9969}, {"date": "2021-12-23", "nav": 1.0252}, {"date": "2022-01-04", "nav": 1.0571}, {"date": "2022-01-12", "nav": 1.0826}, {"date": "2022-01-20", "nav": 1.085}, {"date": "2022-02-07", "nav": 1.0518}, {"date": "2022-02-15", "nav": 1.0539}, {"date": "2022-02-23", "nav": 1.0615}, {"date": "2022-03-04", "nav": 1.056}, {"date": "2022-03-14", "nav": 0.9981}, {"date": "2022-03-22", "nav": 1.0245}, {"date": "2022-03-31", "nav": 1.0855}, {"date": "2022-04-12", "nav": 1.0878}, {"date": "2022-04-20", "nav": 1.0362}, {"date": "2022-04-29", "nav": 1.0297}, {"date": "2022-05-12", "nav": 0.9922}, {"date": "2022-05-20", "nav": 1.035}, {"date": "2022-05-31", "nav": 1.0449}, {"date": "2022-06-09", "nav": 1.0669}, {"date": "2022-06-20", "nav": 1.055}, {"date": "2022-06-28", "nav": 1.0683}, {"date": "2022-07-06", "nav": 1.0512}, {"date": "2022-07-15", "nav": 0.9951}, {"date": "2022-07-25", "nav": 0.9947}, {"date": "2022-08-02", "nav": 0.9729}, {"date": "2022-08-11", "nav": 1.0067}, {"date": "2022-08-19", "nav": 1.0171}, {"date": "2022-08-29", "nav": 1.0258}, {"date": "2022-09-07", "nav": 1.0362}, {"date": "2022-09-16", "nav": 0.9992}, {"date": "2022-09-26", "nav": 0.9737}, {"date": "2022-10-12", "nav": 0.9768}, {"date": "2022-10-20", "nav": 0.9618}, {"date": "2022-10-28", "nav": 0.9157}, {"date": "2022-11-08", "nav": 0.9464}, {"date": "2022-11-16", "nav": 0.9728}, {"date": "2022-11-24", "nav": 0.9825}, {"date": "2022-12-05", "nav": 1.0321}, {"date": "2022-12-13", "nav": 1.0137}, {"date": "2022-12-22", "nav": 0.9631}, {"date": "2022-12-30", "nav": 0.9637}, {"date": "2023-01-10", "nav": 0.9739}, {"date": "2023-01-19", "nav": 0.9944}, {"date": "2023-02-03", "nav": 1.0075}, {"date": "2023-02-13", "nav": 1.0198}, {"date": "2023-02-22", "nav": 1.0344}, {"date": "2023-03-02", "nav": 1.0415}, {"date": "2023-03-10", "nav": 1.0116}, {"date": "2023-03-21", "nav": 1.021}, {"date": "2023-03-29", "nav": 1.006}, {"date": "2023-04-07", "nav": 1.0371}, {"date": "2023-04-18", "nav": 1.069}, {"date": "2023-04-26", "nav": 1.0468}, {"date": "2023-05-09", "nav": 1.0764}, {"date": "2023-05-18", "nav": 1.0674}, {"date": "2023-05-26", "nav": 1.0194}, {"date": "2023-06-05", "nav": 1.0204}, {"date": "2023-06-14", "nav": 1.0193}, {"date": "2023-06-26", "nav": 0.9827}, {"date": "2023-07-05", "nav": 1.0262}, {"date": "2023-07-13", "nav": 1.0345}, {"date": "2023-07-21", "nav": 1.0291}, {"date": "2023-08-01", "nav": 1.0786}, {"date": "2023-08-09", "nav": 1.0569}, {"date": "2023-08-17", "nav": 1.0474}, {"date": "2023-08-28", "nav": 1.049}, {"date": "2023-09-05", "nav": 1.0498}, {"date": "2023-09-13", "nav": 1.048}, {"date": "2023-09-22", "nav": 1.0504}, {"date": "2023-10-10", "nav": 1.0242}, {"date": "2023-10-18", "nav": 1.0122}, {"date": "2023-10-27", "nav": 1.0057}, {"date": "2023-11-06", "nav": 0.9948}, {"date": "2023-11-14", "nav": 0.9909}, {"date": "2023-11-23", "nav": 1.0015}, {"date": "2023-12-01", "nav": 0.9993}, {"date": "2023-12-11", "nav": 0.9991}, {"date": "2023-12-20", "nav": 0.9799}, {"date": "2023-12-28", "nav": 0.9876}, {"date": "2024-01-09", "nav": 1.0165}, {"date": "2024-01-17", "nav": 1.0057}, {"date": "2024-01-25", "nav": 1.0376}, {"date": "2024-02-05", "nav": 0.9957}, {"date": "2024-02-21", "nav": 1.0788}, {"date": "2024-02-29", "nav": 1.0977}, {"date": "2024-03-11", "nav": 1.1144}, {"date": "2024-03-19", "nav": 1.1006}, {"date": "2024-03-27", "nav": 1.0909}, {"date": "2024-04-09", "nav": 1.1269}, {"date": "2024-04-17", "nav": 1.1789}, {"date": "2024-04-25", "nav": 1.1391}, {"date": "2024-05-09", "nav": 1.1767}, {"date": "2024-05-17", "nav": 1.1875}, {"date": "2024-05-27", "nav": 1.2024}, {"date": "2024-06-05", "nav": 1.1837}, {"date": "2024-06-14", "nav": 1.1776}, {"date": "2024-06-24", "nav": 1.1415}, {"date": "2024-07-03", "nav": 1.1505}, {"date": "2024-07-11", "nav": 1.1378}, {"date": "2024-07-22", "nav": 1.1109}, {"date": "2024-07-30", "nav": 1.0877}, {"date": "2024-08-07", "nav": 1.0936}, {"date": "2024-08-16", "nav": 1.0846}, {"date": "2024-08-26", "nav": 1.036}, {"date": "2024-09-03", "nav": 1.0122}, {"date": "2024-09-12", "nav": 0.9716}, {"date": "2024-09-24", "nav": 1.0242}, {"date": "2024-10-09", "nav": 1.1443}, {"date": "2024-10-18", "nav": 1.1482}, {"date": "2024-10-28", "nav": 1.1827}, {"date": "2024-11-05", "nav": 1.1692}, {"date": "2024-11-14", "nav": 1.1676}, {"date": "2024-11-22", "nav": 1.1292}, {"date": "2024-12-02", "nav": 1.1523}, {"date": "2024-12-11", "nav": 1.167}, {"date": "2024-12-19", "nav": 1.1458}, {"date": "2024-12-27", "nav": 1.1498}, {"date": "2025-01-08", "nav": 1.1071}, {"date": "2025-01-16", "nav": 1.1032}, {"date": "2025-01-27", "nav": 1.111}, {"date": "2025-02-12", "nav": 1.1006}, {"date": "2025-02-20", "nav": 1.0825}, {"date": "2025-03-03", "nav": 1.0948}, {"date": "2025-03-11", "nav": 1.1127}, {"date": "2025-03-19", "nav": 1.1346}, {"date": "2025-03-28", "nav": 1.1252}, {"date": "2025-04-08", "nav": 1.0677}, {"date": "2025-04-16", "nav": 1.0853}, {"date": "2025-04-25", "nav": 1.0887}, {"date": "2025-05-08", "nav": 1.0928}, {"date": "2025-05-16", "nav": 1.0965}, {"date": "2025-05-27", "nav": 1.0865}, {"date": "2025-06-05", "nav": 1.0967}, {"date": "2025-06-13", "nav": 1.1108}, {"date": "2025-06-24", "nav": 1.1026}, {"date": "2025-07-02", "nav": 1.1256}, {"date": "2025-07-10", "nav": 1.14}, {"date": "2025-07-21", "nav": 1.174}, {"date": "2025-07-29", "nav": 1.1929}, {"date": "2025-08-07", "nav": 1.1871}, {"date": "2025-08-15", "nav": 1.2172}, {"date": "2025-08-25", "nav": 1.2435}, {"date": "2025-09-03", "nav": 1.2216}, {"date": "2025-09-11", "nav": 1.2485}, {"date": "2025-09-19", "nav": 1.2286}, {"date": "2025-09-30", "nav": 1.2274}, {"date": "2025-10-16", "nav": 1.2582}, {"date": "2025-10-24", "nav": 1.2707}, {"date": "2025-11-04", "nav": 1.2934}, {"date": "2025-11-12", "nav": 1.3337}, {"date": "2025-11-20", "nav": 1.2832}, {"date": "2025-12-01", "nav": 1.2772}, {"date": "2025-12-09", "nav": 1.2714}, {"date": "2025-12-17", "nav": 1.2741}, {"date": "2025-12-26", "nav": 1.302}, {"date": "2026-01-07", "nav": 1.3274}, {"date": "2026-01-15", "nav": 1.3326}, {"date": "2026-01-26", "nav": 1.36}, {"date": "2026-02-03", "nav": 1.3272}, {"date": "2026-02-12", "nav": 1.3418}, {"date": "2026-03-02", "nav": 1.403}, {"date": "2026-03-10", "nav": 1.3994}, {"date": "2026-03-19", "nav": 1.3775}, {"date": "2026-03-27", "nav": 1.3626}, {"date": "2026-04-07", "nav": 1.3471}, {"date": "2026-04-16", "nav": 1.3801}, {"date": "2026-04-24", "nav": 1.3557}, {"date": "2026-05-07", "nav": 1.3441}, {"date": "2026-05-18", "nav": 1.3268}, {"date": "2026-05-26", "nav": 1.3245}, {"date": "2026-06-03", "nav": 1.3547}, {"date": "2026-06-12", "nav": 1.3124}, {"date": "2026-06-23", "nav": 1.2753}, {"date": "2026-07-01", "nav": 1.2488}, {"date": "2026-07-10", "nav": 1.2522}, {"date": "2026-07-20", "nav": 1.3063}, {"date": "2026-07-28", "nav": 1.3038}, {"date": "2026-08-06", "nav": 1.315}, {"date": "2026-08-14", "nav": 1.2965}, {"date": "2026-08-24", "nav": 1.303}]}, {"name": "50%PE+50%质量", "color": "#2980b9", "data": [{"date": "2021-06-01", "nav": 1.0}, {"date": "2021-06-09", "nav": 1.0}, {"date": "2021-06-18", "nav": 1.0}, {"date": "2021-06-29", "nav": 1.0}, {"date": "2021-07-07", "nav": 1.0}, {"date": "2021-07-15", "nav": 1.0}, {"date": "2021-07-26", "nav": 1.0}, {"date": "2021-08-03", "nav": 1.0}, {"date": "2021-08-11", "nav": 1.0}, {"date": "2021-08-20", "nav": 1.0}, {"date": "2021-08-30", "nav": 1.0}, {"date": "2021-09-07", "nav": 1.0638}, {"date": "2021-09-16", "nav": 1.0467}, {"date": "2021-09-28", "nav": 1.0504}, {"date": "2021-10-13", "nav": 1.0276}, {"date": "2021-10-22", "nav": 1.0091}, {"date": "2021-11-01", "nav": 0.9509}, {"date": "2021-11-09", "nav": 0.9291}, {"date": "2021-11-18", "nav": 0.9593}, {"date": "2021-11-26", "nav": 0.9608}, {"date": "2021-12-07", "nav": 1.0072}, {"date": "2021-12-15", "nav": 1.0006}, {"date": "2021-12-23", "nav": 1.0275}, {"date": "2022-01-04", "nav": 1.0626}, {"date": "2022-01-12", "nav": 1.0894}, {"date": "2022-01-20", "nav": 1.0894}, {"date": "2022-02-07", "nav": 1.0533}, {"date": "2022-02-15", "nav": 1.0521}, {"date": "2022-02-23", "nav": 1.0587}, {"date": "2022-03-04", "nav": 1.0528}, {"date": "2022-03-14", "nav": 0.9924}, {"date": "2022-03-22", "nav": 1.0199}, {"date": "2022-03-31", "nav": 1.079}, {"date": "2022-04-12", "nav": 1.0789}, {"date": "2022-04-20", "nav": 1.0304}, {"date": "2022-04-29", "nav": 1.0225}, {"date": "2022-05-12", "nav": 0.988}, {"date": "2022-05-20", "nav": 1.0254}, {"date": "2022-05-31", "nav": 1.0356}, {"date": "2022-06-09", "nav": 1.059}, {"date": "2022-06-20", "nav": 1.0497}, {"date": "2022-06-28", "nav": 1.0635}, {"date": "2022-07-06", "nav": 1.0493}, {"date": "2022-07-15", "nav": 0.9973}, {"date": "2022-07-25", "nav": 0.9987}, {"date": "2022-08-02", "nav": 0.9774}, {"date": "2022-08-11", "nav": 1.0094}, {"date": "2022-08-19", "nav": 1.0193}, {"date": "2022-08-29", "nav": 1.0322}, {"date": "2022-09-07", "nav": 1.0362}, {"date": "2022-09-16", "nav": 0.9967}, {"date": "2022-09-26", "nav": 0.9732}, {"date": "2022-10-12", "nav": 0.9725}, {"date": "2022-10-20", "nav": 0.963}, {"date": "2022-10-28", "nav": 0.9235}, {"date": "2022-11-08", "nav": 0.956}, {"date": "2022-11-16", "nav": 0.9777}, {"date": "2022-11-24", "nav": 0.9858}, {"date": "2022-12-05", "nav": 1.0296}, {"date": "2022-12-13", "nav": 1.0136}, {"date": "2022-12-22", "nav": 0.9665}, {"date": "2022-12-30", "nav": 0.9688}, {"date": "2023-01-10", "nav": 0.9789}, {"date": "2023-01-19", "nav": 0.999}, {"date": "2023-02-03", "nav": 1.0131}, {"date": "2023-02-13", "nav": 1.0242}, {"date": "2023-02-22", "nav": 1.0396}, {"date": "2023-03-02", "nav": 1.0466}, {"date": "2023-03-10", "nav": 1.021}, {"date": "2023-03-21", "nav": 1.0312}, {"date": "2023-03-29", "nav": 1.0173}, {"date": "2023-04-07", "nav": 1.0444}, {"date": "2023-04-18", "nav": 1.0758}, {"date": "2023-04-26", "nav": 1.0565}, {"date": "2023-05-09", "nav": 1.0888}, {"date": "2023-05-18", "nav": 1.0822}, {"date": "2023-05-26", "nav": 1.0358}, {"date": "2023-06-05", "nav": 1.036}, {"date": "2023-06-14", "nav": 1.0327}, {"date": "2023-06-26", "nav": 0.9957}, {"date": "2023-07-05", "nav": 1.0387}, {"date": "2023-07-13", "nav": 1.0471}, {"date": "2023-07-21", "nav": 1.0436}, {"date": "2023-08-01", "nav": 1.0838}, {"date": "2023-08-09", "nav": 1.061}, {"date": "2023-08-17", "nav": 1.055}, {"date": "2023-08-28", "nav": 1.0585}, {"date": "2023-09-05", "nav": 1.0563}, {"date": "2023-09-13", "nav": 1.0552}, {"date": "2023-09-22", "nav": 1.0595}, {"date": "2023-10-10", "nav": 1.0345}, {"date": "2023-10-18", "nav": 1.0214}, {"date": "2023-10-27", "nav": 1.0181}, {"date": "2023-11-06", "nav": 1.0114}, {"date": "2023-11-14", "nav": 1.0078}, {"date": "2023-11-23", "nav": 1.0204}, {"date": "2023-12-01", "nav": 1.0195}, {"date": "2023-12-11", "nav": 1.0184}, {"date": "2023-12-20", "nav": 0.9986}, {"date": "2023-12-28", "nav": 1.0038}, {"date": "2024-01-09", "nav": 1.0298}, {"date": "2024-01-17", "nav": 1.0171}, {"date": "2024-01-25", "nav": 1.0465}, {"date": "2024-02-05", "nav": 1.0067}, {"date": "2024-02-21", "nav": 1.0908}, {"date": "2024-02-29", "nav": 1.1121}, {"date": "2024-03-11", "nav": 1.1296}, {"date": "2024-03-19", "nav": 1.1175}, {"date": "2024-03-27", "nav": 1.1067}, {"date": "2024-04-09", "nav": 1.1383}, {"date": "2024-04-17", "nav": 1.1876}, {"date": "2024-04-25", "nav": 1.146}, {"date": "2024-05-09", "nav": 1.1882}, {"date": "2024-05-17", "nav": 1.2044}, {"date": "2024-05-27", "nav": 1.212}, {"date": "2024-06-05", "nav": 1.1881}, {"date": "2024-06-14", "nav": 1.1854}, {"date": "2024-06-24", "nav": 1.1486}, {"date": "2024-07-03", "nav": 1.1538}, {"date": "2024-07-11", "nav": 1.1432}, {"date": "2024-07-22", "nav": 1.1152}, {"date": "2024-07-30", "nav": 1.0873}, {"date": "2024-08-07", "nav": 1.0976}, {"date": "2024-08-16", "nav": 1.0904}, {"date": "2024-08-26", "nav": 1.0449}, {"date": "2024-09-03", "nav": 1.0312}, {"date": "2024-09-12", "nav": 0.9935}, {"date": "2024-09-24", "nav": 1.04}, {"date": "2024-10-09", "nav": 1.1417}, {"date": "2024-10-18", "nav": 1.1426}, {"date": "2024-10-28", "nav": 1.1732}, {"date": "2024-11-05", "nav": 1.1646}, {"date": "2024-11-14", "nav": 1.1609}, {"date": "2024-11-22", "nav": 1.1277}, {"date": "2024-12-02", "nav": 1.1497}, {"date": "2024-12-11", "nav": 1.1642}, {"date": "2024-12-19", "nav": 1.1462}, {"date": "2024-12-27", "nav": 1.1478}, {"date": "2025-01-08", "nav": 1.1201}, {"date": "2025-01-16", "nav": 1.1172}, {"date": "2025-01-27", "nav": 1.1234}, {"date": "2025-02-12", "nav": 1.1136}, {"date": "2025-02-20", "nav": 1.0975}, {"date": "2025-03-03", "nav": 1.1037}, {"date": "2025-03-11", "nav": 1.1246}, {"date": "2025-03-19", "nav": 1.1447}, {"date": "2025-03-28", "nav": 1.1415}, {"date": "2025-04-08", "nav": 1.0882}, {"date": "2025-04-16", "nav": 1.1037}, {"date": "2025-04-25", "nav": 1.1052}, {"date": "2025-05-08", "nav": 1.1075}, {"date": "2025-05-16", "nav": 1.1117}, {"date": "2025-05-27", "nav": 1.1035}, {"date": "2025-06-05", "nav": 1.1141}, {"date": "2025-06-13", "nav": 1.127}, {"date": "2025-06-24", "nav": 1.1187}, {"date": "2025-07-02", "nav": 1.141}, {"date": "2025-07-10", "nav": 1.1536}, {"date": "2025-07-21", "nav": 1.1853}, {"date": "2025-07-29", "nav": 1.2066}, {"date": "2025-08-07", "nav": 1.2025}, {"date": "2025-08-15", "nav": 1.2278}, {"date": "2025-08-25", "nav": 1.2541}, {"date": "2025-09-03", "nav": 1.231}, {"date": "2025-09-11", "nav": 1.257}, {"date": "2025-09-19", "nav": 1.2376}, {"date": "2025-09-30", "nav": 1.2362}, {"date": "2025-10-16", "nav": 1.2648}, {"date": "2025-10-24", "nav": 1.278}, {"date": "2025-11-04", "nav": 1.3055}, {"date": "2025-11-12", "nav": 1.3433}, {"date": "2025-11-20", "nav": 1.2964}, {"date": "2025-12-01", "nav": 1.2912}, {"date": "2025-12-09", "nav": 1.2868}, {"date": "2025-12-17", "nav": 1.2882}, {"date": "2025-12-26", "nav": 1.313}, {"date": "2026-01-07", "nav": 1.3337}, {"date": "2026-01-15", "nav": 1.3382}, {"date": "2026-01-26", "nav": 1.3632}, {"date": "2026-02-03", "nav": 1.3371}, {"date": "2026-02-12", "nav": 1.352}, {"date": "2026-03-02", "nav": 1.4103}, {"date": "2026-03-10", "nav": 1.4091}, {"date": "2026-03-19", "nav": 1.3753}, {"date": "2026-03-27", "nav": 1.3599}, {"date": "2026-04-07", "nav": 1.3245}, {"date": "2026-04-16", "nav": 1.3624}, {"date": "2026-04-24", "nav": 1.3372}, {"date": "2026-05-07", "nav": 1.3433}, {"date": "2026-05-18", "nav": 1.33}, {"date": "2026-05-26", "nav": 1.3289}, {"date": "2026-06-03", "nav": 1.3604}, {"date": "2026-06-12", "nav": 1.3194}, {"date": "2026-06-23", "nav": 1.2812}, {"date": "2026-07-01", "nav": 1.2579}, {"date": "2026-07-10", "nav": 1.2598}, {"date": "2026-07-20", "nav": 1.3088}, {"date": "2026-07-28", "nav": 1.3082}, {"date": "2026-08-06", "nav": 1.3182}, {"date": "2026-08-14", "nav": 1.3011}, {"date": "2026-08-24", "nav": 1.3053}]}, {"name": "30便宜+10质量", "color": "#8e44ad", "data": [{"date": "2021-06-01", "nav": 1.0}, {"date": "2021-06-09", "nav": 1.0}, {"date": "2021-06-18", "nav": 1.0}, {"date": "2021-06-29", "nav": 1.0}, {"date": "2021-07-07", "nav": 1.0}, {"date": "2021-07-15", "nav": 1.0}, {"date": "2021-07-26", "nav": 1.0}, {"date": "2021-08-03", "nav": 1.0}, {"date": "2021-08-11", "nav": 1.0}, {"date": "2021-08-20", "nav": 1.0}, {"date": "2021-08-30", "nav": 1.0}, {"date": "2021-09-07", "nav": 1.0625}, {"date": "2021-09-16", "nav": 1.0515}, {"date": "2021-09-28", "nav": 1.0556}, {"date": "2021-10-13", "nav": 1.0313}, {"date": "2021-10-22", "nav": 1.0094}, {"date": "2021-11-01", "nav": 0.9539}, {"date": "2021-11-09", "nav": 0.9321}, {"date": "2021-11-18", "nav": 0.963}, {"date": "2021-11-26", "nav": 0.9645}, {"date": "2021-12-07", "nav": 1.0016}, {"date": "2021-12-15", "nav": 0.9956}, {"date": "2021-12-23", "nav": 1.0268}, {"date": "2022-01-04", "nav": 1.0574}, {"date": "2022-01-12", "nav": 1.0821}, {"date": "2022-01-20", "nav": 1.0872}, {"date": "2022-02-07", "nav": 1.0587}, {"date": "2022-02-15", "nav": 1.0593}, {"date": "2022-02-23", "nav": 1.0678}, {"date": "2022-03-04", "nav": 1.0633}, {"date": "2022-03-14", "nav": 1.0115}, {"date": "2022-03-22", "nav": 1.0423}, {"date": "2022-03-31", "nav": 1.1078}, {"date": "2022-04-12", "nav": 1.1067}, {"date": "2022-04-20", "nav": 1.0614}, {"date": "2022-04-29", "nav": 1.0697}, {"date": "2022-05-12", "nav": 1.0357}, {"date": "2022-05-20", "nav": 1.0771}, {"date": "2022-05-31", "nav": 1.0826}, {"date": "2022-06-09", "nav": 1.1083}, {"date": "2022-06-20", "nav": 1.0922}, {"date": "2022-06-28", "nav": 1.1013}, {"date": "2022-07-06", "nav": 1.0857}, {"date": "2022-07-15", "nav": 1.0307}, {"date": "2022-07-25", "nav": 1.0282}, {"date": "2022-08-02", "nav": 1.0053}, {"date": "2022-08-11", "nav": 1.0351}, {"date": "2022-08-19", "nav": 1.0487}, {"date": "2022-08-29", "nav": 1.0526}, {"date": "2022-09-07", "nav": 1.0635}, {"date": "2022-09-16", "nav": 1.0273}, {"date": "2022-09-26", "nav": 1.0027}, {"date": "2022-10-12", "nav": 1.0069}, {"date": "2022-10-20", "nav": 0.9891}, {"date": "2022-10-28", "nav": 0.9465}, {"date": "2022-11-08", "nav": 0.9674}, {"date": "2022-11-16", "nav": 0.9989}, {"date": "2022-11-24", "nav": 1.017}, {"date": "2022-12-05", "nav": 1.0783}, {"date": "2022-12-13", "nav": 1.0503}, {"date": "2022-12-22", "nav": 0.9946}, {"date": "2022-12-30", "nav": 0.9928}, {"date": "2023-01-10", "nav": 0.9971}, {"date": "2023-01-19", "nav": 1.0164}, {"date": "2023-02-03", "nav": 1.0325}, {"date": "2023-02-13", "nav": 1.0473}, {"date": "2023-02-22", "nav": 1.0597}, {"date": "2023-03-02", "nav": 1.0706}, {"date": "2023-03-10", "nav": 1.0368}, {"date": "2023-03-21", "nav": 1.0492}, {"date": "2023-03-29", "nav": 1.0276}, {"date": "2023-04-07", "nav": 1.0669}, {"date": "2023-04-18", "nav": 1.105}, {"date": "2023-04-26", "nav": 1.0563}, {"date": "2023-05-09", "nav": 1.0757}, {"date": "2023-05-18", "nav": 1.0554}, {"date": "2023-05-26", "nav": 1.0132}, {"date": "2023-06-05", "nav": 1.0165}, {"date": "2023-06-14", "nav": 1.0118}, {"date": "2023-06-26", "nav": 0.9781}, {"date": "2023-07-05", "nav": 1.0158}, {"date": "2023-07-13", "nav": 1.0193}, {"date": "2023-07-21", "nav": 1.0127}, {"date": "2023-08-01", "nav": 1.0544}, {"date": "2023-08-09", "nav": 1.0345}, {"date": "2023-08-17", "nav": 1.026}, {"date": "2023-08-28", "nav": 1.022}, {"date": "2023-09-05", "nav": 1.0273}, {"date": "2023-09-13", "nav": 1.0192}, {"date": "2023-09-22", "nav": 1.0188}, {"date": "2023-10-10", "nav": 0.9916}, {"date": "2023-10-18", "nav": 0.9808}, {"date": "2023-10-27", "nav": 0.9759}, {"date": "2023-11-06", "nav": 0.9678}, {"date": "2023-11-14", "nav": 0.9639}, {"date": "2023-11-23", "nav": 0.9715}, {"date": "2023-12-01", "nav": 0.9662}, {"date": "2023-12-11", "nav": 0.9636}, {"date": "2023-12-20", "nav": 0.9422}, {"date": "2023-12-28", "nav": 0.9515}, {"date": "2024-01-09", "nav": 0.9657}, {"date": "2024-01-17", "nav": 0.9542}, {"date": "2024-01-25", "nav": 0.9888}, {"date": "2024-02-05", "nav": 0.9476}, {"date": "2024-02-21", "nav": 1.0215}, {"date": "2024-02-29", "nav": 1.035}, {"date": "2024-03-11", "nav": 1.0419}, {"date": "2024-03-19", "nav": 1.0297}, {"date": "2024-03-27", "nav": 1.013}, {"date": "2024-04-09", "nav": 1.0384}, {"date": "2024-04-17", "nav": 1.081}, {"date": "2024-04-25", "nav": 1.0463}, {"date": "2024-05-09", "nav": 1.0747}, {"date": "2024-05-17", "nav": 1.0957}, {"date": "2024-05-27", "nav": 1.0961}, {"date": "2024-06-05", "nav": 1.074}, {"date": "2024-06-14", "nav": 1.0642}, {"date": "2024-06-24", "nav": 1.0273}, {"date": "2024-07-03", "nav": 1.0283}, {"date": "2024-07-11", "nav": 1.0105}, {"date": "2024-07-22", "nav": 0.998}, {"date": "2024-07-30", "nav": 0.9779}, {"date": "2024-08-07", "nav": 0.9898}, {"date": "2024-08-16", "nav": 0.9841}, {"date": "2024-08-26", "nav": 0.9529}, {"date": "2024-09-03", "nav": 0.927}, {"date": "2024-09-12", "nav": 0.8906}, {"date": "2024-09-24", "nav": 0.9377}, {"date": "2024-10-09", "nav": 1.0626}, {"date": "2024-10-18", "nav": 1.0727}, {"date": "2024-10-28", "nav": 1.108}, {"date": "2024-11-05", "nav": 1.1081}, {"date": "2024-11-14", "nav": 1.1044}, {"date": "2024-11-22", "nav": 1.0664}, {"date": "2024-12-02", "nav": 1.0909}, {"date": "2024-12-11", "nav": 1.0993}, {"date": "2024-12-19", "nav": 1.0753}, {"date": "2024-12-27", "nav": 1.0792}, {"date": "2025-01-08", "nav": 1.0295}, {"date": "2025-01-16", "nav": 1.0278}, {"date": "2025-01-27", "nav": 1.0347}, {"date": "2025-02-12", "nav": 1.0324}, {"date": "2025-02-20", "nav": 1.0164}, {"date": "2025-03-03", "nav": 1.0289}, {"date": "2025-03-11", "nav": 1.0541}, {"date": "2025-03-19", "nav": 1.0663}, {"date": "2025-03-28", "nav": 1.0518}, {"date": "2025-04-08", "nav": 1.0024}, {"date": "2025-04-16", "nav": 1.0117}, {"date": "2025-04-25", "nav": 1.0193}, {"date": "2025-05-08", "nav": 1.0169}, {"date": "2025-05-16", "nav": 1.0213}, {"date": "2025-05-27", "nav": 1.0167}, {"date": "2025-06-05", "nav": 1.025}, {"date": "2025-06-13", "nav": 1.0389}, {"date": "2025-06-24", "nav": 1.032}, {"date": "2025-07-02", "nav": 1.0479}, {"date": "2025-07-10", "nav": 1.0685}, {"date": "2025-07-21", "nav": 1.0942}, {"date": "2025-07-29", "nav": 1.1068}, {"date": "2025-08-07", "nav": 1.1093}, {"date": "2025-08-15", "nav": 1.1299}, {"date": "2025-08-25", "nav": 1.1511}, {"date": "2025-09-03", "nav": 1.1304}, {"date": "2025-09-11", "nav": 1.1522}, {"date": "2025-09-19", "nav": 1.1391}, {"date": "2025-09-30", "nav": 1.1396}, {"date": "2025-10-16", "nav": 1.1594}, {"date": "2025-10-24", "nav": 1.1644}, {"date": "2025-11-04", "nav": 1.1716}, {"date": "2025-11-12", "nav": 1.2013}, {"date": "2025-11-20", "nav": 1.1637}, {"date": "2025-12-01", "nav": 1.1577}, {"date": "2025-12-09", "nav": 1.1504}, {"date": "2025-12-17", "nav": 1.1513}, {"date": "2025-12-26", "nav": 1.1654}, {"date": "2026-01-07", "nav": 1.1704}, {"date": "2026-01-15", "nav": 1.1758}, {"date": "2026-01-26", "nav": 1.2084}, {"date": "2026-02-03", "nav": 1.1843}, {"date": "2026-02-12", "nav": 1.1981}, {"date": "2026-03-02", "nav": 1.2488}, {"date": "2026-03-10", "nav": 1.2422}, {"date": "2026-03-19", "nav": 1.2298}, {"date": "2026-03-27", "nav": 1.2208}, {"date": "2026-04-07", "nav": 1.2062}, {"date": "2026-04-16", "nav": 1.2222}, {"date": "2026-04-24", "nav": 1.2141}, {"date": "2026-05-07", "nav": 1.2046}, {"date": "2026-05-18", "nav": 1.1819}, {"date": "2026-05-26", "nav": 1.184}, {"date": "2026-06-03", "nav": 1.2084}, {"date": "2026-06-12", "nav": 1.1713}, {"date": "2026-06-23", "nav": 1.145}, {"date": "2026-07-01", "nav": 1.1188}, {"date": "2026-07-10", "nav": 1.1234}, {"date": "2026-07-20", "nav": 1.1643}, {"date": "2026-07-28", "nav": 1.166}, {"date": "2026-08-06", "nav": 1.1769}, {"date": "2026-08-14", "nav": 1.1606}, {"date": "2026-08-24", "nav": 1.1629}]}, {"name": "质量调整PE", "color": "#27ae60", "data": [{"date": "2021-06-01", "nav": 1.0}, {"date": "2021-06-09", "nav": 1.0}, {"date": "2021-06-18", "nav": 1.0}, {"date": "2021-06-29", "nav": 1.0}, {"date": "2021-07-07", "nav": 1.0}, {"date": "2021-07-15", "nav": 1.0}, {"date": "2021-07-26", "nav": 1.0}, {"date": "2021-08-03", "nav": 1.0}, {"date": "2021-08-11", "nav": 1.0}, {"date": "2021-08-20", "nav": 1.0}, {"date": "2021-08-30", "nav": 1.0}, {"date": "2021-09-07", "nav": 1.0708}, {"date": "2021-09-16", "nav": 1.0586}, {"date": "2021-09-28", "nav": 1.0605}, {"date": "2021-10-13", "nav": 1.0342}, {"date": "2021-10-22", "nav": 1.0113}, {"date": "2021-11-01", "nav": 0.947}, {"date": "2021-11-09", "nav": 0.9219}, {"date": "2021-11-18", "nav": 0.9543}, {"date": "2021-11-26", "nav": 0.9567}, {"date": "2021-12-07", "nav": 0.9992}, {"date": "2021-12-15", "nav": 0.9922}, {"date": "2021-12-23", "nav": 1.0262}, {"date": "2022-01-04", "nav": 1.0614}, {"date": "2022-01-12", "nav": 1.089}, {"date": "2022-01-20", "nav": 1.0907}, {"date": "2022-02-07", "nav": 1.0574}, {"date": "2022-02-15", "nav": 1.0618}, {"date": "2022-02-23", "nav": 1.0709}, {"date": "2022-03-04", "nav": 1.0663}, {"date": "2022-03-14", "nav": 1.0058}, {"date": "2022-03-22", "nav": 1.0386}, {"date": "2022-03-31", "nav": 1.1074}, {"date": "2022-04-12", "nav": 1.1097}, {"date": "2022-04-20", "nav": 1.0587}, {"date": "2022-04-29", "nav": 1.0581}, {"date": "2022-05-12", "nav": 1.0182}, {"date": "2022-05-20", "nav": 1.0607}, {"date": "2022-05-31", "nav": 1.069}, {"date": "2022-06-09", "nav": 1.0917}, {"date": "2022-06-20", "nav": 1.0781}, {"date": "2022-06-28", "nav": 1.091}, {"date": "2022-07-06", "nav": 1.0766}, {"date": "2022-07-15", "nav": 1.0216}, {"date": "2022-07-25", "nav": 1.0227}, {"date": "2022-08-02", "nav": 0.9998}, {"date": "2022-08-11", "nav": 1.0312}, {"date": "2022-08-19", "nav": 1.0437}, {"date": "2022-08-29", "nav": 1.0519}, {"date": "2022-09-07", "nav": 1.0657}, {"date": "2022-09-16", "nav": 1.0268}, {"date": "2022-09-26", "nav": 0.9984}, {"date": "2022-10-12", "nav": 1.0009}, {"date": "2022-10-20", "nav": 0.9793}, {"date": "2022-10-28", "nav": 0.9315}, {"date": "2022-11-08", "nav": 0.9615}, {"date": "2022-11-16", "nav": 0.9914}, {"date": "2022-11-24", "nav": 1.0038}, {"date": "2022-12-05", "nav": 1.0639}, {"date": "2022-12-13", "nav": 1.039}, {"date": "2022-12-22", "nav": 0.9876}, {"date": "2022-12-30", "nav": 0.9876}, {"date": "2023-01-10", "nav": 0.9948}, {"date": "2023-01-19", "nav": 1.0168}, {"date": "2023-02-03", "nav": 1.0309}, {"date": "2023-02-13", "nav": 1.0466}, {"date": "2023-02-22", "nav": 1.0611}, {"date": "2023-03-02", "nav": 1.0728}, {"date": "2023-03-10", "nav": 1.0382}, {"date": "2023-03-21", "nav": 1.0535}, {"date": "2023-03-29", "nav": 1.0339}, {"date": "2023-04-07", "nav": 1.0708}, {"date": "2023-04-18", "nav": 1.1087}, {"date": "2023-04-26", "nav": 1.0722}, {"date": "2023-05-09", "nav": 1.0984}, {"date": "2023-05-18", "nav": 1.0743}, {"date": "2023-05-26", "nav": 1.0238}, {"date": "2023-06-05", "nav": 1.0269}, {"date": "2023-06-14", "nav": 1.0255}, {"date": "2023-06-26", "nav": 0.9869}, {"date": "2023-07-05", "nav": 1.0313}, {"date": "2023-07-13", "nav": 1.0386}, {"date": "2023-07-21", "nav": 1.0342}, {"date": "2023-08-01", "nav": 1.0898}, {"date": "2023-08-09", "nav": 1.0686}, {"date": "2023-08-17", "nav": 1.0536}, {"date": "2023-08-28", "nav": 1.0508}, {"date": "2023-09-05", "nav": 1.0539}, {"date": "2023-09-13", "nav": 1.0493}, {"date": "2023-09-22", "nav": 1.051}, {"date": "2023-10-10", "nav": 1.0219}, {"date": "2023-10-18", "nav": 1.0094}, {"date": "2023-10-27", "nav": 1.002}, {"date": "2023-11-06", "nav": 0.9911}, {"date": "2023-11-14", "nav": 0.9866}, {"date": "2023-11-23", "nav": 0.9966}, {"date": "2023-12-01", "nav": 0.9906}, {"date": "2023-12-11", "nav": 0.9877}, {"date": "2023-12-20", "nav": 0.9667}, {"date": "2023-12-28", "nav": 0.9774}, {"date": "2024-01-09", "nav": 1.0013}, {"date": "2024-01-17", "nav": 0.989}, {"date": "2024-01-25", "nav": 1.0257}, {"date": "2024-02-05", "nav": 0.9766}, {"date": "2024-02-21", "nav": 1.0624}, {"date": "2024-02-29", "nav": 1.0787}, {"date": "2024-03-11", "nav": 1.0948}, {"date": "2024-03-19", "nav": 1.0825}, {"date": "2024-03-27", "nav": 1.0699}, {"date": "2024-04-09", "nav": 1.1057}, {"date": "2024-04-17", "nav": 1.1555}, {"date": "2024-04-25", "nav": 1.1168}, {"date": "2024-05-09", "nav": 1.1516}, {"date": "2024-05-17", "nav": 1.1641}, {"date": "2024-05-27", "nav": 1.174}, {"date": "2024-06-05", "nav": 1.1534}, {"date": "2024-06-14", "nav": 1.1444}, {"date": "2024-06-24", "nav": 1.108}, {"date": "2024-07-03", "nav": 1.1162}, {"date": "2024-07-11", "nav": 1.1004}, {"date": "2024-07-22", "nav": 1.0766}, {"date": "2024-07-30", "nav": 1.054}, {"date": "2024-08-07", "nav": 1.0616}, {"date": "2024-08-16", "nav": 1.0538}, {"date": "2024-08-26", "nav": 1.0174}, {"date": "2024-09-03", "nav": 0.9858}, {"date": "2024-09-12", "nav": 0.944}, {"date": "2024-09-24", "nav": 0.9952}, {"date": "2024-10-09", "nav": 1.1193}, {"date": "2024-10-18", "nav": 1.1289}, {"date": "2024-10-28", "nav": 1.1596}, {"date": "2024-11-05", "nav": 1.1532}, {"date": "2024-11-14", "nav": 1.1497}, {"date": "2024-11-22", "nav": 1.1124}, {"date": "2024-12-02", "nav": 1.1353}, {"date": "2024-12-11", "nav": 1.1517}, {"date": "2024-12-19", "nav": 1.1318}, {"date": "2024-12-27", "nav": 1.1327}, {"date": "2025-01-08", "nav": 1.089}, {"date": "2025-01-16", "nav": 1.0856}, {"date": "2025-01-27", "nav": 1.0924}, {"date": "2025-02-12", "nav": 1.0823}, {"date": "2025-02-20", "nav": 1.0631}, {"date": "2025-03-03", "nav": 1.0711}, {"date": "2025-03-11", "nav": 1.0871}, {"date": "2025-03-19", "nav": 1.1081}, {"date": "2025-03-28", "nav": 1.1024}, {"date": "2025-04-08", "nav": 1.0586}, {"date": "2025-04-16", "nav": 1.0719}, {"date": "2025-04-25", "nav": 1.0752}, {"date": "2025-05-08", "nav": 1.0756}, {"date": "2025-05-16", "nav": 1.08}, {"date": "2025-05-27", "nav": 1.0695}, {"date": "2025-06-05", "nav": 1.0789}, {"date": "2025-06-13", "nav": 1.0942}, {"date": "2025-06-24", "nav": 1.0852}, {"date": "2025-07-02", "nav": 1.1082}, {"date": "2025-07-10", "nav": 1.1268}, {"date": "2025-07-21", "nav": 1.154}, {"date": "2025-07-29", "nav": 1.1671}, {"date": "2025-08-07", "nav": 1.1593}, {"date": "2025-08-15", "nav": 1.1866}, {"date": "2025-08-25", "nav": 1.2166}, {"date": "2025-09-03", "nav": 1.1929}, {"date": "2025-09-11", "nav": 1.2194}, {"date": "2025-09-19", "nav": 1.2018}, {"date": "2025-09-30", "nav": 1.2001}, {"date": "2025-10-16", "nav": 1.2293}, {"date": "2025-10-24", "nav": 1.2431}, {"date": "2025-11-04", "nav": 1.2625}, {"date": "2025-11-12", "nav": 1.301}, {"date": "2025-11-20", "nav": 1.2509}, {"date": "2025-12-01", "nav": 1.2449}, {"date": "2025-12-09", "nav": 1.24}, {"date": "2025-12-17", "nav": 1.2406}, {"date": "2025-12-26", "nav": 1.2692}, {"date": "2026-01-07", "nav": 1.2962}, {"date": "2026-01-15", "nav": 1.2994}, {"date": "2026-01-26", "nav": 1.3302}, {"date": "2026-02-03", "nav": 1.2991}, {"date": "2026-02-12", "nav": 1.3126}, {"date": "2026-03-02", "nav": 1.3714}, {"date": "2026-03-10", "nav": 1.3637}, {"date": "2026-03-19", "nav": 1.3308}, {"date": "2026-03-27", "nav": 1.3138}, {"date": "2026-04-07", "nav": 1.2886}, {"date": "2026-04-16", "nav": 1.3246}, {"date": "2026-04-24", "nav": 1.2951}, {"date": "2026-05-07", "nav": 1.2926}, {"date": "2026-05-18", "nav": 1.2757}, {"date": "2026-05-26", "nav": 1.2749}, {"date": "2026-06-03", "nav": 1.3056}, {"date": "2026-06-12", "nav": 1.267}, {"date": "2026-06-23", "nav": 1.2312}, {"date": "2026-07-01", "nav": 1.2075}, {"date": "2026-07-10", "nav": 1.2102}, {"date": "2026-07-20", "nav": 1.2574}, {"date": "2026-07-28", "nav": 1.2561}, {"date": "2026-08-06", "nav": 1.2654}, {"date": "2026-08-14", "nav": 1.2483}, {"date": "2026-08-24", "nav": 1.2513}]}];
+const barData = [{"label": "纯PE升序(基线)", "ret": 29.45, "mdd": 22.12}, {"label": "80%PE+20%质量", "ret": 32.85, "mdd": 22.03}, {"label": "60%PE+40%质量", "ret": 30.3, "mdd": 20.42}, {"label": "50%PE+50%质量", "ret": 30.53, "mdd": 19.05}, {"label": "30便宜+10质量", "ret": 16.29, "mdd": 23.42}, {"label": "质量调整PE", "ret": 25.13, "mdd": 21.64}];
+
+// NAV chart
+new Chart(document.getElementById('navChart'), {
+  type: 'line',
+  data: {
+    datasets: navData.map(s => ({
+      label: s.name,
+      data: s.data.map(p => ({x: p.date, y: p.nav})),
+      borderColor: s.color,
+      borderWidth: s.name.includes('基线') || s.name.includes('20%') ? 2.5 : 1.5,
+      pointRadius: 0,
+      tension: 0.1,
+      fill: false,
+    })),
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 } } },
+      tooltip: { mode: 'index', intersect: false },
+    },
+    scales: {
+      x: { type: 'time', time: { unit: 'year' }, title: { display: true, text: '日期' } },
+      y: { title: { display: true, text: 'NAV (百万)' }, ticks: { callback: v => v.toFixed(1) } },
+    },
+  },
+});
+
+// Bar chart
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: barData.map(d => d.label),
+    datasets: [
+      { label: '总收益 %', data: barData.map(d => d.ret), backgroundColor: '#e74c3c', borderRadius: 4 },
+      { label: 'MDD %', data: barData.map(d => d.mdd), backgroundColor: '#3498db', borderRadius: 4 },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      y: { title: { display: true, text: '%' }, ticks: { callback: v => v + '%' } },
+    },
+  },
+});
+</script>
+</body>
+</html>

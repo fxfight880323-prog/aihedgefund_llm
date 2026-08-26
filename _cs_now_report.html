@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>C-Score 一致预期策略 · 当前推荐（2026-08-24）</title>
+<style>
+ body { font-family: "Microsoft YaHei", sans-serif; margin: 24px 36px;
+        background: #fafafa; color: #222; }
+ h1 { font-size: 22px; margin-bottom: 4px; }
+ h2 { font-size: 16px; margin-top: 30px; border-left: 4px solid #c62828;
+        padding-left: 10px; }
+ .sub { color: #666; font-size: 13px; }
+ table { border-collapse: collapse; margin: 12px 0; font-size: 13px;
+         background: #fff; }
+ th, td { border: 1px solid #ddd; padding: 5px 9px; text-align: right;
+           white-space: nowrap; }
+ th { background: #f0f0f0; position: sticky; top: 0; }
+ td.l { text-align: left; }
+ tr.exp-undervalued { background: #fdecea; }
+ tr.exp-moderate { background: #fff3e0; }
+ tr.exp-speculative { background: #f3e5f5; }
+ .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+         padding: 12px 16px; margin: 10px 0; font-size: 13.5px;
+         line-height: 1.75; }
+ .badge { display: inline-block; background: #c62828; color: #fff;
+           border-radius: 4px; padding: 1px 8px; font-size: 12px; }
+ .badge.g { background: #2e7d32; }
+ .note { color: #888; font-size: 12px; margin-top: 18px;
+          border-top: 1px dashed #ccc; padding-top: 10px; }
+ .kpi { font-size: 15px; font-weight: 700; }
+ .kpi b { color: #c62828; font-size: 19px; }
+</style></head><body>
+
+<h1>一致预期 C-Score 策略 · 当前推荐 A 股</h1>
+<p class="sub">数据截至 <b>2026-08-24</b>（最新交易日）· 一致预期 = juzi PIT 快照
+（con_year 2026）· 池子 = 万得全A(881001.WI) 当前 PIT 成分
+5,529 只 → 深度价值池 100 只</p>
+
+<div class="card">
+<b>策略信号（4 项全数值化，来自全历史回测实证）：</b><br>
+<span class="badge">C1</span> 预期ROE &gt; 12%
+<span class="badge">C2</span> 预期净利增速 &gt; 0
+<span class="badge">C3</span> 4周预期上修 &gt; 0
+<span class="badge">C4</span> 13周预期上修 &gt; 0
+→ <b>C-Score ∈ [0,4]</b><br>
+<b>池子（与回测一致）：</b>PB&lt;2 ∩ PE&lt;20 ∩ 市值≥50亿，按 PB 升序取前 100 只
+（池 PB 三分位 = 0.56 / 0.72）→ BM 分位。<br>
+<b>期望矩阵：</b>C≥3 + 高BM = <span style="color:#c62828"><b>undervalued</b></span>（conv 0.5~0.7）← 核心推荐；
+C≥3 + 中BM = moderate；C=2 + 高BM = speculative。<br>
+<span class="kpi">回测（2021-08~2026-06，半年调仓）：<b>+30.7%</b> / 超额等权全A
+<b>+26.2pp</b> / 10 期中 8 期跑赢 F-Score(+12.6%)</span>
+</div>
+
+<h2>① 策略推荐组合 · top-20（conviction 加权，单票 ≤6%）</h2>
+<p class="sub">买入信号共 20 只，权重 = conviction / Σconviction
+（回测 blend_weights 口径，单票上限 6%）。总仓位 90.5%。✓ = 该项信号达标。</p>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>现价</th><th>市值(亿)</th>
+<th>PE</th><th>PB</th><th>C1C2C3C4</th><th>C</th><th>预期ROE%</th>
+<th>预期增速%</th><th>rev4w%</th><th>rev13w%</th><th>矩阵分类</th>
+<th>conv</th><th>权重</th></tr>
+<tr class="exp-undervalued">
+          <td>1</td><td class="l">601668.SH</td>
+          <td class="l"><b>中国建筑</b></td>
+          <td>4.47</td><td>1,826</td>
+          <td>4.8</td><td><b>0.38</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.5</td>
+          <td>1.6</td>
+          <td>340.7</td>
+          <td>232.8</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>2</td><td class="l">002958.SZ</td>
+          <td class="l"><b>青农商行</b></td>
+          <td>2.95</td><td>164</td>
+          <td>5.1</td><td><b>0.44</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.1</td>
+          <td>5.0</td>
+          <td>86.0</td>
+          <td>86.0</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>3</td><td class="l">000001.SZ</td>
+          <td class="l"><b>平安银行</b></td>
+          <td>11.59</td><td>2,243</td>
+          <td>5.2</td><td><b>0.48</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.7</td>
+          <td>2.5</td>
+          <td>218.1</td>
+          <td>50.1</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>4</td><td class="l">601528.SH</td>
+          <td class="l"><b>瑞丰银行</b></td>
+          <td>4.99</td><td>98</td>
+          <td>5.0</td><td><b>0.49</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>9.2</td>
+          <td>2.2</td>
+          <td>91.6</td>
+          <td>56.4</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>5</td><td class="l">603323.SH</td>
+          <td class="l"><b>苏农银行</b></td>
+          <td>4.22</td><td>94</td>
+          <td>4.6</td><td><b>0.49</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>10.2</td>
+          <td>5.5</td>
+          <td>13.0</td>
+          <td>13.0</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>6</td><td class="l">600820.SH</td>
+          <td class="l"><b>隧道股份</b></td>
+          <td>5.47</td><td>169</td>
+          <td>7.8</td><td><b>0.53</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>5.2</td>
+          <td>7.7</td>
+          <td>212.7</td>
+          <td>165.7</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-moderate">
+          <td>7</td><td class="l">002839.SZ</td>
+          <td class="l"><b>张家港行</b></td>
+          <td>4.37</td><td>108</td>
+          <td>5.4</td><td><b>0.57</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>9.2</td>
+          <td>5.2</td>
+          <td>94.6</td>
+          <td>59.1</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>8</td><td class="l">002061.SZ</td>
+          <td class="l"><b>浙江交科</b></td>
+          <td>3.53</td><td>92</td>
+          <td>9.5</td><td><b>0.59</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>6.5</td>
+          <td>14.3</td>
+          <td>455.4</td>
+          <td>455.4</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>9</td><td class="l">601658.SH</td>
+          <td class="l"><b>邮储银行</b></td>
+          <td>5.04</td><td>6,053</td>
+          <td>6.9</td><td><b>0.59</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.4</td>
+          <td>2.8</td>
+          <td>48.1</td>
+          <td>65.5</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>10</td><td class="l">600717.SH</td>
+          <td class="l"><b>天津港</b></td>
+          <td>4.31</td><td>124</td>
+          <td>10.8</td><td><b>0.61</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>5.5</td>
+          <td>17.7</td>
+          <td>907.1</td>
+          <td>907.1</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>11</td><td class="l">600335.SH</td>
+          <td class="l"><b>国机汽车</b></td>
+          <td>5.2</td><td>75</td>
+          <td>16.1</td><td><b>0.64</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>3.9</td>
+          <td>10.6</td>
+          <td>1272.5</td>
+          <td>1272.5</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>12</td><td class="l">600064.SH</td>
+          <td class="l"><b>南京高科</b></td>
+          <td>7.68</td><td>131</td>
+          <td>7.7</td><td><b>0.66</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>10.9</td>
+          <td>24.4</td>
+          <td>315.8</td>
+          <td>315.8</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>13</td><td class="l">601963.SH</td>
+          <td class="l"><b>重庆银行</b></td>
+          <td>11.16</td><td>406</td>
+          <td>6.8</td><td><b>0.67</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>9.0</td>
+          <td>11.8</td>
+          <td>165.2</td>
+          <td>60.1</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>14</td><td class="l">601966.SH</td>
+          <td class="l"><b>玲珑轮胎</b></td>
+          <td>11.19</td><td>161</td>
+          <td>15.4</td><td><b>0.71</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.6</td>
+          <td>37.8</td>
+          <td>6030.3</td>
+          <td>4307.6</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>15</td><td class="l">600020.SH</td>
+          <td class="l"><b>中原高速</b></td>
+          <td>3.8</td><td>85</td>
+          <td>13.1</td><td><b>0.72</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>5.7</td>
+          <td>40.9</td>
+          <td>109.2</td>
+          <td>109.2</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>16</td><td class="l">601398.SH</td>
+          <td class="l"><b>工商银行</b></td>
+          <td>7.9</td><td>28,120</td>
+          <td>7.6</td><td><b>0.72</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>8.2</td>
+          <td>2.9</td>
+          <td>0.9</td>
+          <td>24.0</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-speculative">
+          <td>17</td><td class="l">601997.SH</td>
+          <td class="l"><b>贵阳银行</b></td>
+          <td>5.47</td><td>212</td>
+          <td>4.0</td><td><b>0.33</b></td>
+          <td>·✓·✓</td>
+          <td><b>2/4</b></td>
+          <td>7.3</td>
+          <td>4.0</td>
+          <td>0.0</td>
+          <td>325.8</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr><tr class="exp-speculative">
+          <td>18</td><td class="l">601390.SH</td>
+          <td class="l"><b>中国中铁</b></td>
+          <td>4.38</td><td>1,070</td>
+          <td>5.0</td><td><b>0.34</b></td>
+          <td>··✓✓</td>
+          <td><b>2/4</b></td>
+          <td>5.8</td>
+          <td>-0.3</td>
+          <td>328.5</td>
+          <td>261.1</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr><tr class="exp-speculative">
+          <td>19</td><td class="l">600000.SH</td>
+          <td class="l"><b>浦发银行</b></td>
+          <td>9.08</td><td>3,071</td>
+          <td>6.0</td><td><b>0.41</b></td>
+          <td>·✓✓·</td>
+          <td><b>2/4</b></td>
+          <td>6.1</td>
+          <td>5.7</td>
+          <td>69.5</td>
+          <td>-36.5</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr><tr class="exp-speculative">
+          <td>20</td><td class="l">601328.SH</td>
+          <td class="l"><b>交通银行</b></td>
+          <td>7.16</td><td>6,362</td>
+          <td>6.6</td><td><b>0.55</b></td>
+          <td>·✓·✓</td>
+          <td><b>2/4</b></td>
+          <td>7.2</td>
+          <td>3.2</td>
+          <td>-9.3</td>
+          <td>60.1</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr>
+</table>
+
+<h2>② 全部买入信号明细（20 只）</h2>
+<p class="sub">红色=低估+强预期（undervalued），橙色=估值中性（moderate），
+紫色=C=2 但深度低估（speculative）。</p>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>现价</th><th>市值(亿)</th>
+<th>PE</th><th>PB</th><th>C1C2C3C4</th><th>C</th><th>预期ROE%</th>
+<th>预期增速%</th><th>rev4w%</th><th>rev13w%</th><th>矩阵分类</th>
+<th>conv</th><th>权重</th></tr>
+<tr class="exp-undervalued">
+          <td>1</td><td class="l">601668.SH</td>
+          <td class="l"><b>中国建筑</b></td>
+          <td>4.47</td><td>1,826</td>
+          <td>4.8</td><td><b>0.38</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.5</td>
+          <td>1.6</td>
+          <td>340.7</td>
+          <td>232.8</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>2</td><td class="l">002958.SZ</td>
+          <td class="l"><b>青农商行</b></td>
+          <td>2.95</td><td>164</td>
+          <td>5.1</td><td><b>0.44</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.1</td>
+          <td>5.0</td>
+          <td>86.0</td>
+          <td>86.0</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>3</td><td class="l">000001.SZ</td>
+          <td class="l"><b>平安银行</b></td>
+          <td>11.59</td><td>2,243</td>
+          <td>5.2</td><td><b>0.48</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.7</td>
+          <td>2.5</td>
+          <td>218.1</td>
+          <td>50.1</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>4</td><td class="l">601528.SH</td>
+          <td class="l"><b>瑞丰银行</b></td>
+          <td>4.99</td><td>98</td>
+          <td>5.0</td><td><b>0.49</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>9.2</td>
+          <td>2.2</td>
+          <td>91.6</td>
+          <td>56.4</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>5</td><td class="l">603323.SH</td>
+          <td class="l"><b>苏农银行</b></td>
+          <td>4.22</td><td>94</td>
+          <td>4.6</td><td><b>0.49</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>10.2</td>
+          <td>5.5</td>
+          <td>13.0</td>
+          <td>13.0</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-undervalued">
+          <td>6</td><td class="l">600820.SH</td>
+          <td class="l"><b>隧道股份</b></td>
+          <td>5.47</td><td>169</td>
+          <td>7.8</td><td><b>0.53</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>5.2</td>
+          <td>7.7</td>
+          <td>212.7</td>
+          <td>165.7</td>
+          <td><span style="color:#c62828"><b>undervalued</b></span></td>
+          <td>0.50</td><td>6.0%</td></tr><tr class="exp-moderate">
+          <td>7</td><td class="l">002839.SZ</td>
+          <td class="l"><b>张家港行</b></td>
+          <td>4.37</td><td>108</td>
+          <td>5.4</td><td><b>0.57</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>9.2</td>
+          <td>5.2</td>
+          <td>94.6</td>
+          <td>59.1</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>8</td><td class="l">002061.SZ</td>
+          <td class="l"><b>浙江交科</b></td>
+          <td>3.53</td><td>92</td>
+          <td>9.5</td><td><b>0.59</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>6.5</td>
+          <td>14.3</td>
+          <td>455.4</td>
+          <td>455.4</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>9</td><td class="l">601658.SH</td>
+          <td class="l"><b>邮储银行</b></td>
+          <td>5.04</td><td>6,053</td>
+          <td>6.9</td><td><b>0.59</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.4</td>
+          <td>2.8</td>
+          <td>48.1</td>
+          <td>65.5</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>10</td><td class="l">600717.SH</td>
+          <td class="l"><b>天津港</b></td>
+          <td>4.31</td><td>124</td>
+          <td>10.8</td><td><b>0.61</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>5.5</td>
+          <td>17.7</td>
+          <td>907.1</td>
+          <td>907.1</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>11</td><td class="l">600335.SH</td>
+          <td class="l"><b>国机汽车</b></td>
+          <td>5.2</td><td>75</td>
+          <td>16.1</td><td><b>0.64</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>3.9</td>
+          <td>10.6</td>
+          <td>1272.5</td>
+          <td>1272.5</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>12</td><td class="l">600064.SH</td>
+          <td class="l"><b>南京高科</b></td>
+          <td>7.68</td><td>131</td>
+          <td>7.7</td><td><b>0.66</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>10.9</td>
+          <td>24.4</td>
+          <td>315.8</td>
+          <td>315.8</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>13</td><td class="l">601963.SH</td>
+          <td class="l"><b>重庆银行</b></td>
+          <td>11.16</td><td>406</td>
+          <td>6.8</td><td><b>0.67</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>9.0</td>
+          <td>11.8</td>
+          <td>165.2</td>
+          <td>60.1</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>14</td><td class="l">601966.SH</td>
+          <td class="l"><b>玲珑轮胎</b></td>
+          <td>11.19</td><td>161</td>
+          <td>15.4</td><td><b>0.71</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>7.6</td>
+          <td>37.8</td>
+          <td>6030.3</td>
+          <td>4307.6</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>15</td><td class="l">600020.SH</td>
+          <td class="l"><b>中原高速</b></td>
+          <td>3.8</td><td>85</td>
+          <td>13.1</td><td><b>0.72</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>5.7</td>
+          <td>40.9</td>
+          <td>109.2</td>
+          <td>109.2</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-moderate">
+          <td>16</td><td class="l">601398.SH</td>
+          <td class="l"><b>工商银行</b></td>
+          <td>7.9</td><td>28,120</td>
+          <td>7.6</td><td><b>0.72</b></td>
+          <td>·✓✓✓</td>
+          <td><b>3/4</b></td>
+          <td>8.2</td>
+          <td>2.9</td>
+          <td>0.9</td>
+          <td>24.0</td>
+          <td><span style="color:#e65100"><b>moderate</b></span></td>
+          <td>0.30</td><td>4.5%</td></tr><tr class="exp-speculative">
+          <td>17</td><td class="l">601997.SH</td>
+          <td class="l"><b>贵阳银行</b></td>
+          <td>5.47</td><td>212</td>
+          <td>4.0</td><td><b>0.33</b></td>
+          <td>·✓·✓</td>
+          <td><b>2/4</b></td>
+          <td>7.3</td>
+          <td>4.0</td>
+          <td>0.0</td>
+          <td>325.8</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr><tr class="exp-speculative">
+          <td>18</td><td class="l">601390.SH</td>
+          <td class="l"><b>中国中铁</b></td>
+          <td>4.38</td><td>1,070</td>
+          <td>5.0</td><td><b>0.34</b></td>
+          <td>··✓✓</td>
+          <td><b>2/4</b></td>
+          <td>5.8</td>
+          <td>-0.3</td>
+          <td>328.5</td>
+          <td>261.1</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr><tr class="exp-speculative">
+          <td>19</td><td class="l">600000.SH</td>
+          <td class="l"><b>浦发银行</b></td>
+          <td>9.08</td><td>3,071</td>
+          <td>6.0</td><td><b>0.41</b></td>
+          <td>·✓✓·</td>
+          <td><b>2/4</b></td>
+          <td>6.1</td>
+          <td>5.7</td>
+          <td>69.5</td>
+          <td>-36.5</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr><tr class="exp-speculative">
+          <td>20</td><td class="l">601328.SH</td>
+          <td class="l"><b>交通银行</b></td>
+          <td>7.16</td><td>6,362</td>
+          <td>6.6</td><td><b>0.55</b></td>
+          <td>·✓·✓</td>
+          <td><b>2/4</b></td>
+          <td>7.2</td>
+          <td>3.2</td>
+          <td>-9.3</td>
+          <td>60.1</td>
+          <td><span style="color:#6a1b9a"><b>speculative</b></span></td>
+          <td>0.15</td><td>2.3%</td></tr>
+</table>
+
+<h2>③ 预期动能榜 · beat 且上涨最强 top-20（数据端视角）</h2>
+<p class="sub">口径：有分析师覆盖 & 市值≥50亿 & PE&gt;0 & 预期ROE≥8%
+& 4周上修&gt;0（beat 进行中），按一致预期净利增速 con_np_yoy 降序。
+C-Score 列标出该股的一致预期质量。</p>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>现价</th><th>市值(亿)</th>
+<th>PE</th><th>预期增速%</th><th>预期ROE%</th><th>rev4w%</th>
+<th>rev13w%</th><th>C-Score</th></tr>
+<tr>
+          <td>1</td><td class="l">688408.SH</td>
+          <td class="l"><b>中信博</b></td>
+          <td>24.82</td><td>54</td>
+          <td>—</td>
+          <td><b>7127.9</b></td>
+          <td>14.8</td>
+          <td>1672.0</td>
+          <td>1605.8</td>
+          <td>4/4</td></tr><tr>
+          <td>2</td><td class="l">000301.SZ</td>
+          <td class="l"><b>东方盛虹</b></td>
+          <td>13.02</td><td>882</td>
+          <td>72.0</td>
+          <td><b>3940.8</b></td>
+          <td>13.6</td>
+          <td>711.3</td>
+          <td>5741.2</td>
+          <td>4/4</td></tr><tr>
+          <td>3</td><td class="l">000703.SZ</td>
+          <td class="l"><b>恒逸石化</b></td>
+          <td>18.34</td><td>727</td>
+          <td>12.3</td>
+          <td><b>3408.4</b></td>
+          <td>26.9</td>
+          <td>2418.1</td>
+          <td>4264.3</td>
+          <td>4/4</td></tr><tr>
+          <td>4</td><td class="l">002134.SZ</td>
+          <td class="l"><b>天津普林</b></td>
+          <td>20.93</td><td>51</td>
+          <td>324.3</td>
+          <td><b>1998.8</b></td>
+          <td>16.6</td>
+          <td>53094.3</td>
+          <td>53094.3</td>
+          <td>4/4</td></tr><tr>
+          <td>5</td><td class="l">002466.SZ</td>
+          <td class="l"><b>天齐锂业</b></td>
+          <td>47.01</td><td>841</td>
+          <td>37.6</td>
+          <td><b>1624.7</b></td>
+          <td>15.2</td>
+          <td>360.4</td>
+          <td>1173.8</td>
+          <td>4/4</td></tr><tr>
+          <td>6</td><td class="l">688388.SH</td>
+          <td class="l"><b>嘉元科技</b></td>
+          <td>28.31</td><td>196</td>
+          <td>128.4</td>
+          <td><b>1567.4</b></td>
+          <td>10.7</td>
+          <td>1563.3</td>
+          <td>2906.9</td>
+          <td>3/4</td></tr><tr>
+          <td>7</td><td class="l">688525.SH</td>
+          <td class="l"><b>佰维存储</b></td>
+          <td>227.82</td><td>1,064</td>
+          <td>26.9</td>
+          <td><b>1494.8</b></td>
+          <td>70.8</td>
+          <td>4482.4</td>
+          <td>7020.7</td>
+          <td>4/4</td></tr><tr>
+          <td>8</td><td class="l">600230.SH</td>
+          <td class="l"><b>沧州大化</b></td>
+          <td>14.37</td><td>60</td>
+          <td>55.2</td>
+          <td><b>1434.5</b></td>
+          <td>10.6</td>
+          <td>4318.7</td>
+          <td>5661.1</td>
+          <td>3/4</td></tr><tr>
+          <td>9</td><td class="l">603800.SH</td>
+          <td class="l"><b>洪田股份</b></td>
+          <td>66.16</td><td>136</td>
+          <td>572.9</td>
+          <td><b>1349.3</b></td>
+          <td>20.7</td>
+          <td>2826.2</td>
+          <td>7879.2</td>
+          <td>4/4</td></tr><tr>
+          <td>10</td><td class="l">600869.SH</td>
+          <td class="l"><b>远东股份</b></td>
+          <td>16.2</td><td>359</td>
+          <td>297.0</td>
+          <td><b>1330.1</b></td>
+          <td>16.8</td>
+          <td>9.8</td>
+          <td>147.1</td>
+          <td>4/4</td></tr><tr>
+          <td>11</td><td class="l">000415.SZ</td>
+          <td class="l"><b>渤海租赁</b></td>
+          <td>4.46</td><td>278</td>
+          <td>5.8</td>
+          <td><b>1312.2</b></td>
+          <td>15.0</td>
+          <td>1853.5</td>
+          <td>3893.5</td>
+          <td>4/4</td></tr><tr>
+          <td>12</td><td class="l">301308.SZ</td>
+          <td class="l"><b>江波龙</b></td>
+          <td>369.66</td><td>1,568</td>
+          <td>13.1</td>
+          <td><b>1160.4</b></td>
+          <td>60.5</td>
+          <td>3713.4</td>
+          <td>3692.3</td>
+          <td>4/4</td></tr><tr>
+          <td>13</td><td class="l">601869.SH</td>
+          <td class="l"><b>长飞光纤</b></td>
+          <td>394.5</td><td>3,139</td>
+          <td>91.2</td>
+          <td><b>949.4</b></td>
+          <td>38.9</td>
+          <td>1976.5</td>
+          <td>330.3</td>
+          <td>4/4</td></tr><tr>
+          <td>14</td><td class="l">002493.SZ</td>
+          <td class="l"><b>荣盛石化</b></td>
+          <td>13.22</td><td>1,364</td>
+          <td>44.3</td>
+          <td><b>893.9</b></td>
+          <td>16.2</td>
+          <td>309.2</td>
+          <td>2233.4</td>
+          <td>4/4</td></tr><tr>
+          <td>15</td><td class="l">300438.SZ</td>
+          <td class="l"><b>鹏辉能源</b></td>
+          <td>60.6</td><td>311</td>
+          <td>54.2</td>
+          <td><b>846.3</b></td>
+          <td>26.6</td>
+          <td>737.8</td>
+          <td>1533.6</td>
+          <td>4/4</td></tr><tr>
+          <td>16</td><td class="l">300199.SZ</td>
+          <td class="l"><b>翰宇药业</b></td>
+          <td>23.48</td><td>196</td>
+          <td>153.2</td>
+          <td><b>829.7</b></td>
+          <td>35.7</td>
+          <td>25972.9</td>
+          <td>25972.9</td>
+          <td>4/4</td></tr><tr>
+          <td>17</td><td class="l">603986.SH</td>
+          <td class="l"><b>兆易创新</b></td>
+          <td>395.51</td><td>2,678</td>
+          <td>33.8</td>
+          <td><b>779.3</b></td>
+          <td>32.3</td>
+          <td>11314.2</td>
+          <td>14741.4</td>
+          <td>4/4</td></tr><tr>
+          <td>18</td><td class="l">688390.SH</td>
+          <td class="l"><b>固德威</b></td>
+          <td>63.75</td><td>157</td>
+          <td>59.3</td>
+          <td><b>703.8</b></td>
+          <td>28.3</td>
+          <td>754.9</td>
+          <td>1219.2</td>
+          <td>4/4</td></tr><tr>
+          <td>19</td><td class="l">301511.SZ</td>
+          <td class="l"><b>德福科技</b></td>
+          <td>81.48</td><td>516</td>
+          <td>153.0</td>
+          <td><b>673.9</b></td>
+          <td>18.0</td>
+          <td>225.1</td>
+          <td>-706.1</td>
+          <td>3/4</td></tr><tr>
+          <td>20</td><td class="l">920571.BJ</td>
+          <td class="l"><b>—</b></td>
+          <td>—</td><td>51</td>
+          <td>29.0</td>
+          <td><b>668.3</b></td>
+          <td>14.7</td>
+          <td>9787.5</td>
+          <td>6844.8</td>
+          <td>4/4</td></tr>
+</table>
+
+<p class="note"><b>方法诚实性：</b>① 全部数据来自 juzi 估值面板 + 一致预期
+PIT 快照（2026-08-20，全市场 5528 只）与腾讯实时行情，无合成数据；
+② 深度价值池（PB&lt;2/PE&lt;20/市值≥50亿）与 2026-08-19 全历史回测口径完全一致，
+BM 分位在池内计算；③ C-Score 仅用符号方向（&gt;0/&gt;12%），对原始上修幅度的
+极端值稳健；④ 无分析师覆盖的股票直接剔除（这是策略的真实暴露，不是缺陷）；
+⑤ 本名单由数值化筛选器产生，<b>不构成投资建议</b>；⑥ 过去表现不代表未来。</p>
+
+</body></html>
