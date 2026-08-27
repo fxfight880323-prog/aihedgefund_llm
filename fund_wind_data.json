@@ -1,0 +1,470 @@
+[
+  {
+    "name": "陈金伟",
+    "org": "鹏华基金",
+    "funds": [
+      {
+        "code": "005812.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "020884.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "160611.SZ",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "孟杰",
+    "org": "宏利基金",
+    "funds": [
+      {
+        "code": "000828.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "162204.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "003501.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "姚艺",
+    "org": "宝盈基金",
+    "funds": [
+      {
+        "code": "009223.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "008227.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "001487.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "乔海英",
+    "org": "景顺长城",
+    "funds": [
+      {
+        "code": "011876.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "高付",
+    "org": "申万菱信",
+    "funds": [
+      {
+        "code": "001148.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      },
+      {
+        "code": "001724.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "苗琦",
+    "org": "申万菱信",
+    "funds": [
+      {
+        "code": "005009.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "毕凯",
+    "org": "贝莱德",
+    "funds": [
+      {
+        "code": "018101.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "陈颖",
+    "org": "泰信基金",
+    "funds": [
+      {
+        "code": "013072.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "马晓东",
+    "org": "安信基金",
+    "funds": [
+      {
+        "code": "022299.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "江琦",
+    "org": "东方红",
+    "funds": [
+      {
+        "code": "015052.OF",
+        "info": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_info, api_name=wind_get_fund_info, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        },
+        "nav": {
+          "ok": false,
+          "error": {
+            "code": "ROUTE_ERROR",
+            "agent_action": "[工具名 \"get_fund_nav\" 不属于 server_type \"fund_data\"。] 路由错误：server_type 或 tool_name 不合法。detail 中列出了可用选项。1) 根据 detail 中的可用列表，结合 SKILL.md 范围表重选合法的 server_type；2) 读取 references/tool-contracts.md 对应 server_type 的工具列表，重选合法的 tool_name；3) 保持用户原始数据意图，不要直接 fallback 到 analytics_data。"
+          }
+        },
+        "performance": {
+          "ok": false,
+          "error": {
+            "code": "PARAM_VALIDATION_ERROR",
+            "agent_action": "[{'type': 'text', 'text': 'PARAMETER_ERROR - Missing required parameters: question. Required parameters: question, file_path'} (server=fund_data, tool=get_fund_performance, api_name=wind_get_fund_performance, via agent-gw)] 业务参数错误：本地基础校验或后端参数校验未通过。1) 读取 references/tool-contracts.md 当前工具的段落，逐项核对字段名、必填项、日期格式（yyyyMMdd）、单标的和枚举值；2) 含 indexes 时读取 references/indicators.md 相关类别，每个 index 必须逐字存在；3) 只修 detail 指出的错误项，保持同一 server_type+tool_name 和业务参数语义。禁止改 shell 引号、添加用户未请求的指标、发明字段名或直接上 analytics。"
+          }
+        }
+      }
+    ]
+  }
+]

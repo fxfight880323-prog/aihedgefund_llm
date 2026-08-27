@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>一致预期 beat · 上涨最强 top-20（2026-08-24）</title>
+<style>
+ body { font-family: "Microsoft YaHei", sans-serif; margin: 24px 36px;
+        background: #fafafa; color: #222; }
+ h1 { font-size: 22px; margin-bottom: 4px; }
+ h2 { font-size: 16px; margin-top: 28px; border-left: 4px solid #c62828;
+        padding-left: 10px; }
+ .sub { color: #666; font-size: 13px; }
+ table { border-collapse: collapse; margin: 12px 0; font-size: 13px;
+         background: #fff; }
+ th, td { border: 1px solid #ddd; padding: 5px 9px; text-align: right;
+           white-space: nowrap; }
+ th { background: #f0f0f0; position: sticky; top: 0; }
+ td.l { text-align: left; }
+ .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+         padding: 12px 16px; margin: 10px 0; font-size: 13.5px;
+         line-height: 1.8; }
+ .kpi { font-size: 15px; font-weight: 700; color: #c62828; }
+ .note { color: #888; font-size: 12px; margin-top: 18px;
+          border-top: 1px dashed #ccc; padding-top: 10px; }
+</style></head><body>
+
+<h1>一致预期 beat · 上涨最强 · 当前推荐 A 股 top-20</h1>
+<p class="sub">数据截至 <b>2026-08-24</b>（最新交易日）· 一致预期 PIT 快照 @ 2026-08-24 ·
+池子 = 万得全A(881001.WI) 成分 5,529 只，剔除申万银行+非银金融
+121 只 → 5,408 只</p>
+
+<div class="card">
+<b>策略逻辑（基于 juzi 一致预期数据，C-Score 框架实证方向）：</b><br>
+① <b>beat</b>：近4周一致预期净利润上修 <span class="kpi">np_revision_4w &gt; 0</span>
+——分析师在最近一个月内<b>方向性上调</b>盈利预期（预期差信息的"方向变动"维度，
+此前回测证明比水平排序更有信息量）；<br>
+② <b>上涨最强</b>：一致预期净利同比增速 <span class="kpi">con_np_yoy &gt; 0</span>，
+并按 <span class="kpi">con_np_yoy 降序</span>取前 20（预期盈利弹性最高）；<br>
+③ 金融剔除：申万一级 <b>银行(801780.SI)</b> + <b>非银金融(801790.SI)</b> PIT 成分
+（券商/保险/多元金融一并剔除）。<br>
+当前命中 <b>1,108</b> 只；质量强化版（另加 con_roe ≥ 12%）命中
+<b>354</b> 只。
+</div>
+
+<h2>① 主榜 · beat + 上涨最强 top-20</h2>
+<p class="sub">按一致预期净利增速降序；红=预期增速%，蓝=4周上修幅度%。</p>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>现价</th><th>市值(亿)</th>
+<th>PE(TTM)</th><th>预期增速%</th><th>4周上修%</th><th>13周上修%</th>
+<th>26周上修%</th><th>预期ROE%</th><th>PEG</th></tr>
+<tr>
+          <td>1</td><td class="l">300277.SZ</td>
+          <td class="l"><b>汽轮科技</b></td>
+          <td>11.93</td><td>177</td>
+          <td>200.6</td>
+          <td><b style="color:#c62828">21614.0</b></td>
+          <td><b style="color:#1565c0">293.6</b></td>
+          <td>-323.7</td>
+          <td>539572.3</td>
+          <td>4.6</td>
+          <td>0.02</td></tr><tr>
+          <td>2</td><td class="l">688408.SH</td>
+          <td class="l"><b>中信博</b></td>
+          <td>24.82</td><td>54</td>
+          <td>—</td>
+          <td><b style="color:#c62828">7127.9</b></td>
+          <td><b style="color:#1565c0">1672.0</b></td>
+          <td>1605.8</td>
+          <td>38.7</td>
+          <td>14.8</td>
+          <td>—</td></tr><tr>
+          <td>3</td><td class="l">000301.SZ</td>
+          <td class="l"><b>东方盛虹</b></td>
+          <td>13.02</td><td>882</td>
+          <td>72.0</td>
+          <td><b style="color:#c62828">3940.8</b></td>
+          <td><b style="color:#1565c0">711.3</b></td>
+          <td>5741.2</td>
+          <td>23679.5</td>
+          <td>13.6</td>
+          <td>0.03</td></tr><tr>
+          <td>4</td><td class="l">000703.SZ</td>
+          <td class="l"><b>恒逸石化</b></td>
+          <td>18.34</td><td>727</td>
+          <td>12.3</td>
+          <td><b style="color:#c62828">3408.4</b></td>
+          <td><b style="color:#1565c0">2418.1</b></td>
+          <td>4264.3</td>
+          <td>94040.6</td>
+          <td>26.9</td>
+          <td>0.02</td></tr><tr>
+          <td>5</td><td class="l">000701.SZ</td>
+          <td class="l"><b>厦门信达</b></td>
+          <td>5.05</td><td>33</td>
+          <td>6.7</td>
+          <td><b style="color:#c62828">3140.4</b></td>
+          <td><b style="color:#1565c0">265334.2</b></td>
+          <td>265334.2</td>
+          <td>319272.2</td>
+          <td>18.4</td>
+          <td>0.01</td></tr><tr>
+          <td>6</td><td class="l">300821.SZ</td>
+          <td class="l"><b>东岳硅材</b></td>
+          <td>15.74</td><td>196</td>
+          <td>53.2</td>
+          <td><b style="color:#c62828">2002.1</b></td>
+          <td><b style="color:#1565c0">16632.8</b></td>
+          <td>16632.8</td>
+          <td>136770.9</td>
+          <td>7.0</td>
+          <td>—</td></tr><tr>
+          <td>7</td><td class="l">002134.SZ</td>
+          <td class="l"><b>天津普林</b></td>
+          <td>20.93</td><td>51</td>
+          <td>324.3</td>
+          <td><b style="color:#c62828">1998.8</b></td>
+          <td><b style="color:#1565c0">53094.3</b></td>
+          <td>53094.3</td>
+          <td>45421.8</td>
+          <td>16.6</td>
+          <td>0.1</td></tr><tr>
+          <td>8</td><td class="l">300568.SZ</td>
+          <td class="l"><b>星源材质</b></td>
+          <td>14.4</td><td>210</td>
+          <td>1112.0</td>
+          <td><b style="color:#c62828">1978.9</b></td>
+          <td><b style="color:#1565c0">84.8</b></td>
+          <td>808.4</td>
+          <td>3738.2</td>
+          <td>7.2</td>
+          <td>0.06</td></tr><tr>
+          <td>9</td><td class="l">002466.SZ</td>
+          <td class="l"><b>天齐锂业</b></td>
+          <td>47.01</td><td>841</td>
+          <td>37.6</td>
+          <td><b style="color:#c62828">1624.7</b></td>
+          <td><b style="color:#1565c0">360.4</b></td>
+          <td>1173.8</td>
+          <td>47846.1</td>
+          <td>15.2</td>
+          <td>0.03</td></tr><tr>
+          <td>10</td><td class="l">688388.SH</td>
+          <td class="l"><b>嘉元科技</b></td>
+          <td>28.31</td><td>196</td>
+          <td>128.4</td>
+          <td><b style="color:#c62828">1567.4</b></td>
+          <td><b style="color:#1565c0">1563.3</b></td>
+          <td>2906.9</td>
+          <td>15273.0</td>
+          <td>10.7</td>
+          <td>0.05</td></tr><tr>
+          <td>11</td><td class="l">301327.SZ</td>
+          <td class="l"><b>华宝新能</b></td>
+          <td>44.41</td><td>78</td>
+          <td>—</td>
+          <td><b style="color:#c62828">1520.6</b></td>
+          <td><b style="color:#1565c0">242.1</b></td>
+          <td>242.1</td>
+          <td>-3653.0</td>
+          <td>4.4</td>
+          <td>0.07</td></tr><tr>
+          <td>12</td><td class="l">688525.SH</td>
+          <td class="l"><b>佰维存储</b></td>
+          <td>227.82</td><td>1,064</td>
+          <td>26.9</td>
+          <td><b style="color:#c62828">1494.8</b></td>
+          <td><b style="color:#1565c0">4482.4</b></td>
+          <td>7020.7</td>
+          <td>43962.9</td>
+          <td>70.8</td>
+          <td>0.02</td></tr><tr>
+          <td>13</td><td class="l">600230.SH</td>
+          <td class="l"><b>沧州大化</b></td>
+          <td>14.37</td><td>60</td>
+          <td>55.2</td>
+          <td><b style="color:#c62828">1434.5</b></td>
+          <td><b style="color:#1565c0">4318.7</b></td>
+          <td>5661.1</td>
+          <td>43220.6</td>
+          <td>10.6</td>
+          <td>0.04</td></tr><tr>
+          <td>14</td><td class="l">603520.SH</td>
+          <td class="l"><b>司太立</b></td>
+          <td>8.92</td><td>38</td>
+          <td>226.3</td>
+          <td><b style="color:#c62828">1366.5</b></td>
+          <td><b style="color:#1565c0">1361.2</b></td>
+          <td>1150.5</td>
+          <td>-1778.6</td>
+          <td>5.5</td>
+          <td>0.06</td></tr><tr>
+          <td>15</td><td class="l">603800.SH</td>
+          <td class="l"><b>洪田股份</b></td>
+          <td>66.16</td><td>136</td>
+          <td>572.9</td>
+          <td><b style="color:#c62828">1349.3</b></td>
+          <td><b style="color:#1565c0">2826.2</b></td>
+          <td>7879.2</td>
+          <td>-1216.7</td>
+          <td>20.7</td>
+          <td>0.14</td></tr><tr>
+          <td>16</td><td class="l">600869.SH</td>
+          <td class="l"><b>远东股份</b></td>
+          <td>16.2</td><td>359</td>
+          <td>297.0</td>
+          <td><b style="color:#c62828">1330.1</b></td>
+          <td><b style="color:#1565c0">9.8</b></td>
+          <td>147.1</td>
+          <td>3893.8</td>
+          <td>16.8</td>
+          <td>0.09</td></tr><tr>
+          <td>17</td><td class="l">300471.SZ</td>
+          <td class="l"><b>厚普股份</b></td>
+          <td>10.04</td><td>46</td>
+          <td>41.6</td>
+          <td><b style="color:#c62828">1311.6</b></td>
+          <td><b style="color:#1565c0">1436112.2</b></td>
+          <td>1436112.2</td>
+          <td>29320.0</td>
+          <td>6.6</td>
+          <td>0.15</td></tr><tr>
+          <td>18</td><td class="l">600078.SH</td>
+          <td class="l"><b>澄星股份</b></td>
+          <td>10.84</td><td>74</td>
+          <td>68.4</td>
+          <td><b style="color:#c62828">1169.4</b></td>
+          <td><b style="color:#1565c0">4941.3</b></td>
+          <td>4941.3</td>
+          <td>20441.1</td>
+          <td>6.0</td>
+          <td>0.27</td></tr><tr>
+          <td>19</td><td class="l">002182.SZ</td>
+          <td class="l"><b>宝武镁业</b></td>
+          <td>11.96</td><td>114</td>
+          <td>—</td>
+          <td><b style="color:#c62828">1167.5</b></td>
+          <td><b style="color:#1565c0">61.3</b></td>
+          <td>340.1</td>
+          <td>-5885.7</td>
+          <td>3.6</td>
+          <td>—</td></tr><tr>
+          <td>20</td><td class="l">301308.SZ</td>
+          <td class="l"><b>江波龙</b></td>
+          <td>369.66</td><td>1,568</td>
+          <td>13.1</td>
+          <td><b style="color:#c62828">1160.4</b></td>
+          <td><b style="color:#1565c0">3713.4</b></td>
+          <td>3692.3</td>
+          <td>47090.5</td>
+          <td>60.5</td>
+          <td>0.05</td></tr>
+</table>
+
+<h2>② 质量强化版 · 另加 con_roe ≥ 12% top-20</h2>
+<p class="sub">在 beat+上涨 之上要求一致预期 ROE ≥ 12%（C-Score 实证质量阈值，
+命中 354 只）。</p>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>现价</th><th>市值(亿)</th>
+<th>PE(TTM)</th><th>预期增速%</th><th>4周上修%</th><th>13周上修%</th>
+<th>26周上修%</th><th>预期ROE%</th><th>PEG</th></tr>
+<tr>
+          <td>1</td><td class="l">688408.SH</td>
+          <td class="l"><b>中信博</b></td>
+          <td>24.82</td><td>54</td>
+          <td>—</td>
+          <td><b style="color:#c62828">7127.9</b></td>
+          <td><b style="color:#1565c0">1672.0</b></td>
+          <td>1605.8</td>
+          <td>38.7</td>
+          <td>14.8</td>
+          <td>—</td></tr><tr>
+          <td>2</td><td class="l">000301.SZ</td>
+          <td class="l"><b>东方盛虹</b></td>
+          <td>13.02</td><td>882</td>
+          <td>72.0</td>
+          <td><b style="color:#c62828">3940.8</b></td>
+          <td><b style="color:#1565c0">711.3</b></td>
+          <td>5741.2</td>
+          <td>23679.5</td>
+          <td>13.6</td>
+          <td>0.03</td></tr><tr>
+          <td>3</td><td class="l">000703.SZ</td>
+          <td class="l"><b>恒逸石化</b></td>
+          <td>18.34</td><td>727</td>
+          <td>12.3</td>
+          <td><b style="color:#c62828">3408.4</b></td>
+          <td><b style="color:#1565c0">2418.1</b></td>
+          <td>4264.3</td>
+          <td>94040.6</td>
+          <td>26.9</td>
+          <td>0.02</td></tr><tr>
+          <td>4</td><td class="l">000701.SZ</td>
+          <td class="l"><b>厦门信达</b></td>
+          <td>5.05</td><td>33</td>
+          <td>6.7</td>
+          <td><b style="color:#c62828">3140.4</b></td>
+          <td><b style="color:#1565c0">265334.2</b></td>
+          <td>265334.2</td>
+          <td>319272.2</td>
+          <td>18.4</td>
+          <td>0.01</td></tr><tr>
+          <td>5</td><td class="l">002134.SZ</td>
+          <td class="l"><b>天津普林</b></td>
+          <td>20.93</td><td>51</td>
+          <td>324.3</td>
+          <td><b style="color:#c62828">1998.8</b></td>
+          <td><b style="color:#1565c0">53094.3</b></td>
+          <td>53094.3</td>
+          <td>45421.8</td>
+          <td>16.6</td>
+          <td>0.1</td></tr><tr>
+          <td>6</td><td class="l">002466.SZ</td>
+          <td class="l"><b>天齐锂业</b></td>
+          <td>47.01</td><td>841</td>
+          <td>37.6</td>
+          <td><b style="color:#c62828">1624.7</b></td>
+          <td><b style="color:#1565c0">360.4</b></td>
+          <td>1173.8</td>
+          <td>47846.1</td>
+          <td>15.2</td>
+          <td>0.03</td></tr><tr>
+          <td>7</td><td class="l">688525.SH</td>
+          <td class="l"><b>佰维存储</b></td>
+          <td>227.82</td><td>1,064</td>
+          <td>26.9</td>
+          <td><b style="color:#c62828">1494.8</b></td>
+          <td><b style="color:#1565c0">4482.4</b></td>
+          <td>7020.7</td>
+          <td>43962.9</td>
+          <td>70.8</td>
+          <td>0.02</td></tr><tr>
+          <td>8</td><td class="l">603800.SH</td>
+          <td class="l"><b>洪田股份</b></td>
+          <td>66.16</td><td>136</td>
+          <td>572.9</td>
+          <td><b style="color:#c62828">1349.3</b></td>
+          <td><b style="color:#1565c0">2826.2</b></td>
+          <td>7879.2</td>
+          <td>-1216.7</td>
+          <td>20.7</td>
+          <td>0.14</td></tr><tr>
+          <td>9</td><td class="l">600869.SH</td>
+          <td class="l"><b>远东股份</b></td>
+          <td>16.2</td><td>359</td>
+          <td>297.0</td>
+          <td><b style="color:#c62828">1330.1</b></td>
+          <td><b style="color:#1565c0">9.8</b></td>
+          <td>147.1</td>
+          <td>3893.8</td>
+          <td>16.8</td>
+          <td>0.09</td></tr><tr>
+          <td>10</td><td class="l">301308.SZ</td>
+          <td class="l"><b>江波龙</b></td>
+          <td>369.66</td><td>1,568</td>
+          <td>13.1</td>
+          <td><b style="color:#c62828">1160.4</b></td>
+          <td><b style="color:#1565c0">3713.4</b></td>
+          <td>3692.3</td>
+          <td>47090.5</td>
+          <td>60.5</td>
+          <td>0.05</td></tr><tr>
+          <td>11</td><td class="l">300749.SZ</td>
+          <td class="l"><b>顶固集创</b></td>
+          <td>25.57</td><td>50</td>
+          <td>45.9</td>
+          <td><b style="color:#c62828">1117.9</b></td>
+          <td><b style="color:#1565c0">112101.0</b></td>
+          <td>112101.0</td>
+          <td>17050.7</td>
+          <td>16.0</td>
+          <td>0.18</td></tr><tr>
+          <td>12</td><td class="l">601869.SH</td>
+          <td class="l"><b>长飞光纤</b></td>
+          <td>394.5</td><td>3,139</td>
+          <td>91.2</td>
+          <td><b style="color:#c62828">949.4</b></td>
+          <td><b style="color:#1565c0">1976.5</b></td>
+          <td>330.3</td>
+          <td>52893.0</td>
+          <td>38.9</td>
+          <td>0.12</td></tr><tr>
+          <td>13</td><td class="l">002493.SZ</td>
+          <td class="l"><b>荣盛石化</b></td>
+          <td>13.22</td><td>1,364</td>
+          <td>44.3</td>
+          <td><b style="color:#c62828">893.9</b></td>
+          <td><b style="color:#1565c0">309.2</b></td>
+          <td>2233.4</td>
+          <td>13908.0</td>
+          <td>16.2</td>
+          <td>0.07</td></tr><tr>
+          <td>14</td><td class="l">300438.SZ</td>
+          <td class="l"><b>鹏辉能源</b></td>
+          <td>60.6</td><td>311</td>
+          <td>54.2</td>
+          <td><b style="color:#c62828">846.3</b></td>
+          <td><b style="color:#1565c0">737.8</b></td>
+          <td>1533.6</td>
+          <td>1221.5</td>
+          <td>26.6</td>
+          <td>0.06</td></tr><tr>
+          <td>15</td><td class="l">300199.SZ</td>
+          <td class="l"><b>翰宇药业</b></td>
+          <td>23.48</td><td>196</td>
+          <td>153.2</td>
+          <td><b style="color:#c62828">829.7</b></td>
+          <td><b style="color:#1565c0">25972.9</b></td>
+          <td>25972.9</td>
+          <td>60372.7</td>
+          <td>35.7</td>
+          <td>0.19</td></tr><tr>
+          <td>16</td><td class="l">603986.SH</td>
+          <td class="l"><b>兆易创新</b></td>
+          <td>395.51</td><td>2,678</td>
+          <td>33.8</td>
+          <td><b style="color:#c62828">779.3</b></td>
+          <td><b style="color:#1565c0">11314.2</b></td>
+          <td>14741.4</td>
+          <td>42782.9</td>
+          <td>32.3</td>
+          <td>0.08</td></tr><tr>
+          <td>17</td><td class="l">688390.SH</td>
+          <td class="l"><b>固德威</b></td>
+          <td>63.75</td><td>157</td>
+          <td>59.3</td>
+          <td><b style="color:#c62828">703.8</b></td>
+          <td><b style="color:#1565c0">754.9</b></td>
+          <td>1219.2</td>
+          <td>6553.9</td>
+          <td>28.3</td>
+          <td>0.06</td></tr><tr>
+          <td>18</td><td class="l">301511.SZ</td>
+          <td class="l"><b>德福科技</b></td>
+          <td>81.48</td><td>516</td>
+          <td>153.0</td>
+          <td><b style="color:#c62828">673.9</b></td>
+          <td><b style="color:#1565c0">225.1</b></td>
+          <td>-706.1</td>
+          <td>20701.6</td>
+          <td>18.0</td>
+          <td>0.17</td></tr><tr>
+          <td>19</td><td class="l">300765.SZ</td>
+          <td class="l"><b>石药创新</b></td>
+          <td>44.29</td><td>635</td>
+          <td>62.1</td>
+          <td><b style="color:#c62828">667.3</b></td>
+          <td><b style="color:#1565c0">54404.2</b></td>
+          <td>177397.3</td>
+          <td>177397.3</td>
+          <td>33.8</td>
+          <td>—</td></tr><tr>
+          <td>20</td><td class="l">603083.SH</td>
+          <td class="l"><b>剑桥科技</b></td>
+          <td>173.5</td><td>644</td>
+          <td>183.9</td>
+          <td><b style="color:#c62828">580.4</b></td>
+          <td><b style="color:#1565c0">471.2</b></td>
+          <td>41163.4</td>
+          <td>1162.3</td>
+          <td>19.4</td>
+          <td>0.13</td></tr>
+</table>
+
+<p class="note"><b>方法诚实性：</b>① 数据全部来自 juzi 一致预期 PIT 快照 + 估值面板
++ 腾讯实时行情，无合成数据；② np_revision 为分析师对当年净利的预期修正幅度（%），
+正数=上调，是"预期被 beat"的方向信号，非实际财报 beat；③ 一致预期仅覆盖有分析师
+覆盖的股票，小盘无覆盖股天然缺席（这是数据端的真实暴露）；④ 本名单由数值化筛选器
+产生，<b>不构成投资建议</b>；⑤ C-Score 一致预期策略回测（2021-08 起）年化超额等权
+全A +26pp，过去表现不代表未来。</p>
+
+</body></html>

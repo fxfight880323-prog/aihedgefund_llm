@@ -1,367 +1,86 @@
-# AI Investment Fund Framework
+# ai_fund_framework 统一数据管线
 
-A **LangGraph-powered AI investment fund** framework built on the architecture of [ai-hedge-fund](https://github.com/virattt/ai-hedge-fund), with blank templates for your own investment theories.
+把已验证的策略筛选、回测、模拟组合跟踪**固定为可重复运行的代码**。以后更新数据
+只跑 `run.py` 一个入口，不再手工改脚本日期、不再依赖会话里临时拼装。
 
-> **Educational use only.** Not investment advice. Not intended for real trading.
-
----
-
-## What This Is
-
-A framework for building your own AI-powered investment fund. You staff it with **alpha models** (analysts), bundle them into **strategies** (pods), and the engine runs a complete cycle: data → analysts → portfolio → risk → execution → ledger.
-
-The entire workflow is orchestrated by **LangGraph**, giving you:
-- Checkpointing (resume any cycle from any point)
-- Human-in-the-loop (pause before execution for approval)
-- Parallelism (run analysts simultaneously)
-- Streaming (watch signal generation in real-time)
-- Conditional logic (skip execution when all signals are neutral)
-
-### Three Target Layers — Where Alpha Comes From
-
-框架的顶层结构是**三层 Alpha 目标层**（详见 [`docs/ALPHA_LAYERS.md`](docs/ALPHA_LAYERS.md)），
-任何一次回测改进都必须归因到恰好一层，每层独立记账、设 benchmark、持续迭代：
-
-| 层 | 记录什么 | 归因规则 | 已实测 |
-|----|----------|----------|--------|
-| **L1 数据层/信息源层** | 能带来超额收益的数据源、信息源、新 MCP 接入（券商等），本层做 A/B 鉴别 | 同一方法论仅换数据 → 增量归数据层 | 一致预期 PIT 数据 +18.1pp |
-| **L2 Alpha 层/方法论层** | 方法论 + benchmark + 迭代版本线 | 同一数据换决策框架 → 增量归方法论层 | F-Score 基线 +8.1pp、否决制 +4.7pp |
-| **L3 数量信号层** | 买卖时点、过热、估值、回撤纪律（A股：卖得好比买得好重要） | 同一方法论加减信号 → 增量归信号层 | 估值卖出 +11pp |
-
-账本：`alpha_ledger/ledger.json`（程序读取）+ `alpha_ledger/alpha_ledger_report.html`（对比报告）。
-构建/重生成：`python examples/build_alpha_ledger.py`。核心模块：`src/research/alpha_ledger.py`。
-
-### Architecture
-
-```
-FUND      =  capital slices over STRATEGIES   (master risk on the netted book)
-STRATEGY  =  a blend policy over MODELS       (a "pod")
-MODEL     =  an alpha model → Signal          (conviction in [-1,+1] + thesis)
-```
-
-```
- point-in-time data        only what was actually filed by this date
-        │
-        ▼
- analysts emit Signals     Buffett +0.7 "durable moat, fair price"
-        │                   PEAD    -1.0 "missed earnings"
-        ▼
- portfolio construction    blend views → target weights
-        ▼
- risk model                hard caps clamp or veto
-        ▼
- execution                 target vs. broker reality → orders
-        ▼
- ledger                    persist the decision, thesis, fills, NAV
-```
-
-### Key Principles (from ai-hedge-fund)
-
-1. **Point-in-time by construction** — no lookahead in backtests
-2. **The LLM never touches the trade** — agents form views, deterministic code sizes positions
-3. **One interface for every analyst** — implement `AlphaModel.predict()` and it plugs in
-4. **Fail loud** — infrastructure failures raise; only genuine "no data" returns empty
-5. **Conviction requests, risk disposes** — analysts propose, risk disposes
-6. **Data completeness is guaranteed by construction** — fetch required fields aggressively (multi-query + cache-bypass retry), declare any genuinely unavailable field as an explicit DATA GAP in the packet, and never let a declared gap silently kill an analysis: the analyst constructs tagged [EST]/[HEUR] estimates and continues. An analysis may only fail on logic, never on a silently missing field. (See `src/workflow/growth_loop_graph.py` — 数据完整性原则.)
-
----
-
-## Quick Start
-
-### 1. Install
+## 快速上手
 
 ```bash
-cd ai_fund_framework
-pip install -e .
+# 使用管理 venv 的解释器（含 pandas 2.3.3）
+PY="C:\Users\xfugm\.workbuddy\binaries\python\envs\default\Scripts\python.exe"
+
+$PY run.py status      # ① 数据新鲜度体检（推荐先跑）
+$PY run.py daily       # ② 每日：两个模拟组合净值 + 报告（幂等，非交易日自动 SKIP）
+$PY run.py screen      # ③ 名单刷新：数据拉取 + 三轨筛选（主轨/KFIN/q20），约 5~15 分钟
+$PY run.py backtest    # ④ 权威回测集重跑（garp 审计/gm 证伪/q20 增量/全景总结）
+$PY run.py audit       # ⑤ 一致性审计：最新名单 vs 模拟组合账本（差异=数据更新效应提示）
+$PY run.py all         # ⑥ 全流程 = screen + backtest（重，慎用）
+$PY run.py --list      # 预览所有步骤
 ```
 
-### 2. Set up API keys
+`--only 子串` 可只跑部分步骤（如 `run.py screen --only q20`、`run.py backtest --only garp`）；
+`--continue-on-error` 允许失败后继续（默认 fail-fast 停住，便于定位）。
 
-```bash
-cp .env.example .env
-# Edit .env and add your FINANCIAL_DATASETS_API_KEY
-# Add an LLM API key (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)
-```
-
-### 3. Run a fund cycle
-
-```python
-from src.workflow.runner import run_fund_cycle
-
-record = run_fund_cycle(
-    mandate_path="config/funds/example_fund.yaml",
-    tickers=["AAPL", "MSFT", "NVDA"],
-    as_of="2024-01-15",
-)
-
-print(f"NAV: ${record.nav:,.2f}")
-print(f"Positions: {record.positions}")
-for signal in record.signals:
-    print(f"  {signal.model_name} → {signal.ticker}: {signal.value:+.2f}")
-    print(f"    {signal.reasoning}")
-```
-
-### 4. Backtest
-
-```python
-from src.research.backtest import backtest_fund
-
-result = backtest_fund(
-    mandate_path="config/funds/example_fund.yaml",
-    tickers=["AAPL", "MSFT", "NVDA"],
-    start_date="2023-01-01",
-    end_date="2024-01-01",
-    capital=100_000,
-)
-
-print(f"Total Return: {result['stats']['total_return']:.2%}")
-print(f"Sharpe: {result['stats']['sharpe_ratio']:.2f}")
-print(f"Max Drawdown: {result['stats']['max_drawdown']:.2%}")
-```
-
-### 5. Run with human approval (paper trading)
-
-```python
-from src.workflow.graph import build_fund_graph_with_approval
-
-graph = build_fund_graph_with_approval()
-config = {"configurable": {"thread_id": "cycle-1"}}
-
-# Runs up to build_orders, then pauses
-result = graph.invoke(initial_state, config)
-
-# Review proposed orders
-for order in result["orders"]:
-    print(f"  {order.side} {order.shares:.0f} {order.ticker} @ {order.limit_price}")
-
-# Approve and continue to execution
-result = graph.invoke(None, config)
-```
-
----
-
-## Project Structure
+## 管线结构
 
 ```
-ai_fund_framework/
-├── config/
-│   ├── funds/                       # Fund mandate YAML files
-│   │   └── example_fund.yaml        # Example two-strategy fund
-│   └── strategies/                  # Strategy YAML files
-│       ├── fundamental_ls.yaml      # Value L/S strategy
-│       ├── earnings_drift.yaml      # Quant PEAD strategy
-│       └── _template.yaml           # ⬅ BLANK TEMPLATE for your strategy
-│
-├── src/
-│   ├── core/                        # Core framework (don't modify)
-│   │   ├── models.py                # Data contracts (Signal, Order, Fill, etc.)
-│   │   ├── interfaces.py            # All abstract interfaces
-│   │   ├── fund_spec.py             # Fund/Strategy spec (YAML → objects)
-│   │   └── registry.py              # Plugin system for alpha models
-│   │
-│   ├── data/                        # Data layer
-│   │   ├── fin_datasets_client.py   # Financial Datasets API client
-│   │   ├── cache.py                 # Disk cache for API responses
-│   │   └── _template_client.py      # ⬅ BLANK TEMPLATE for custom data source
-│   │
-│   ├── signals/                     # Alpha models (your analysts)
-│   │   ├── base.py                  # AlphaModel / QuantModel / LLMAgent
-│   │   ├── pead.py                  # Example quant model
-│   │   ├── buffett.py               # Example LLM agent
-│   │   ├── _template_quant.py       # ⬅ BLANK TEMPLATE for quant model
-│   │   ├── _template_llm.py         # ⬅ BLANK TEMPLATE for LLM agent
-│   │   └── __init__.py              # ⬅ REGISTER YOUR MODELS HERE
-│   │
-│   ├── portfolio/                   # Portfolio construction
-│   │   ├── construction.py          # Conviction-weighted blend (default)
-│   │   └── _template_allocator.py   # ⬅ BLANK TEMPLATE for custom allocator
-│   │
-│   ├── risk/                        # Risk management
-│   │   ├── limits.py                # Hard limits (per-position + gross)
-│   │   └── _template_risk.py        # ⬅ BLANK TEMPLATE for custom risk model
-│   │
-│   ├── execution/                   # Order execution
-│   │   ├── broker.py                # SimBroker (backtesting)
-│   │   └── _template_broker.py      # ⬅ BLANK TEMPLATE for live broker
-│   │
-│   ├── workflow/                    # LangGraph workflow (the engine)
-│   │   ├── graph.py                 # Graph definition (nodes + edges)
-│   │   ├── nodes.py                 # Graph nodes (fetch, analyze, blend, risk, execute)
-│   │   ├── state.py                 # Workflow state (FundState TypedDict)
-│   │   └── runner.py                # Entry point (run_fund_cycle, run_fund_backtest)
-│   │
-│   ├── research/                    # Research lab
-│   │   ├── backtest.py              # Backtesting + performance stats
-│   │   └── _template_research.py    # ⬅ BLANK TEMPLATE for custom research
-│   │
-│   └── utils/                       # Utilities
-│
-├── pyproject.toml
-├── .env.example
-└── README.md                        # You are here
+run.py                  # 统一总控入口（CLI）
+pipeline/
+  config.py             # 根目录/解释器/资金参数统一配置（AIFF_PYTHON 可覆盖解释器）
+  dates.py              # 候选交易日自动推导 + 新鲜度体检
+  runner.py             # 步骤定义（Step）与顺序执行器（产物校验 + fail-fast）
 ```
 
-**⬅ = blank templates for you to fill in**
+设计原则：
+1. **不移动/不重写已验证脚本**（每日自动化任务引用其绝对路径）——编排层只按序调用；
+2. **唯一日期入口**：`_lx_now_fetch.py` 支持 `--candidate-dates`，由 `pipeline/dates.py`
+   自动注入最近 6 个工作日，**无需再手工改 CANDIDATE_DATES**；
+3. 每个 Step 校验产物存在，失败即停并报错（screen 链中间产物缺失会在第一步暴露）。
 
----
-
-## How to Add Your Own Investment Theory
-
-### Step 1: Create an Alpha Model
-
-Copy a template and implement your logic:
-
-**For a quant model** (momentum, RSI, factor screens, etc.):
-```bash
-cp src/signals/_template_quant.py src/signals/my_model.py
-```
-
-**For an LLM agent** (your own investment persona):
-```bash
-cp src/signals/_template_llm.py src/signals/my_agent.py
-```
-
-### Step 2: Register It
-
-In `src/signals/__init__.py`:
-```python
-from src.signals.my_model import MyModel
-ALPHA_MODEL_REGISTRY["my_model"] = MyModel
-```
-
-### Step 3: Use It in a Strategy
-
-Create `config/strategies/my_strategy.yaml` (copy `_template.yaml`):
-```yaml
-name: my_strategy
-models:
-  - name: my_model
-    weight: 1.0
-blend:
-  method: conviction_weighted
-  gross_target: 1.0
-  market_neutral: false
-```
-
-### Step 4: Add to a Fund
-
-In your fund mandate YAML:
-```yaml
-strategies:
-  - name: my_pod
-    weight: 1.0
-    models:
-      - name: my_model
-        weight: 1.0
-    blend:
-      method: conviction_weighted
-      gross_target: 1.0
-```
-
-**That's it.** The engine runs your model without any other changes.
-
----
-
-## The Signal Contract
-
-Every alpha model produces a `Signal`:
-
-```python
-Signal(
-    model_name="my_model",      # your model's name
-    ticker="AAPL",
-    date="2024-01-15",
-    value=0.7,                  # conviction in [-1, +1]
-    reasoning="Strong momentum",# human-readable thesis
-    components={"momentum": 0.8, "rsi": 0.6},  # optional sub-scores
-    metadata={"lookback": 252}, # optional extra data
-)
-```
-
-**The value is the only thing the engine uses.** Everything else is for you, for logging, and for the audit trail.
-
-- `+1.0` = maximally bullish
-- `0.0` = no view (abstain)
-- `-1.0` = maximally bearish
-
----
-
-## LangGraph Workflow
-
-The fund cycle is a LangGraph `StateGraph` with 7 nodes:
-
-```python
-from src.workflow.graph import build_fund_graph
-
-graph = build_fund_graph()
-result = graph.invoke({
-    "fund_name": "My Fund",
-    "as_of": "2024-01-15",
-    "universe": ["AAPL", "MSFT"],
-    "capital": 100_000,
-    "metadata": {
-        "fund_spec": spec,
-        "data_client": client,
-        "broker": broker,
-    },
-})
-```
-
-### Available graph variants:
-
-| Function | Description |
-|----------|-------------|
-| `build_fund_graph()` | Standard pipeline (no pauses) |
-| `build_fund_graph_with_approval()` | Pauses before execution for human review |
-| `build_fund_graph_parallel()` | Parallel analyst execution (advanced) |
-
-### Custom graph nodes:
-
-You can add your own nodes to the graph. For example, a news sentiment node:
-
-```python
-from langgraph.graph import StateGraph
-from src.workflow.graph import build_fund_graph
-
-# Get the compiled graph's builder... or build your own:
-graph = StateGraph(FundState)
-graph.add_node("fetch_data", fetch_data)
-graph.add_node("news_sentiment", my_news_sentiment_node)  # YOUR NODE
-graph.add_node("run_analysts", run_analysts)
-# ... rest of pipeline
-```
-
----
-
-## Three Modes — One Code Path
+## 数据流（screen 步骤明细）
 
 ```
-BACKTEST  =  historical clock  +  simulated broker   (the past, fake money)
-PAPER     =  live clock         +  simulated broker   (right now, fake money)
-LIVE      =  live clock         +  real broker         (right now, real money)
+①  _lx_now_fetch.py       万得全A PIT成分 / 估值面板 / HF因子 / 一致预期
+        ↓（_bt_lx_now_{universe,valuation,factors,consensus}.json）
+②  _lx_now_screen.py      主轨筛选（剔金融, LX-core+garp）→ _lx_now_results.json
+③  _lx_now_score.py       评分（价值50/质量25/安全25）→ _lx_now_scored.json
+④  _lx_now_band.py        估值Band（5年自身分位）→ _lx_now_band.json
+⑤  _lx_band_apply.py      Band规避剔除(PB分位>90%)→ _lx_now_final.json + 报告
+⑥  _lx_now_screen_kfin.py KFIN轨筛选（含金融, core原始口径）→ _lx_now_results_kfin.json
+⑦  _lx_kfin_band.py       KFIN Band → _lx_kfin_final.json + 报告
+⑧  _bt_q20_kfin.py        q20混合排序（0.8×PE+0.2×质量）top40 → _bt_q20_kfin.json + 报告
+⑨  _pipeline_audit.py     一致性审计（run.py audit 独立触发）
 ```
 
-The only thing that changes is the clock and the broker. The pipeline never changes.
+## 一致性审计（audit 步骤）
 
----
+`run.py audit` 校验：q20 最新名单 ↔ Q20 模拟组合账本、行业构成、资金使用率。
+**名单与账本出现差异 = 数据更新效应，非 bug**：模拟组合只在调仓日（2027-04-30）重平衡，
+期间 screen 每次刷新（一致预期 T+1 落地、估值/HF 更新）都可能让最新名单小幅变动。
+典型例子：2026-08-27 建仓（consensus@08-24，池 221 只）后首次重跑
+（consensus@08-26，池 210 只），q20 名单 7 进 7 出 —— garp 门控 L4/L5 随预期数据变化所致。
+差异提示 exit code = 2（区别于管线错误的 1）。
 
-## Pluggable Components
+## 模拟组合（daily 步骤）
 
-| Component | Interface | Template | Built-in |
-|-----------|-----------|----------|----------|
-| Alpha Model (quant) | `QuantModel` | `_template_quant.py` | `pead.py` |
-| Alpha Model (LLM) | `LLMAgent` | `_template_llm.py` | `buffett.py` |
-| Data Client | `DataClient` | `_template_client.py` | `fin_datasets_client.py` |
-| Blend Policy | `BlendPolicy` | `_template_allocator.py` | `construction.py` |
-| Risk Model | `RiskModel` | `_template_risk.py` | `limits.py` |
-| Broker | `Broker` | `_template_broker.py` | `broker.py` (SimBroker) |
-| Research | — | `_template_research.py` | `backtest.py` |
+| 组合 | 账本 | 引擎 | 下次调仓 |
+|---|---|---|---|
+| LX-top40（core+garp 剔金融） | `_sim_portfolio.json` / `_sim_nav.json` | `_sim_engine.py` → `_sim_daily.py` | 2027-04-30 |
+| Q20·质衡优选（含金融, q20 排序） | `_sim_q20_portfolio.json` / `_sim_q20_nav.json` | `_sim_q20_engine.py` → `_sim_q20_daily.py` | 2027-04-30 |
 
----
+两个 daily 脚本**幂等**：同日重复跑覆盖当天条目；行情日期≠今天自动 SKIP。
+调仓请用 `_sim_rebalance.py` / `_sim_q20_rebalance.py`（--dry 先预览），
+或等自动化任务在 2027-04-30 / 2027-08-31 触发。
 
-## Disclaimer
+## 自动化（已配置，无需手工）
 
-This project is for **educational and research purposes only**.
-- Not intended for real trading or investment
-- No investment advice or guarantees provided
-- Past performance does not indicate future results
+- 每日净值：LX automation-1787723540036 / Q20 automation-1787816093790（工作日 15:35）
+- 调仓：LX 1787723732694/1787723732711、Q20 1787816093812/1787816093831（2027 年生效）
+
+## 数据源与口径铁律（勿违背）
+
+- 池子 = 万得全A(881001.WI) PIT 成分，禁止手工精选；结论先对"等权全A"基准
+- 回测一律**日频 + 复权**；半年调仓策略基准 = "半年调仓等权全A"
+- 质量层只能排序微调（q20 +3.40pp），gm 硬过滤已证伪禁止引入
+- garp 权威口径 = 全池 g60（+67.01%），旧 +34.57% 禁止引用
+- HF 因子健康判定：gpm top5 头部 >50 才健康（2026-08-20 起污染），fetch 自动回退

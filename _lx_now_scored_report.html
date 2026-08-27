@@ -1,0 +1,2679 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>刘旭式框架 · 评分排名（2026-08-26）</title>
+<style>
+ body { font-family: "Microsoft YaHei", sans-serif; margin: 20px 28px;
+        background: #fafafa; color: #222; }
+ h1 { font-size: 22px; margin-bottom: 4px; }
+ h2 { font-size: 16px; margin-top: 28px; border-left: 4px solid #c62828;
+        padding-left: 10px; }
+ .sub { color: #666; font-size: 13px; margin-bottom: 10px; }
+ table { border-collapse: collapse; margin: 8px 0; font-size: 12.5px;
+         background: #fff; }
+ th, td { border: 1px solid #ddd; padding: 4px 7px; text-align: right;
+           white-space: nowrap; }
+ th { background: #f0f0f0; position: sticky; top: 0; z-index: 1; }
+ td.l { text-align: left; }
+ tr.gm { background: #fff8e1; }
+ tr:hover { background: #e3f2fd !important; }
+ .score { font-size: 14px; color: #c62828; }
+ .bar { position: relative; width: 60px; height: 16px; background: #eee;
+         border-radius: 3px; overflow: hidden; display: inline-block; }
+ .bar-fill { height: 100%; border-radius: 3px; }
+ .bar span { position: absolute; right: 3px; top: 0; font-size: 11px;
+              color: #333; line-height: 16px; }
+ .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+         padding: 12px 16px; margin: 10px 0; font-size: 13.5px;
+         line-height: 1.75; }
+ .badge { display: inline-block; background: #c62828; color: #fff;
+           border-radius: 4px; padding: 1px 8px; font-size: 12px; }
+ .legend { font-size: 12px; color: #888; margin: 6px 0; }
+ .legend span { display: inline-block; margin-right: 16px; }
+ .legend .dot { display: inline-block; width: 10px; height: 10px;
+                border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+ .note { color: #888; font-size: 12px; margin-top: 18px;
+          border-top: 1px dashed #ccc; padding-top: 10px; }
+</style></head><body>
+
+<h1>刘旭式框架 · 评分排名推荐</h1>
+<p class="sub">数据截至 <b>2026-08-26</b> · 池子 = 万得全A PIT 成分 5,409 只 ·
+通过 core 筛选 176 只 · 评分维度权重：价值50% + 质量25% + 安全25%</p>
+
+<div class="card">
+<b>评分方法：</b>对通过 LX-core 筛选的全部 176 只股票，
+按 6 个因子在组内百分位排名（0-100），加权合成总分：<br>
+<table style="margin-top:8px;font-size:12px;border:none;">
+<tr style="background:none;border:none;">
+<td style="border:none;"><span class="dot" style="display:inline-block;width:10px;height:10px;background:#c62828;border-radius:2px;vertical-align:middle;"></span>
+<b>价值 50%</b>：PE(30%, 低=好) + PEG(20%, 低=好)</td>
+<td style="border:none;"><span class="dot" style="display:inline-block;width:10px;height:10px;background:#1565c0;border-radius:2px;vertical-align:middle;"></span>
+<b>质量 25%</b>：预期ROE(15%, 高=好) + 毛利率(10%, 高=好)</td>
+<td style="border:none;"><span class="dot" style="display:inline-block;width:10px;height:10px;background:#2e7d32;border-radius:2px;vertical-align:middle;"></span>
+<b>安全 25%</b>：股息率(15%, 高=好) + OCF/市值(10%, 高=好)</td>
+</tr></table>
+<br>
+排序信念来自回测实证：同一筛选器 PE 升序 +60% vs 质量优先 -12%，
+价值维度权重因此最高。★ 标记 = 同时通过 gm 质量层（毛利率≥25.3%）。
+</div>
+
+<div class="legend">
+<span><span class="dot" style="background:#fff8e1;border:1px solid #ddd;"></span>黄色行 = 通过 gm 层</span>
+<span>百分位条 = 该因子在 176 只候选股中的相对位置</span>
+</div>
+
+<h2>① 综合评分 Top 40（推荐组合，等权 2.5%）</h2>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>总分</th>
+<th>价值分</th><th>质量分</th><th>安全分</th>
+<th>PE</th><th>PEG</th><th>ROE%</th><th>毛利%</th><th>息率%</th><th>OCF%</th>
+<th>预期增速%</th><th>市值(亿)</th><th>gm</th></tr>
+<tr class=" gm">
+        <td>1</td><td class="l">002170.SZ</td>
+        <td class="l"><b>芭田股份</b></td>
+        <td><b class="score">84.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:95.3%;background:#c62828"></div><span>95</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.0%;background:#1565c0"></div><span>87</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.9%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>10.8</td><td>0.27</td>
+        <td>25.4</td><td>37.2</td>
+        <td>1.87</td>
+        <td>14.12</td>
+        <td>40.9</td>
+        <td>110</td><td>★</td></tr><tr class=" gm">
+        <td>2</td><td class="l">600989.SH</td>
+        <td class="l"><b>宝丰能源</b></td>
+        <td><b class="score">80.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.6%;background:#c62828"></div><span>89</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.4%;background:#1565c0"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.3%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>11.0</td><td>0.4</td>
+        <td>27.1</td><td>39.7</td>
+        <td>1.83</td>
+        <td>12.0</td>
+        <td>49.1</td>
+        <td>1,695</td><td>★</td></tr><tr class=" gm">
+        <td>3</td><td class="l">002545.SZ</td>
+        <td class="l"><b>东方铁塔</b></td>
+        <td><b class="score">80.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:83.5%;background:#c62828"></div><span>84</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.0%;background:#1565c0"></div><span>77</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.4%;background:#2e7d32"></div><span>77</span></div></td>
+        <td>13.1</td><td>0.33</td>
+        <td>16.9</td><td>41.0</td>
+        <td>3.7</td>
+        <td>10.61</td>
+        <td>58.7</td>
+        <td>221</td><td>★</td></tr><tr class=" gm">
+        <td>4</td><td class="l">301219.SZ</td>
+        <td class="l"><b>腾远钴业</b></td>
+        <td><b class="score">78.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.0%;background:#c62828"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.5%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.1%;background:#2e7d32"></div><span>74</span></div></td>
+        <td>11.6</td><td>0.38</td>
+        <td>15.3</td><td>30.7</td>
+        <td>2.07</td>
+        <td>257.74</td>
+        <td>47.6</td>
+        <td>176</td><td>★</td></tr><tr class=" gm">
+        <td>5</td><td class="l">002128.SZ</td>
+        <td class="l"><b>电投能源</b></td>
+        <td><b class="score">76.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.0%;background:#c62828"></div><span>87</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.0%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.1%;background:#2e7d32"></div><span>71</span></div></td>
+        <td>10.9</td><td>0.47</td>
+        <td>13.0</td><td>39.8</td>
+        <td>2.63</td>
+        <td>11.92</td>
+        <td>43.5</td>
+        <td>861</td><td>★</td></tr><tr class="">
+        <td>6</td><td class="l">600064.SH</td>
+        <td class="l"><b>南京高科</b></td>
+        <td><b class="score">76.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:95.5%;background:#c62828"></div><span>96</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.0%;background:#1565c0"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.6%;background:#2e7d32"></div><span>76</span></div></td>
+        <td>7.9</td><td>0.36</td>
+        <td>10.6</td><td>23.5</td>
+        <td>4.88</td>
+        <td>8.44</td>
+        <td>20.6</td>
+        <td>134</td><td></td></tr><tr class=" gm">
+        <td>7</td><td class="l">002867.SZ</td>
+        <td class="l"><b>周大生</b></td>
+        <td><b class="score">75.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:66.4%;background:#c62828"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.2%;background:#1565c0"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:90.9%;background:#2e7d32"></div><span>91</span></div></td>
+        <td>12.7</td><td>0.71</td>
+        <td>18.2</td><td>35.0</td>
+        <td>3.26</td>
+        <td>2019.35</td>
+        <td>16.6</td>
+        <td>122</td><td>★</td></tr><tr class=" gm">
+        <td>8</td><td class="l">603565.SH</td>
+        <td class="l"><b>中谷物流</b></td>
+        <td><b class="score">75.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.7%;background:#c62828"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.4%;background:#1565c0"></div><span>69</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.3%;background:#2e7d32"></div><span>87</span></div></td>
+        <td>13.5</td><td>0.53</td>
+        <td>19.9</td><td>25.4</td>
+        <td>5.38</td>
+        <td>13.35</td>
+        <td>30.0</td>
+        <td>268</td><td>★</td></tr><tr class=" gm">
+        <td>9</td><td class="l">000792.SZ</td>
+        <td class="l"><b>盐湖股份</b></td>
+        <td><b class="score">74.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:80.2%;background:#c62828"></div><span>80</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:89.7%;background:#1565c0"></div><span>90</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.8%;background:#2e7d32"></div><span>47</span></div></td>
+        <td>12.3</td><td>0.5</td>
+        <td>21.8</td><td>62.3</td>
+        <td>—</td>
+        <td>8.03</td>
+        <td>37.0</td>
+        <td>1,490</td><td>★</td></tr><tr class="">
+        <td>10</td><td class="l">000550.SZ</td>
+        <td class="l"><b>江铃汽车</b></td>
+        <td><b class="score">73.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:90.8%;background:#c62828"></div><span>91</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.0%;background:#1565c0"></div><span>35</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.3%;background:#2e7d32"></div><span>77</span></div></td>
+        <td>11.5</td><td>0.3</td>
+        <td>12.9</td><td>14.3</td>
+        <td>2.56</td>
+        <td>19.49</td>
+        <td>40.3</td>
+        <td>138</td><td></td></tr><tr class="">
+        <td>11</td><td class="l">600803.SH</td>
+        <td class="l"><b>新奥股份</b></td>
+        <td><b class="score">73.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.9%;background:#c62828"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.6%;background:#1565c0"></div><span>53</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.8%;background:#2e7d32"></div><span>89</span></div></td>
+        <td>12.4</td><td>0.57</td>
+        <td>19.1</td><td>14.1</td>
+        <td>3.53</td>
+        <td>24.73</td>
+        <td>18.9</td>
+        <td>540</td><td></td></tr><tr class="">
+        <td>12</td><td class="l">600233.SH</td>
+        <td class="l"><b>圆通速递</b></td>
+        <td><b class="score">72.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:94.8%;background:#c62828"></div><span>95</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.1%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.5%;background:#2e7d32"></div><span>58</span></div></td>
+        <td>10.2</td><td>0.31</td>
+        <td>15.7</td><td>10.1</td>
+        <td>1.82</td>
+        <td>13.17</td>
+        <td>46.5</td>
+        <td>580</td><td></td></tr><tr class=" gm">
+        <td>13</td><td class="l">601899.SH</td>
+        <td class="l"><b>紫金矿业</b></td>
+        <td><b class="score">71.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.2%;background:#c62828"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.2%;background:#1565c0"></div><span>84</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.2%;background:#2e7d32"></div><span>37</span></div></td>
+        <td>13.5</td><td>0.31</td>
+        <td>32.9</td><td>31.1</td>
+        <td>1.16</td>
+        <td>10.42</td>
+        <td>57.5</td>
+        <td>9,166</td><td>★</td></tr><tr class=" gm">
+        <td>14</td><td class="l">002001.SZ</td>
+        <td class="l"><b>新 和 成</b></td>
+        <td><b class="score">71.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.6%;background:#c62828"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.1%;background:#1565c0"></div><span>86</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.2%;background:#2e7d32"></div><span>55</span></div></td>
+        <td>11.3</td><td>0.7</td>
+        <td>21.3</td><td>43.7</td>
+        <td>2.01</td>
+        <td>9.92</td>
+        <td>23.2</td>
+        <td>813</td><td>★</td></tr><tr class=" gm">
+        <td>15</td><td class="l">601975.SH</td>
+        <td class="l"><b>招商南油</b></td>
+        <td><b class="score">70.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:83.2%;background:#c62828"></div><span>83</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.7%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.5%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>12.7</td><td>0.39</td>
+        <td>14.8</td><td>29.4</td>
+        <td>—</td>
+        <td>11.3</td>
+        <td>52.5</td>
+        <td>185</td><td>★</td></tr><tr class=" gm">
+        <td>16</td><td class="l">002602.SZ</td>
+        <td class="l"><b>世纪华通</b></td>
+        <td><b class="score">70.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.2%;background:#c62828"></div><span>71</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.7%;background:#1565c0"></div><span>92</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.3%;background:#2e7d32"></div><span>49</span></div></td>
+        <td>16.4</td><td>0.29</td>
+        <td>22.9</td><td>70.6</td>
+        <td>—</td>
+        <td>8.99</td>
+        <td>60.0</td>
+        <td>1,028</td><td>★</td></tr><tr class=" gm">
+        <td>17</td><td class="l">300181.SZ</td>
+        <td class="l"><b>佐力药业</b></td>
+        <td><b class="score">70.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:68.3%;background:#c62828"></div><span>68</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.8%;background:#1565c0"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.2%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>15.4</td><td>0.47</td>
+        <td>20.1</td><td>62.4</td>
+        <td>2.8</td>
+        <td>5.63</td>
+        <td>28.2</td>
+        <td>100</td><td>★</td></tr><tr class=" gm">
+        <td>18</td><td class="l">000612.SZ</td>
+        <td class="l"><b>焦作万方</b></td>
+        <td><b class="score">69.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.1%;background:#c62828"></div><span>81</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.8%;background:#1565c0"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:51.1%;background:#2e7d32"></div><span>51</span></div></td>
+        <td>9.4</td><td>0.62</td>
+        <td>16.5</td><td>28.5</td>
+        <td>1.67</td>
+        <td>11.87</td>
+        <td>32.6</td>
+        <td>133</td><td>★</td></tr><tr class="">
+        <td>19</td><td class="l">000425.SZ</td>
+        <td class="l"><b>徐工机械</b></td>
+        <td><b class="score">67.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.3%;background:#c62828"></div><span>74</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.2%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.2%;background:#2e7d32"></div><span>78</span></div></td>
+        <td>14.2</td><td>0.44</td>
+        <td>12.3</td><td>22.6</td>
+        <td>2.84</td>
+        <td>16.39</td>
+        <td>29.8</td>
+        <td>937</td><td></td></tr><tr class="">
+        <td>20</td><td class="l">601058.SH</td>
+        <td class="l"><b>赛轮轮胎</b></td>
+        <td><b class="score">67.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.5%;background:#c62828"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.3%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.7%;background:#2e7d32"></div><span>42</span></div></td>
+        <td>12.9</td><td>0.4</td>
+        <td>17.4</td><td>25.2</td>
+        <td>1.31</td>
+        <td>10.3</td>
+        <td>27.7</td>
+        <td>458</td><td></td></tr><tr class=" gm">
+        <td>21</td><td class="l">600323.SH</td>
+        <td class="l"><b>瀚蓝环境</b></td>
+        <td><b class="score">67.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.8%;background:#c62828"></div><span>73</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.1%;background:#1565c0"></div><span>61</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.5%;background:#2e7d32"></div><span>62</span></div></td>
+        <td>11.1</td><td>0.69</td>
+        <td>13.5</td><td>34.5</td>
+        <td>1.87</td>
+        <td>16.01</td>
+        <td>15.9</td>
+        <td>245</td><td>★</td></tr><tr class="">
+        <td>22</td><td class="l">600428.SH</td>
+        <td class="l"><b>中远海特</b></td>
+        <td><b class="score">67.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.8%;background:#c62828"></div><span>68</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.2%;background:#1565c0"></div><span>50</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.6%;background:#2e7d32"></div><span>83</span></div></td>
+        <td>16.6</td><td>0.38</td>
+        <td>13.8</td><td>21.1</td>
+        <td>2.9</td>
+        <td>22.18</td>
+        <td>50.7</td>
+        <td>306</td><td></td></tr><tr class="">
+        <td>23</td><td class="l">601339.SH</td>
+        <td class="l"><b>XD百隆东</b></td>
+        <td><b class="score">67.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.8%;background:#c62828"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:25.2%;background:#1565c0"></div><span>25</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.2%;background:#2e7d32"></div><span>91</span></div></td>
+        <td>14.1</td><td>0.43</td>
+        <td>10.3</td><td>14.4</td>
+        <td>5.98</td>
+        <td>17.33</td>
+        <td>51.0</td>
+        <td>116</td><td></td></tr><tr class=" gm">
+        <td>24</td><td class="l">600066.SH</td>
+        <td class="l"><b>宇通客车</b></td>
+        <td><b class="score">65.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.7%;background:#c62828"></div><span>51</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:79.7%;background:#1565c0"></div><span>80</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.7%;background:#2e7d32"></div><span>82</span></div></td>
+        <td>12.3</td><td>0.99</td>
+        <td>35.5</td><td>25.4</td>
+        <td>4.49</td>
+        <td>11.25</td>
+        <td>9.9</td>
+        <td>673</td><td>★</td></tr><tr class="">
+        <td>25</td><td class="l">600309.SH</td>
+        <td class="l"><b>万华化学</b></td>
+        <td><b class="score">65.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.0%;background:#c62828"></div><span>78</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.1%;background:#1565c0"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.9%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>14.2</td><td>0.35</td>
+        <td>15.7</td><td>13.5</td>
+        <td>1.79</td>
+        <td>17.03</td>
+        <td>54.1</td>
+        <td>2,332</td><td></td></tr><tr class=" gm">
+        <td>26</td><td class="l">603816.SH</td>
+        <td class="l"><b>顾家家居</b></td>
+        <td><b class="score">65.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.5%;background:#c62828"></div><span>58</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:63.9%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.2%;background:#2e7d32"></div><span>82</span></div></td>
+        <td>13.2</td><td>0.82</td>
+        <td>14.2</td><td>33.1</td>
+        <td>3.89</td>
+        <td>12.69</td>
+        <td>15.0</td>
+        <td>234</td><td>★</td></tr><tr class="">
+        <td>27</td><td class="l">601216.SH</td>
+        <td class="l"><b>君正集团</b></td>
+        <td><b class="score">65.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.3%;background:#c62828"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.2%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.2%;background:#2e7d32"></div><span>87</span></div></td>
+        <td>12.7</td><td>0.74</td>
+        <td>12.8</td><td>21.0</td>
+        <td>4.49</td>
+        <td>14.51</td>
+        <td>14.4</td>
+        <td>391</td><td></td></tr><tr class=" gm">
+        <td>28</td><td class="l">600933.SH</td>
+        <td class="l"><b>爱柯迪</b></td>
+        <td><b class="score">64.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.6%;background:#c62828"></div><span>77</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:51.8%;background:#1565c0"></div><span>52</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.3%;background:#2e7d32"></div><span>53</span></div></td>
+        <td>12.7</td><td>0.52</td>
+        <td>12.5</td><td>29.4</td>
+        <td>1.62</td>
+        <td>14.18</td>
+        <td>18.5</td>
+        <td>144</td><td>★</td></tr><tr class=" gm">
+        <td>29</td><td class="l">600801.SH</td>
+        <td class="l"><b>华新建材</b></td>
+        <td><b class="score">64.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.9%;background:#c62828"></div><span>65</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.4%;background:#1565c0"></div><span>43</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.3%;background:#2e7d32"></div><span>84</span></div></td>
+        <td>15.3</td><td>0.53</td>
+        <td>10.2</td><td>31.2</td>
+        <td>3.68</td>
+        <td>16.05</td>
+        <td>28.2</td>
+        <td>496</td><td>★</td></tr><tr class="">
+        <td>30</td><td class="l">601139.SH</td>
+        <td class="l"><b>深圳燃气</b></td>
+        <td><b class="score">64.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.4%;background:#c62828"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.6%;background:#1565c0"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.7%;background:#2e7d32"></div><span>75</span></div></td>
+        <td>11.7</td><td>0.58</td>
+        <td>10.0</td><td>18.4</td>
+        <td>2.22</td>
+        <td>23.9</td>
+        <td>26.3</td>
+        <td>181</td><td></td></tr><tr class="">
+        <td>31</td><td class="l">000685.SZ</td>
+        <td class="l"><b>中山公用</b></td>
+        <td><b class="score">63.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.2%;background:#c62828"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.5%;background:#1565c0"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.7%;background:#2e7d32"></div><span>54</span></div></td>
+        <td>7.7</td><td>0.62</td>
+        <td>10.3</td><td>24.4</td>
+        <td>2.87</td>
+        <td>4.38</td>
+        <td>14.1</td>
+        <td>166</td><td></td></tr><tr class="">
+        <td>32</td><td class="l">000528.SZ</td>
+        <td class="l"><b>柳    工</b></td>
+        <td><b class="score">63.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.4%;background:#c62828"></div><span>91</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.5%;background:#1565c0"></div><span>32</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.9%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>10.7</td><td>0.39</td>
+        <td>9.5</td><td>21.9</td>
+        <td>2.07</td>
+        <td>3.64</td>
+        <td>20.3</td>
+        <td>167</td><td></td></tr><tr class="">
+        <td>33</td><td class="l">605599.SH</td>
+        <td class="l"><b>菜百股份</b></td>
+        <td><b class="score">63.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.4%;background:#c62828"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.5%;background:#1565c0"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:63.0%;background:#2e7d32"></div><span>63</span></div></td>
+        <td>11.1</td><td>0.76</td>
+        <td>24.0</td><td>7.8</td>
+        <td>3.98</td>
+        <td>5.34</td>
+        <td>10.8</td>
+        <td>123</td><td></td></tr><tr class="">
+        <td>34</td><td class="l">600710.SH</td>
+        <td class="l"><b>苏美达</b></td>
+        <td><b class="score">63.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:60.3%;background:#c62828"></div><span>60</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.6%;background:#1565c0"></div><span>39</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:93.6%;background:#2e7d32"></div><span>94</span></div></td>
+        <td>9.8</td><td>0.94</td>
+        <td>15.1</td><td>6.7</td>
+        <td>4.0</td>
+        <td>545.52</td>
+        <td>7.9</td>
+        <td>138</td><td></td></tr><tr class=" gm">
+        <td>35</td><td class="l">300910.SZ</td>
+        <td class="l"><b>瑞丰新材</b></td>
+        <td><b class="score">62.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.2%;background:#c62828"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:79.1%;background:#1565c0"></div><span>79</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:54.1%;background:#2e7d32"></div><span>54</span></div></td>
+        <td>13.4</td><td>0.76</td>
+        <td>20.3</td><td>34.2</td>
+        <td>2.2</td>
+        <td>7.73</td>
+        <td>16.7</td>
+        <td>104</td><td>★</td></tr><tr class="">
+        <td>36</td><td class="l">603871.SH</td>
+        <td class="l"><b>嘉友国际</b></td>
+        <td><b class="score">62.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.8%;background:#c62828"></div><span>70</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.7%;background:#1565c0"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.8%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>14.5</td><td>0.51</td>
+        <td>21.9</td><td>19.8</td>
+        <td>1.97</td>
+        <td>6.91</td>
+        <td>35.8</td>
+        <td>190</td><td></td></tr><tr class=" gm">
+        <td>37</td><td class="l">601918.SH</td>
+        <td class="l"><b>新集能源</b></td>
+        <td><b class="score">61.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.4%;background:#c62828"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.3%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.5%;background:#2e7d32"></div><span>50</span></div></td>
+        <td>11.1</td><td>0.76</td>
+        <td>13.0</td><td>40.5</td>
+        <td>1.63</td>
+        <td>11.97</td>
+        <td>18.2</td>
+        <td>269</td><td>★</td></tr><tr class="">
+        <td>38</td><td class="l">603799.SH</td>
+        <td class="l"><b>华友钴业</b></td>
+        <td><b class="score">61.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.6%;background:#c62828"></div><span>87</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.4%;background:#1565c0"></div><span>41</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.0%;background:#2e7d32"></div><span>32</span></div></td>
+        <td>11.0</td><td>0.46</td>
+        <td>12.7</td><td>19.3</td>
+        <td>1.38</td>
+        <td>6.06</td>
+        <td>12.4</td>
+        <td>757</td><td></td></tr><tr class=" gm">
+        <td>39</td><td class="l">000157.SZ</td>
+        <td class="l"><b>中联重科</b></td>
+        <td><b class="score">61.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.2%;background:#c62828"></div><span>69</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.1%;background:#1565c0"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:73.2%;background:#2e7d32"></div><span>73</span></div></td>
+        <td>14.1</td><td>0.54</td>
+        <td>8.9</td><td>27.8</td>
+        <td>4.07</td>
+        <td>8.53</td>
+        <td>15.7</td>
+        <td>612</td><td>★</td></tr><tr class=" gm">
+        <td>40</td><td class="l">002895.SZ</td>
+        <td class="l"><b>川恒股份</b></td>
+        <td><b class="score">61.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.3%;background:#c62828"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.5%;background:#1565c0"></div><span>70</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.6%;background:#2e7d32"></div><span>57</span></div></td>
+        <td>15.1</td><td>0.68</td>
+        <td>18.1</td><td>29.1</td>
+        <td>3.18</td>
+        <td>4.72</td>
+        <td>19.6</td>
+        <td>194</td><td>★</td></tr>
+</table>
+
+<h2>② 全部评分排名（176 只）</h2>
+<table>
+<tr><th>#</th><th>代码</th><th>名称</th><th>总分</th>
+<th>价值分</th><th>质量分</th><th>安全分</th>
+<th>PE</th><th>PEG</th><th>ROE%</th><th>毛利%</th><th>息率%</th><th>OCF%</th>
+<th>预期增速%</th><th>市值(亿)</th><th>gm</th></tr>
+<tr class=" gm">
+        <td>1</td><td class="l">002170.SZ</td>
+        <td class="l"><b>芭田股份</b></td>
+        <td><b class="score">84.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:95.3%;background:#c62828"></div><span>95</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.0%;background:#1565c0"></div><span>87</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.9%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>10.8</td><td>0.27</td>
+        <td>25.4</td><td>37.2</td>
+        <td>1.87</td>
+        <td>14.12</td>
+        <td>40.9</td>
+        <td>110</td><td>★</td></tr><tr class=" gm">
+        <td>2</td><td class="l">600989.SH</td>
+        <td class="l"><b>宝丰能源</b></td>
+        <td><b class="score">80.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.6%;background:#c62828"></div><span>89</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.4%;background:#1565c0"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.3%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>11.0</td><td>0.4</td>
+        <td>27.1</td><td>39.7</td>
+        <td>1.83</td>
+        <td>12.0</td>
+        <td>49.1</td>
+        <td>1,695</td><td>★</td></tr><tr class=" gm">
+        <td>3</td><td class="l">002545.SZ</td>
+        <td class="l"><b>东方铁塔</b></td>
+        <td><b class="score">80.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:83.5%;background:#c62828"></div><span>84</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.0%;background:#1565c0"></div><span>77</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.4%;background:#2e7d32"></div><span>77</span></div></td>
+        <td>13.1</td><td>0.33</td>
+        <td>16.9</td><td>41.0</td>
+        <td>3.7</td>
+        <td>10.61</td>
+        <td>58.7</td>
+        <td>221</td><td>★</td></tr><tr class=" gm">
+        <td>4</td><td class="l">301219.SZ</td>
+        <td class="l"><b>腾远钴业</b></td>
+        <td><b class="score">78.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.0%;background:#c62828"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.5%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.1%;background:#2e7d32"></div><span>74</span></div></td>
+        <td>11.6</td><td>0.38</td>
+        <td>15.3</td><td>30.7</td>
+        <td>2.07</td>
+        <td>257.74</td>
+        <td>47.6</td>
+        <td>176</td><td>★</td></tr><tr class=" gm">
+        <td>5</td><td class="l">002128.SZ</td>
+        <td class="l"><b>电投能源</b></td>
+        <td><b class="score">76.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.0%;background:#c62828"></div><span>87</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.0%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.1%;background:#2e7d32"></div><span>71</span></div></td>
+        <td>10.9</td><td>0.47</td>
+        <td>13.0</td><td>39.8</td>
+        <td>2.63</td>
+        <td>11.92</td>
+        <td>43.5</td>
+        <td>861</td><td>★</td></tr><tr class="">
+        <td>6</td><td class="l">600064.SH</td>
+        <td class="l"><b>南京高科</b></td>
+        <td><b class="score">76.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:95.5%;background:#c62828"></div><span>96</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.0%;background:#1565c0"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.6%;background:#2e7d32"></div><span>76</span></div></td>
+        <td>7.9</td><td>0.36</td>
+        <td>10.6</td><td>23.5</td>
+        <td>4.88</td>
+        <td>8.44</td>
+        <td>20.6</td>
+        <td>134</td><td></td></tr><tr class=" gm">
+        <td>7</td><td class="l">002867.SZ</td>
+        <td class="l"><b>周大生</b></td>
+        <td><b class="score">75.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:66.4%;background:#c62828"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.2%;background:#1565c0"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:90.9%;background:#2e7d32"></div><span>91</span></div></td>
+        <td>12.7</td><td>0.71</td>
+        <td>18.2</td><td>35.0</td>
+        <td>3.26</td>
+        <td>2019.35</td>
+        <td>16.6</td>
+        <td>122</td><td>★</td></tr><tr class=" gm">
+        <td>8</td><td class="l">603565.SH</td>
+        <td class="l"><b>中谷物流</b></td>
+        <td><b class="score">75.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.7%;background:#c62828"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.4%;background:#1565c0"></div><span>69</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.3%;background:#2e7d32"></div><span>87</span></div></td>
+        <td>13.5</td><td>0.53</td>
+        <td>19.9</td><td>25.4</td>
+        <td>5.38</td>
+        <td>13.35</td>
+        <td>30.0</td>
+        <td>268</td><td>★</td></tr><tr class=" gm">
+        <td>9</td><td class="l">000792.SZ</td>
+        <td class="l"><b>盐湖股份</b></td>
+        <td><b class="score">74.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:80.2%;background:#c62828"></div><span>80</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:89.7%;background:#1565c0"></div><span>90</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.8%;background:#2e7d32"></div><span>47</span></div></td>
+        <td>12.3</td><td>0.5</td>
+        <td>21.8</td><td>62.3</td>
+        <td>—</td>
+        <td>8.03</td>
+        <td>37.0</td>
+        <td>1,490</td><td>★</td></tr><tr class="">
+        <td>10</td><td class="l">000550.SZ</td>
+        <td class="l"><b>江铃汽车</b></td>
+        <td><b class="score">73.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:90.8%;background:#c62828"></div><span>91</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.0%;background:#1565c0"></div><span>35</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.3%;background:#2e7d32"></div><span>77</span></div></td>
+        <td>11.5</td><td>0.3</td>
+        <td>12.9</td><td>14.3</td>
+        <td>2.56</td>
+        <td>19.49</td>
+        <td>40.3</td>
+        <td>138</td><td></td></tr><tr class="">
+        <td>11</td><td class="l">600803.SH</td>
+        <td class="l"><b>新奥股份</b></td>
+        <td><b class="score">73.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.9%;background:#c62828"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.6%;background:#1565c0"></div><span>53</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.8%;background:#2e7d32"></div><span>89</span></div></td>
+        <td>12.4</td><td>0.57</td>
+        <td>19.1</td><td>14.1</td>
+        <td>3.53</td>
+        <td>24.73</td>
+        <td>18.9</td>
+        <td>540</td><td></td></tr><tr class="">
+        <td>12</td><td class="l">600233.SH</td>
+        <td class="l"><b>圆通速递</b></td>
+        <td><b class="score">72.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:94.8%;background:#c62828"></div><span>95</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.1%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.5%;background:#2e7d32"></div><span>58</span></div></td>
+        <td>10.2</td><td>0.31</td>
+        <td>15.7</td><td>10.1</td>
+        <td>1.82</td>
+        <td>13.17</td>
+        <td>46.5</td>
+        <td>580</td><td></td></tr><tr class=" gm">
+        <td>13</td><td class="l">601899.SH</td>
+        <td class="l"><b>紫金矿业</b></td>
+        <td><b class="score">71.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.2%;background:#c62828"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.2%;background:#1565c0"></div><span>84</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.2%;background:#2e7d32"></div><span>37</span></div></td>
+        <td>13.5</td><td>0.31</td>
+        <td>32.9</td><td>31.1</td>
+        <td>1.16</td>
+        <td>10.42</td>
+        <td>57.5</td>
+        <td>9,166</td><td>★</td></tr><tr class=" gm">
+        <td>14</td><td class="l">002001.SZ</td>
+        <td class="l"><b>新 和 成</b></td>
+        <td><b class="score">71.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.6%;background:#c62828"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.1%;background:#1565c0"></div><span>86</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.2%;background:#2e7d32"></div><span>55</span></div></td>
+        <td>11.3</td><td>0.7</td>
+        <td>21.3</td><td>43.7</td>
+        <td>2.01</td>
+        <td>9.92</td>
+        <td>23.2</td>
+        <td>813</td><td>★</td></tr><tr class=" gm">
+        <td>15</td><td class="l">601975.SH</td>
+        <td class="l"><b>招商南油</b></td>
+        <td><b class="score">70.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:83.2%;background:#c62828"></div><span>83</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.7%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.5%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>12.7</td><td>0.39</td>
+        <td>14.8</td><td>29.4</td>
+        <td>—</td>
+        <td>11.3</td>
+        <td>52.5</td>
+        <td>185</td><td>★</td></tr><tr class=" gm">
+        <td>16</td><td class="l">002602.SZ</td>
+        <td class="l"><b>世纪华通</b></td>
+        <td><b class="score">70.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.2%;background:#c62828"></div><span>71</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.7%;background:#1565c0"></div><span>92</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.3%;background:#2e7d32"></div><span>49</span></div></td>
+        <td>16.4</td><td>0.29</td>
+        <td>22.9</td><td>70.6</td>
+        <td>—</td>
+        <td>8.99</td>
+        <td>60.0</td>
+        <td>1,028</td><td>★</td></tr><tr class=" gm">
+        <td>17</td><td class="l">300181.SZ</td>
+        <td class="l"><b>佐力药业</b></td>
+        <td><b class="score">70.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:68.3%;background:#c62828"></div><span>68</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.8%;background:#1565c0"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.2%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>15.4</td><td>0.47</td>
+        <td>20.1</td><td>62.4</td>
+        <td>2.8</td>
+        <td>5.63</td>
+        <td>28.2</td>
+        <td>100</td><td>★</td></tr><tr class=" gm">
+        <td>18</td><td class="l">000612.SZ</td>
+        <td class="l"><b>焦作万方</b></td>
+        <td><b class="score">69.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.1%;background:#c62828"></div><span>81</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.8%;background:#1565c0"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:51.1%;background:#2e7d32"></div><span>51</span></div></td>
+        <td>9.4</td><td>0.62</td>
+        <td>16.5</td><td>28.5</td>
+        <td>1.67</td>
+        <td>11.87</td>
+        <td>32.6</td>
+        <td>133</td><td>★</td></tr><tr class="">
+        <td>19</td><td class="l">000425.SZ</td>
+        <td class="l"><b>徐工机械</b></td>
+        <td><b class="score">67.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.3%;background:#c62828"></div><span>74</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.2%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.2%;background:#2e7d32"></div><span>78</span></div></td>
+        <td>14.2</td><td>0.44</td>
+        <td>12.3</td><td>22.6</td>
+        <td>2.84</td>
+        <td>16.39</td>
+        <td>29.8</td>
+        <td>937</td><td></td></tr><tr class="">
+        <td>20</td><td class="l">601058.SH</td>
+        <td class="l"><b>赛轮轮胎</b></td>
+        <td><b class="score">67.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.5%;background:#c62828"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.3%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.7%;background:#2e7d32"></div><span>42</span></div></td>
+        <td>12.9</td><td>0.4</td>
+        <td>17.4</td><td>25.2</td>
+        <td>1.31</td>
+        <td>10.3</td>
+        <td>27.7</td>
+        <td>458</td><td></td></tr><tr class=" gm">
+        <td>21</td><td class="l">600323.SH</td>
+        <td class="l"><b>瀚蓝环境</b></td>
+        <td><b class="score">67.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.8%;background:#c62828"></div><span>73</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.1%;background:#1565c0"></div><span>61</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.5%;background:#2e7d32"></div><span>62</span></div></td>
+        <td>11.1</td><td>0.69</td>
+        <td>13.5</td><td>34.5</td>
+        <td>1.87</td>
+        <td>16.01</td>
+        <td>15.9</td>
+        <td>245</td><td>★</td></tr><tr class="">
+        <td>22</td><td class="l">600428.SH</td>
+        <td class="l"><b>中远海特</b></td>
+        <td><b class="score">67.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.8%;background:#c62828"></div><span>68</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.2%;background:#1565c0"></div><span>50</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.6%;background:#2e7d32"></div><span>83</span></div></td>
+        <td>16.6</td><td>0.38</td>
+        <td>13.8</td><td>21.1</td>
+        <td>2.9</td>
+        <td>22.18</td>
+        <td>50.7</td>
+        <td>306</td><td></td></tr><tr class="">
+        <td>23</td><td class="l">601339.SH</td>
+        <td class="l"><b>XD百隆东</b></td>
+        <td><b class="score">67.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.8%;background:#c62828"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:25.2%;background:#1565c0"></div><span>25</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.2%;background:#2e7d32"></div><span>91</span></div></td>
+        <td>14.1</td><td>0.43</td>
+        <td>10.3</td><td>14.4</td>
+        <td>5.98</td>
+        <td>17.33</td>
+        <td>51.0</td>
+        <td>116</td><td></td></tr><tr class=" gm">
+        <td>24</td><td class="l">600066.SH</td>
+        <td class="l"><b>宇通客车</b></td>
+        <td><b class="score">65.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.7%;background:#c62828"></div><span>51</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:79.7%;background:#1565c0"></div><span>80</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.7%;background:#2e7d32"></div><span>82</span></div></td>
+        <td>12.3</td><td>0.99</td>
+        <td>35.5</td><td>25.4</td>
+        <td>4.49</td>
+        <td>11.25</td>
+        <td>9.9</td>
+        <td>673</td><td>★</td></tr><tr class="">
+        <td>25</td><td class="l">600309.SH</td>
+        <td class="l"><b>万华化学</b></td>
+        <td><b class="score">65.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.0%;background:#c62828"></div><span>78</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.1%;background:#1565c0"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.9%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>14.2</td><td>0.35</td>
+        <td>15.7</td><td>13.5</td>
+        <td>1.79</td>
+        <td>17.03</td>
+        <td>54.1</td>
+        <td>2,332</td><td></td></tr><tr class=" gm">
+        <td>26</td><td class="l">603816.SH</td>
+        <td class="l"><b>顾家家居</b></td>
+        <td><b class="score">65.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.5%;background:#c62828"></div><span>58</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:63.9%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.2%;background:#2e7d32"></div><span>82</span></div></td>
+        <td>13.2</td><td>0.82</td>
+        <td>14.2</td><td>33.1</td>
+        <td>3.89</td>
+        <td>12.69</td>
+        <td>15.0</td>
+        <td>234</td><td>★</td></tr><tr class="">
+        <td>27</td><td class="l">601216.SH</td>
+        <td class="l"><b>君正集团</b></td>
+        <td><b class="score">65.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.3%;background:#c62828"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.2%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.2%;background:#2e7d32"></div><span>87</span></div></td>
+        <td>12.7</td><td>0.74</td>
+        <td>12.8</td><td>21.0</td>
+        <td>4.49</td>
+        <td>14.51</td>
+        <td>14.4</td>
+        <td>391</td><td></td></tr><tr class=" gm">
+        <td>28</td><td class="l">600933.SH</td>
+        <td class="l"><b>爱柯迪</b></td>
+        <td><b class="score">64.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.6%;background:#c62828"></div><span>77</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:51.8%;background:#1565c0"></div><span>52</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.3%;background:#2e7d32"></div><span>53</span></div></td>
+        <td>12.7</td><td>0.52</td>
+        <td>12.5</td><td>29.4</td>
+        <td>1.62</td>
+        <td>14.18</td>
+        <td>18.5</td>
+        <td>144</td><td>★</td></tr><tr class=" gm">
+        <td>29</td><td class="l">600801.SH</td>
+        <td class="l"><b>华新建材</b></td>
+        <td><b class="score">64.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.9%;background:#c62828"></div><span>65</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.4%;background:#1565c0"></div><span>43</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.3%;background:#2e7d32"></div><span>84</span></div></td>
+        <td>15.3</td><td>0.53</td>
+        <td>10.2</td><td>31.2</td>
+        <td>3.68</td>
+        <td>16.05</td>
+        <td>28.2</td>
+        <td>496</td><td>★</td></tr><tr class="">
+        <td>30</td><td class="l">601139.SH</td>
+        <td class="l"><b>深圳燃气</b></td>
+        <td><b class="score">64.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.4%;background:#c62828"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.6%;background:#1565c0"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.7%;background:#2e7d32"></div><span>75</span></div></td>
+        <td>11.7</td><td>0.58</td>
+        <td>10.0</td><td>18.4</td>
+        <td>2.22</td>
+        <td>23.9</td>
+        <td>26.3</td>
+        <td>181</td><td></td></tr><tr class="">
+        <td>31</td><td class="l">000685.SZ</td>
+        <td class="l"><b>中山公用</b></td>
+        <td><b class="score">63.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.2%;background:#c62828"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.5%;background:#1565c0"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.7%;background:#2e7d32"></div><span>54</span></div></td>
+        <td>7.7</td><td>0.62</td>
+        <td>10.3</td><td>24.4</td>
+        <td>2.87</td>
+        <td>4.38</td>
+        <td>14.1</td>
+        <td>166</td><td></td></tr><tr class="">
+        <td>32</td><td class="l">000528.SZ</td>
+        <td class="l"><b>柳    工</b></td>
+        <td><b class="score">63.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.4%;background:#c62828"></div><span>91</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.5%;background:#1565c0"></div><span>32</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.9%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>10.7</td><td>0.39</td>
+        <td>9.5</td><td>21.9</td>
+        <td>2.07</td>
+        <td>3.64</td>
+        <td>20.3</td>
+        <td>167</td><td></td></tr><tr class="">
+        <td>33</td><td class="l">605599.SH</td>
+        <td class="l"><b>菜百股份</b></td>
+        <td><b class="score">63.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.4%;background:#c62828"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.5%;background:#1565c0"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:63.0%;background:#2e7d32"></div><span>63</span></div></td>
+        <td>11.1</td><td>0.76</td>
+        <td>24.0</td><td>7.8</td>
+        <td>3.98</td>
+        <td>5.34</td>
+        <td>10.8</td>
+        <td>123</td><td></td></tr><tr class="">
+        <td>34</td><td class="l">600710.SH</td>
+        <td class="l"><b>苏美达</b></td>
+        <td><b class="score">63.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:60.3%;background:#c62828"></div><span>60</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.6%;background:#1565c0"></div><span>39</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:93.6%;background:#2e7d32"></div><span>94</span></div></td>
+        <td>9.8</td><td>0.94</td>
+        <td>15.1</td><td>6.7</td>
+        <td>4.0</td>
+        <td>545.52</td>
+        <td>7.9</td>
+        <td>138</td><td></td></tr><tr class=" gm">
+        <td>35</td><td class="l">300910.SZ</td>
+        <td class="l"><b>瑞丰新材</b></td>
+        <td><b class="score">62.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.2%;background:#c62828"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:79.1%;background:#1565c0"></div><span>79</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:54.1%;background:#2e7d32"></div><span>54</span></div></td>
+        <td>13.4</td><td>0.76</td>
+        <td>20.3</td><td>34.2</td>
+        <td>2.2</td>
+        <td>7.73</td>
+        <td>16.7</td>
+        <td>104</td><td>★</td></tr><tr class="">
+        <td>36</td><td class="l">603871.SH</td>
+        <td class="l"><b>嘉友国际</b></td>
+        <td><b class="score">62.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.8%;background:#c62828"></div><span>70</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.7%;background:#1565c0"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.8%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>14.5</td><td>0.51</td>
+        <td>21.9</td><td>19.8</td>
+        <td>1.97</td>
+        <td>6.91</td>
+        <td>35.8</td>
+        <td>190</td><td></td></tr><tr class=" gm">
+        <td>37</td><td class="l">601918.SH</td>
+        <td class="l"><b>新集能源</b></td>
+        <td><b class="score">61.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.4%;background:#c62828"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.3%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.5%;background:#2e7d32"></div><span>50</span></div></td>
+        <td>11.1</td><td>0.76</td>
+        <td>13.0</td><td>40.5</td>
+        <td>1.63</td>
+        <td>11.97</td>
+        <td>18.2</td>
+        <td>269</td><td>★</td></tr><tr class="">
+        <td>38</td><td class="l">603799.SH</td>
+        <td class="l"><b>华友钴业</b></td>
+        <td><b class="score">61.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.6%;background:#c62828"></div><span>87</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.4%;background:#1565c0"></div><span>41</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.0%;background:#2e7d32"></div><span>32</span></div></td>
+        <td>11.0</td><td>0.46</td>
+        <td>12.7</td><td>19.3</td>
+        <td>1.38</td>
+        <td>6.06</td>
+        <td>12.4</td>
+        <td>757</td><td></td></tr><tr class=" gm">
+        <td>39</td><td class="l">000157.SZ</td>
+        <td class="l"><b>中联重科</b></td>
+        <td><b class="score">61.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.2%;background:#c62828"></div><span>69</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.1%;background:#1565c0"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:73.2%;background:#2e7d32"></div><span>73</span></div></td>
+        <td>14.1</td><td>0.54</td>
+        <td>8.9</td><td>27.8</td>
+        <td>4.07</td>
+        <td>8.53</td>
+        <td>15.7</td>
+        <td>612</td><td>★</td></tr><tr class=" gm">
+        <td>40</td><td class="l">002895.SZ</td>
+        <td class="l"><b>川恒股份</b></td>
+        <td><b class="score">61.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.3%;background:#c62828"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.5%;background:#1565c0"></div><span>70</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.6%;background:#2e7d32"></div><span>57</span></div></td>
+        <td>15.1</td><td>0.68</td>
+        <td>18.1</td><td>29.1</td>
+        <td>3.18</td>
+        <td>4.72</td>
+        <td>19.6</td>
+        <td>194</td><td>★</td></tr><tr class="">
+        <td>41</td><td class="l">601877.SH</td>
+        <td class="l"><b>正泰电器</b></td>
+        <td><b class="score">60.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:66.6%;background:#c62828"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:39.5%;background:#1565c0"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:70.8%;background:#2e7d32"></div><span>71</span></div></td>
+        <td>11.0</td><td>0.81</td>
+        <td>10.8</td><td>24.4</td>
+        <td>1.99</td>
+        <td>48.29</td>
+        <td>15.8</td>
+        <td>558</td><td></td></tr><tr class="">
+        <td>42</td><td class="l">002011.SZ</td>
+        <td class="l"><b>盾安环境</b></td>
+        <td><b class="score">60.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:66.9%;background:#c62828"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:48.6%;background:#1565c0"></div><span>49</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.8%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>10.3</td><td>0.83</td>
+        <td>14.6</td><td>18.3</td>
+        <td>—</td>
+        <td>14.13</td>
+        <td>4.8</td>
+        <td>109</td><td></td></tr><tr class="">
+        <td>43</td><td class="l">000680.SZ</td>
+        <td class="l"><b>山推股份</b></td>
+        <td><b class="score">60.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:80.9%;background:#c62828"></div><span>81</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.8%;background:#1565c0"></div><span>66</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:14.8%;background:#2e7d32"></div><span>15</span></div></td>
+        <td>11.7</td><td>0.5</td>
+        <td>19.7</td><td>22.5</td>
+        <td>0.7</td>
+        <td>5.65</td>
+        <td>21.3</td>
+        <td>155</td><td></td></tr><tr class="">
+        <td>44</td><td class="l">600426.SH</td>
+        <td class="l"><b>华鲁恒升</b></td>
+        <td><b class="score">60.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.4%;background:#c62828"></div><span>78</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.9%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.8%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>13.7</td><td>0.4</td>
+        <td>12.9</td><td>20.7</td>
+        <td>1.74</td>
+        <td>7.21</td>
+        <td>45.0</td>
+        <td>561</td><td></td></tr><tr class=" gm">
+        <td>45</td><td class="l">002517.SZ</td>
+        <td class="l"><b>恺英网络</b></td>
+        <td><b class="score">60.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.0%;background:#c62828"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.6%;background:#1565c0"></div><span>92</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:22.1%;background:#2e7d32"></div><span>22</span></div></td>
+        <td>16.3</td><td>0.48</td>
+        <td>21.9</td><td>80.2</td>
+        <td>0.85</td>
+        <td>6.42</td>
+        <td>40.7</td>
+        <td>352</td><td>★</td></tr><tr class=" gm">
+        <td>46</td><td class="l">603233.SH</td>
+        <td class="l"><b>大参林</b></td>
+        <td><b class="score">60.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.8%;background:#c62828"></div><span>47</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.3%;background:#1565c0"></div><span>75</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.6%;background:#2e7d32"></div><span>72</span></div></td>
+        <td>15.2</td><td>0.84</td>
+        <td>17.9</td><td>34.6</td>
+        <td>2.08</td>
+        <td>22.31</td>
+        <td>20.1</td>
+        <td>208</td><td>★</td></tr><tr class=" gm">
+        <td>47</td><td class="l">600415.SH</td>
+        <td class="l"><b>小商品城</b></td>
+        <td><b class="score">59.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.2%;background:#c62828"></div><span>53</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.1%;background:#1565c0"></div><span>75</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.5%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>15.0</td><td>0.79</td>
+        <td>19.9</td><td>31.2</td>
+        <td>1.63</td>
+        <td>16.5</td>
+        <td>18.5</td>
+        <td>675</td><td>★</td></tr><tr class="">
+        <td>48</td><td class="l">601156.SH</td>
+        <td class="l"><b>东航物流</b></td>
+        <td><b class="score">59.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.5%;background:#c62828"></div><span>60</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:39.2%;background:#1565c0"></div><span>39</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.2%;background:#2e7d32"></div><span>78</span></div></td>
+        <td>11.0</td><td>0.89</td>
+        <td>12.3</td><td>18.9</td>
+        <td>2.52</td>
+        <td>23.77</td>
+        <td>2.8</td>
+        <td>299</td><td></td></tr><tr class="">
+        <td>49</td><td class="l">603049.SH</td>
+        <td class="l"><b>中策橡胶</b></td>
+        <td><b class="score">58.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:60.7%;background:#c62828"></div><span>61</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.8%;background:#1565c0"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:58.4%;background:#2e7d32"></div><span>58</span></div></td>
+        <td>10.2</td><td>0.93</td>
+        <td>16.4</td><td>19.8</td>
+        <td>2.78</td>
+        <td>6.31</td>
+        <td>7.9</td>
+        <td>436</td><td></td></tr><tr class=" gm">
+        <td>50</td><td class="l">601001.SH</td>
+        <td class="l"><b>晋控煤业</b></td>
+        <td><b class="score">58.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.6%;background:#c62828"></div><span>47</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.5%;background:#1565c0"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.8%;background:#2e7d32"></div><span>87</span></div></td>
+        <td>18.3</td><td>0.67</td>
+        <td>11.3</td><td>40.8</td>
+        <td>4.69</td>
+        <td>13.64</td>
+        <td>33.2</td>
+        <td>303</td><td>★</td></tr><tr class="">
+        <td>51</td><td class="l">601117.SH</td>
+        <td class="l"><b>中国化学</b></td>
+        <td><b class="score">58.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.3%;background:#c62828"></div><span>75</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:17.0%;background:#1565c0"></div><span>17</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.0%;background:#2e7d32"></div><span>67</span></div></td>
+        <td>7.1</td><td>0.75</td>
+        <td>9.4</td><td>10.7</td>
+        <td>1.86</td>
+        <td>33.49</td>
+        <td>8.1</td>
+        <td>463</td><td></td></tr><tr class=" gm">
+        <td>52</td><td class="l">603979.SH</td>
+        <td class="l"><b>金诚信</b></td>
+        <td><b class="score">58.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.0%;background:#c62828"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.8%;background:#1565c0"></div><span>85</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:24.8%;background:#2e7d32"></div><span>25</span></div></td>
+        <td>17.7</td><td>0.42</td>
+        <td>24.7</td><td>34.4</td>
+        <td>0.58</td>
+        <td>10.21</td>
+        <td>50.9</td>
+        <td>504</td><td>★</td></tr><tr class="">
+        <td>53</td><td class="l">600968.SH</td>
+        <td class="l"><b>海油发展</b></td>
+        <td><b class="score">57.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.4%;background:#c62828"></div><span>61</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.2%;background:#1565c0"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:66.6%;background:#2e7d32"></div><span>67</span></div></td>
+        <td>10.1</td><td>0.93</td>
+        <td>13.5</td><td>16.5</td>
+        <td>2.95</td>
+        <td>8.8</td>
+        <td>12.5</td>
+        <td>396</td><td></td></tr><tr class=" gm">
+        <td>54</td><td class="l">300573.SZ</td>
+        <td class="l"><b>兴齐眼药</b></td>
+        <td><b class="score">56.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.6%;background:#c62828"></div><span>58</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:98.0%;background:#1565c0"></div><span>98</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:13.0%;background:#2e7d32"></div><span>13</span></div></td>
+        <td>18.8</td><td>0.42</td>
+        <td>32.5</td><td>81.6</td>
+        <td>0.66</td>
+        <td>5.42</td>
+        <td>36.7</td>
+        <td>142</td><td>★</td></tr><tr class=" gm">
+        <td>55</td><td class="l">002563.SZ</td>
+        <td class="l"><b>森马服饰</b></td>
+        <td><b class="score">56.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.5%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:47.7%;background:#1565c0"></div><span>48</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.3%;background:#2e7d32"></div><span>86</span></div></td>
+        <td>15.1</td><td>0.87</td>
+        <td>9.1</td><td>45.6</td>
+        <td>4.26</td>
+        <td>14.24</td>
+        <td>23.2</td>
+        <td>158</td><td>★</td></tr><tr class="">
+        <td>56</td><td class="l">000951.SZ</td>
+        <td class="l"><b>中国重汽</b></td>
+        <td><b class="score">56.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.6%;background:#c62828"></div><span>73</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:22.8%;background:#1565c0"></div><span>23</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.8%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>13.1</td><td>0.56</td>
+        <td>11.2</td><td>7.6</td>
+        <td>1.77</td>
+        <td>13.16</td>
+        <td>22.1</td>
+        <td>238</td><td></td></tr><tr class=" gm">
+        <td>57</td><td class="l">601225.SH</td>
+        <td class="l"><b>陕西煤业</b></td>
+        <td><b class="score">56.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.2%;background:#c62828"></div><span>35</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.0%;background:#1565c0"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:86.7%;background:#2e7d32"></div><span>87</span></div></td>
+        <td>15.8</td><td>0.97</td>
+        <td>17.4</td><td>28.2</td>
+        <td>4.16</td>
+        <td>15.28</td>
+        <td>22.7</td>
+        <td>2,555</td><td>★</td></tr><tr class=" gm">
+        <td>58</td><td class="l">601019.SH</td>
+        <td class="l"><b>山东出版</b></td>
+        <td><b class="score">55.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.1%;background:#c62828"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.2%;background:#1565c0"></div><span>41</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.3%;background:#2e7d32"></div><span>67</span></div></td>
+        <td>12.4</td><td>0.88</td>
+        <td>8.5</td><td>36.1</td>
+        <td>3.5</td>
+        <td>7.45</td>
+        <td>17.4</td>
+        <td>142</td><td>★</td></tr><tr class=" gm">
+        <td>59</td><td class="l">600177.SH</td>
+        <td class="l"><b>雅戈尔</b></td>
+        <td><b class="score">55.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.2%;background:#c62828"></div><span>65</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.3%;background:#1565c0"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.0%;background:#2e7d32"></div><span>52</span></div></td>
+        <td>14.2</td><td>0.6</td>
+        <td>6.7</td><td>46.2</td>
+        <td>3.04</td>
+        <td>3.14</td>
+        <td>21.2</td>
+        <td>365</td><td>★</td></tr><tr class=" gm">
+        <td>60</td><td class="l">600348.SH</td>
+        <td class="l"><b>华阳股份</b></td>
+        <td><b class="score">55.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.3%;background:#c62828"></div><span>52</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.9%;background:#1565c0"></div><span>36</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:80.4%;background:#2e7d32"></div><span>80</span></div></td>
+        <td>20.3</td><td>0.41</td>
+        <td>6.8</td><td>40.9</td>
+        <td>5.81</td>
+        <td>9.83</td>
+        <td>47.1</td>
+        <td>323</td><td>★</td></tr><tr class=" gm">
+        <td>61</td><td class="l">689009.SH</td>
+        <td class="l"><b>九号公司-WD</b></td>
+        <td><b class="score">55.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.7%;background:#c62828"></div><span>33</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.6%;background:#1565c0"></div><span>78</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.6%;background:#2e7d32"></div><span>78</span></div></td>
+        <td>20.8</td><td>0.72</td>
+        <td>23.4</td><td>28.6</td>
+        <td>15.44</td>
+        <td>8.46</td>
+        <td>10.4</td>
+        <td>318</td><td>★</td></tr><tr class=" gm">
+        <td>62</td><td class="l">601567.SH</td>
+        <td class="l"><b>三星电气</b></td>
+        <td><b class="score">55.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.2%;background:#c62828"></div><span>49</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.8%;background:#1565c0"></div><span>57</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.3%;background:#2e7d32"></div><span>65</span></div></td>
+        <td>22.0</td><td>0.32</td>
+        <td>13.6</td><td>29.2</td>
+        <td>2.67</td>
+        <td>9.1</td>
+        <td>42.9</td>
+        <td>209</td><td>★</td></tr><tr class="">
+        <td>63</td><td class="l">601799.SH</td>
+        <td class="l"><b>星宇股份</b></td>
+        <td><b class="score">54.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.7%;background:#c62828"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.1%;background:#1565c0"></div><span>49</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:27.2%;background:#2e7d32"></div><span>27</span></div></td>
+        <td>14.9</td><td>0.47</td>
+        <td>14.2</td><td>19.7</td>
+        <td>0.77</td>
+        <td>9.73</td>
+        <td>14.5</td>
+        <td>247</td><td></td></tr><tr class=" gm">
+        <td>64</td><td class="l">603379.SH</td>
+        <td class="l"><b>三美股份</b></td>
+        <td><b class="score">54.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.5%;background:#c62828"></div><span>54</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:93.1%;background:#1565c0"></div><span>93</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:18.9%;background:#2e7d32"></div><span>19</span></div></td>
+        <td>16.8</td><td>0.62</td>
+        <td>25.3</td><td>52.0</td>
+        <td>0.78</td>
+        <td>6.04</td>
+        <td>21.8</td>
+        <td>358</td><td>★</td></tr><tr class=" gm">
+        <td>65</td><td class="l">603486.SH</td>
+        <td class="l"><b>科沃斯</b></td>
+        <td><b class="score">54.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.7%;background:#c62828"></div><span>54</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.1%;background:#1565c0"></div><span>84</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:26.7%;background:#2e7d32"></div><span>27</span></div></td>
+        <td>15.4</td><td>0.73</td>
+        <td>19.5</td><td>47.8</td>
+        <td>0.92</td>
+        <td>7.64</td>
+        <td>23.4</td>
+        <td>311</td><td>★</td></tr><tr class="">
+        <td>66</td><td class="l">601677.SH</td>
+        <td class="l"><b>明泰铝业</b></td>
+        <td><b class="score">54.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:88.1%;background:#c62828"></div><span>88</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:25.6%;background:#1565c0"></div><span>26</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:16.2%;background:#2e7d32"></div><span>16</span></div></td>
+        <td>8.6</td><td>0.5</td>
+        <td>11.7</td><td>8.9</td>
+        <td>0.88</td>
+        <td>4.38</td>
+        <td>28.2</td>
+        <td>209</td><td></td></tr><tr class="">
+        <td>67</td><td class="l">600704.SH</td>
+        <td class="l"><b>物产中大</b></td>
+        <td><b class="score">54.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.0%;background:#c62828"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:5.8%;background:#1565c0"></div><span>6</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:87.7%;background:#2e7d32"></div><span>88</span></div></td>
+        <td>7.2</td><td>0.94</td>
+        <td>7.7</td><td>2.5</td>
+        <td>3.1</td>
+        <td>268.25</td>
+        <td>5.7</td>
+        <td>258</td><td></td></tr><tr class="">
+        <td>68</td><td class="l">002701.SZ</td>
+        <td class="l"><b>奥瑞金</b></td>
+        <td><b class="score">54.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.7%;background:#c62828"></div><span>60</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:20.2%;background:#1565c0"></div><span>20</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.4%;background:#2e7d32"></div><span>77</span></div></td>
+        <td>14.3</td><td>0.7</td>
+        <td>9.9</td><td>13.1</td>
+        <td>2.54</td>
+        <td>21.23</td>
+        <td>5.9</td>
+        <td>123</td><td></td></tr><tr class=" gm">
+        <td>69</td><td class="l">300850.SZ</td>
+        <td class="l"><b>新强联</b></td>
+        <td><b class="score">54.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:82.8%;background:#c62828"></div><span>83</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.2%;background:#1565c0"></div><span>50</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:0.4%;background:#2e7d32"></div><span>0</span></div></td>
+        <td>12.9</td><td>0.38</td>
+        <td>12.5</td><td>28.4</td>
+        <td>0.39</td>
+        <td>1.08</td>
+        <td>22.5</td>
+        <td>103</td><td>★</td></tr><tr class=" gm">
+        <td>70</td><td class="l">002847.SZ</td>
+        <td class="l"><b>盐津铺子</b></td>
+        <td><b class="score">53.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.5%;background:#c62828"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:85.9%;background:#1565c0"></div><span>86</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.9%;background:#2e7d32"></div><span>38</span></div></td>
+        <td>15.2</td><td>0.86</td>
+        <td>33.8</td><td>31.7</td>
+        <td>1.34</td>
+        <td>8.95</td>
+        <td>14.1</td>
+        <td>122</td><td>★</td></tr><tr class="">
+        <td>71</td><td class="l">600166.SH</td>
+        <td class="l"><b>福田汽车</b></td>
+        <td><b class="score">53.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.3%;background:#c62828"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:26.2%;background:#1565c0"></div><span>26</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.1%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>16.1</td><td>0.29</td>
+        <td>11.7</td><td>10.0</td>
+        <td>—</td>
+        <td>5.72</td>
+        <td>51.0</td>
+        <td>230</td><td></td></tr><tr class="">
+        <td>72</td><td class="l">601702.SH</td>
+        <td class="l"><b>华峰铝业</b></td>
+        <td><b class="score">51.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:70.6%;background:#c62828"></div><span>71</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.3%;background:#1565c0"></div><span>52</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:14.1%;background:#2e7d32"></div><span>14</span></div></td>
+        <td>13.3</td><td>0.58</td>
+        <td>18.9</td><td>14.1</td>
+        <td>1.1</td>
+        <td>1.54</td>
+        <td>18.7</td>
+        <td>158</td><td></td></tr><tr class=" gm">
+        <td>73</td><td class="l">300628.SZ</td>
+        <td class="l"><b>亿联网络</b></td>
+        <td><b class="score">51.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.3%;background:#c62828"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:95.6%;background:#1565c0"></div><span>96</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.5%;background:#2e7d32"></div><span>38</span></div></td>
+        <td>17.7</td><td>0.84</td>
+        <td>29.0</td><td>63.4</td>
+        <td>2.01</td>
+        <td>3.38</td>
+        <td>20.5</td>
+        <td>510</td><td>★</td></tr><tr class="">
+        <td>74</td><td class="l">002043.SZ</td>
+        <td class="l"><b>兔 宝 宝</b></td>
+        <td><b class="score">51.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.6%;background:#c62828"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.2%;background:#1565c0"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:73.2%;background:#2e7d32"></div><span>73</span></div></td>
+        <td>15.6</td><td>0.97</td>
+        <td>20.5</td><td>16.7</td>
+        <td>3.77</td>
+        <td>9.0</td>
+        <td>11.7</td>
+        <td>106</td><td></td></tr><tr class="">
+        <td>75</td><td class="l">688036.SH</td>
+        <td class="l"><b>传音控股</b></td>
+        <td><b class="score">50.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.2%;background:#c62828"></div><span>42</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:54.5%;background:#1565c0"></div><span>54</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.9%;background:#2e7d32"></div><span>65</span></div></td>
+        <td>21.2</td><td>0.52</td>
+        <td>15.5</td><td>20.5</td>
+        <td>1.77</td>
+        <td>41.65</td>
+        <td>37.4</td>
+        <td>666</td><td></td></tr><tr class="">
+        <td>76</td><td class="l">600060.SH</td>
+        <td class="l"><b>海信视像</b></td>
+        <td><b class="score">50.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.7%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.4%;background:#1565c0"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.2%;background:#2e7d32"></div><span>76</span></div></td>
+        <td>14.0</td><td>0.94</td>
+        <td>11.9</td><td>16.9</td>
+        <td>3.07</td>
+        <td>12.19</td>
+        <td>15.2</td>
+        <td>362</td><td></td></tr><tr class=" gm">
+        <td>77</td><td class="l">600216.SH</td>
+        <td class="l"><b>浙江医药</b></td>
+        <td><b class="score">50.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:51.1%;background:#c62828"></div><span>51</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.4%;background:#1565c0"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.7%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>15.6</td><td>0.75</td>
+        <td>8.7</td><td>32.5</td>
+        <td>1.96</td>
+        <td>12.55</td>
+        <td>21.1</td>
+        <td>126</td><td>★</td></tr><tr class=" gm">
+        <td>78</td><td class="l">002415.SZ</td>
+        <td class="l"><b>海康威视</b></td>
+        <td><b class="score">50.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.8%;background:#c62828"></div><span>32</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.5%;background:#1565c0"></div><span>82</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.2%;background:#2e7d32"></div><span>55</span></div></td>
+        <td>19.4</td><td>0.83</td>
+        <td>19.1</td><td>43.5</td>
+        <td>2.24</td>
+        <td>7.48</td>
+        <td>27.0</td>
+        <td>3,188</td><td>★</td></tr><tr class="">
+        <td>79</td><td class="l">603766.SH</td>
+        <td class="l"><b>隆鑫通用</b></td>
+        <td><b class="score">50.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.4%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.8%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.9%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>19.4</td><td>0.58</td>
+        <td>20.7</td><td>18.1</td>
+        <td>1.82</td>
+        <td>8.18</td>
+        <td>28.9</td>
+        <td>304</td><td></td></tr><tr class="">
+        <td>80</td><td class="l">601966.SH</td>
+        <td class="l"><b>玲珑轮胎</b></td>
+        <td><b class="score">50.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:73.3%;background:#c62828"></div><span>73</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:15.2%;background:#1565c0"></div><span>15</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.1%;background:#2e7d32"></div><span>38</span></div></td>
+        <td>15.9</td><td>0.28</td>
+        <td>7.6</td><td>17.5</td>
+        <td>0.77</td>
+        <td>17.92</td>
+        <td>37.8</td>
+        <td>166</td><td></td></tr><tr class=" gm">
+        <td>81</td><td class="l">603317.SH</td>
+        <td class="l"><b>天味食品</b></td>
+        <td><b class="score">50.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.9%;background:#c62828"></div><span>36</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.9%;background:#1565c0"></div><span>76</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.3%;background:#2e7d32"></div><span>52</span></div></td>
+        <td>18.5</td><td>0.83</td>
+        <td>16.2</td><td>41.9</td>
+        <td>2.56</td>
+        <td>5.38</td>
+        <td>31.3</td>
+        <td>141</td><td>★</td></tr><tr class="">
+        <td>82</td><td class="l">601886.SH</td>
+        <td class="l"><b>江河集团</b></td>
+        <td><b class="score">49.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.5%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:33.3%;background:#1565c0"></div><span>33</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:75.0%;background:#2e7d32"></div><span>75</span></div></td>
+        <td>20.3</td><td>0.53</td>
+        <td>11.6</td><td>17.5</td>
+        <td>2.84</td>
+        <td>13.0</td>
+        <td>46.1</td>
+        <td>147</td><td></td></tr><tr class=" gm">
+        <td>83</td><td class="l">601965.SH</td>
+        <td class="l"><b>中国汽研</b></td>
+        <td><b class="score">49.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:47.4%;background:#c62828"></div><span>47</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.3%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:39.4%;background:#2e7d32"></div><span>39</span></div></td>
+        <td>13.4</td><td>0.94</td>
+        <td>12.9</td><td>45.9</td>
+        <td>1.28</td>
+        <td>9.72</td>
+        <td>6.1</td>
+        <td>144</td><td>★</td></tr><tr class=" gm">
+        <td>84</td><td class="l">688208.SH</td>
+        <td class="l"><b>道通科技</b></td>
+        <td><b class="score">49.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.4%;background:#c62828"></div><span>42</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:92.5%;background:#1565c0"></div><span>92</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:20.9%;background:#2e7d32"></div><span>21</span></div></td>
+        <td>19.5</td><td>0.63</td>
+        <td>23.8</td><td>56.0</td>
+        <td>1.23</td>
+        <td>3.63</td>
+        <td>16.7</td>
+        <td>174</td><td>★</td></tr><tr class="">
+        <td>85</td><td class="l">002078.SZ</td>
+        <td class="l"><b>太阳纸业</b></td>
+        <td><b class="score">48.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.1%;background:#c62828"></div><span>55</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.0%;background:#1565c0"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.2%;background:#2e7d32"></div><span>55</span></div></td>
+        <td>12.6</td><td>0.89</td>
+        <td>11.2</td><td>15.3</td>
+        <td>1.67</td>
+        <td>14.27</td>
+        <td>15.0</td>
+        <td>431</td><td></td></tr><tr class="">
+        <td>86</td><td class="l">603733.SH</td>
+        <td class="l"><b>仙鹤股份</b></td>
+        <td><b class="score">48.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.2%;background:#c62828"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.3%;background:#1565c0"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.4%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>16.8</td><td>0.52</td>
+        <td>12.9</td><td>13.8</td>
+        <td>1.76</td>
+        <td>7.26</td>
+        <td>28.1</td>
+        <td>173</td><td></td></tr><tr class="">
+        <td>87</td><td class="l">600219.SH</td>
+        <td class="l"><b>南山铝业</b></td>
+        <td><b class="score">48.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.5%;background:#c62828"></div><span>50</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.1%;background:#1565c0"></div><span>31</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.7%;background:#2e7d32"></div><span>62</span></div></td>
+        <td>12.7</td><td>0.94</td>
+        <td>9.4</td><td>22.3</td>
+        <td>2.16</td>
+        <td>10.64</td>
+        <td>4.7</td>
+        <td>555</td><td></td></tr><tr class="">
+        <td>88</td><td class="l">600028.SH</td>
+        <td class="l"><b>中国石化</b></td>
+        <td><b class="score">48.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:48.8%;background:#c62828"></div><span>49</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:9.8%;background:#1565c0"></div><span>10</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:85.1%;background:#2e7d32"></div><span>85</span></div></td>
+        <td>17.9</td><td>0.64</td>
+        <td>4.9</td><td>17.0</td>
+        <td>3.17</td>
+        <td>23.85</td>
+        <td>32.9</td>
+        <td>6,445</td><td></td></tr><tr class="">
+        <td>89</td><td class="l">600021.SH</td>
+        <td class="l"><b>上海电力</b></td>
+        <td><b class="score">48.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.5%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.2%;background:#1565c0"></div><span>32</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:68.9%;background:#2e7d32"></div><span>69</span></div></td>
+        <td>15.5</td><td>0.84</td>
+        <td>9.2</td><td>24.9</td>
+        <td>1.94</td>
+        <td>34.49</td>
+        <td>24.4</td>
+        <td>387</td><td></td></tr><tr class=" gm">
+        <td>90</td><td class="l">603659.SH</td>
+        <td class="l"><b>璞泰来</b></td>
+        <td><b class="score">48.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.9%;background:#c62828"></div><span>57</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.0%;background:#1565c0"></div><span>61</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:17.1%;background:#2e7d32"></div><span>17</span></div></td>
+        <td>18.8</td><td>0.44</td>
+        <td>14.1</td><td>31.1</td>
+        <td>0.72</td>
+        <td>6.04</td>
+        <td>38.8</td>
+        <td>517</td><td>★</td></tr><tr class=" gm">
+        <td>91</td><td class="l">601330.SH</td>
+        <td class="l"><b>绿色动力</b></td>
+        <td><b class="score">47.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.0%;background:#c62828"></div><span>42</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.9%;background:#1565c0"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.4%;background:#2e7d32"></div><span>61</span></div></td>
+        <td>15.8</td><td>0.85</td>
+        <td>8.3</td><td>47.8</td>
+        <td>1.81</td>
+        <td>18.36</td>
+        <td>21.8</td>
+        <td>101</td><td>★</td></tr><tr class=" gm">
+        <td>92</td><td class="l">688578.SH</td>
+        <td class="l"><b>艾力斯</b></td>
+        <td><b class="score">47.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.6%;background:#c62828"></div><span>43</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:97.7%;background:#1565c0"></div><span>98</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:8.5%;background:#2e7d32"></div><span>8</span></div></td>
+        <td>18.8</td><td>0.7</td>
+        <td>29.8</td><td>96.3</td>
+        <td>0.5</td>
+        <td>4.74</td>
+        <td>34.0</td>
+        <td>504</td><td>★</td></tr><tr class=" gm">
+        <td>93</td><td class="l">002444.SZ</td>
+        <td class="l"><b>巨星科技</b></td>
+        <td><b class="score">47.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.6%;background:#c62828"></div><span>58</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.5%;background:#1565c0"></div><span>60</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:16.2%;background:#2e7d32"></div><span>16</span></div></td>
+        <td>14.1</td><td>0.75</td>
+        <td>13.5</td><td>33.0</td>
+        <td>0.8</td>
+        <td>5.11</td>
+        <td>15.8</td>
+        <td>361</td><td>★</td></tr><tr class=" gm">
+        <td>94</td><td class="l">603338.SH</td>
+        <td class="l"><b>浙江鼎力</b></td>
+        <td><b class="score">47.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.1%;background:#c62828"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:67.3%;background:#1565c0"></div><span>67</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:33.4%;background:#2e7d32"></div><span>33</span></div></td>
+        <td>15.2</td><td>0.87</td>
+        <td>15.5</td><td>32.8</td>
+        <td>1.59</td>
+        <td>5.7</td>
+        <td>10.3</td>
+        <td>292</td><td>★</td></tr><tr class="">
+        <td>95</td><td class="l">603218.SH</td>
+        <td class="l"><b>日月股份</b></td>
+        <td><b class="score">46.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.6%;background:#c62828"></div><span>58</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:15.3%;background:#1565c0"></div><span>15</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.7%;background:#2e7d32"></div><span>57</span></div></td>
+        <td>19.5</td><td>0.33</td>
+        <td>7.7</td><td>17.2</td>
+        <td>1.89</td>
+        <td>11.33</td>
+        <td>56.3</td>
+        <td>101</td><td></td></tr><tr class="">
+        <td>96</td><td class="l">000338.SZ</td>
+        <td class="l"><b>潍柴动力</b></td>
+        <td><b class="score">46.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.2%;background:#c62828"></div><span>42</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.3%;background:#1565c0"></div><span>49</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:53.1%;background:#2e7d32"></div><span>53</span></div></td>
+        <td>20.7</td><td>0.57</td>
+        <td>13.6</td><td>21.3</td>
+        <td>1.7</td>
+        <td>12.48</td>
+        <td>32.7</td>
+        <td>2,336</td><td></td></tr><tr class="">
+        <td>97</td><td class="l">600583.SH</td>
+        <td class="l"><b>海油工程</b></td>
+        <td><b class="score">46.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.3%;background:#c62828"></div><span>55</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:10.1%;background:#1565c0"></div><span>10</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.5%;background:#2e7d32"></div><span>66</span></div></td>
+        <td>12.8</td><td>0.85</td>
+        <td>7.7</td><td>13.3</td>
+        <td>2.39</td>
+        <td>10.76</td>
+        <td>11.7</td>
+        <td>265</td><td></td></tr><tr class="">
+        <td>98</td><td class="l">600361.SH</td>
+        <td class="l"><b>创新新材</b></td>
+        <td><b class="score">46.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:69.2%;background:#c62828"></div><span>69</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:16.2%;background:#1565c0"></div><span>16</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.8%;background:#2e7d32"></div><span>32</span></div></td>
+        <td>16.8</td><td>0.29</td>
+        <td>9.7</td><td>3.2</td>
+        <td>1.72</td>
+        <td>3.96</td>
+        <td>51.6</td>
+        <td>142</td><td></td></tr><tr class=" gm">
+        <td>99</td><td class="l">603393.SH</td>
+        <td class="l"><b>新天然气</b></td>
+        <td><b class="score">46.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.0%;background:#c62828"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.7%;background:#1565c0"></div><span>47</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.4%;background:#2e7d32"></div><span>77</span></div></td>
+        <td>18.7</td><td>0.9</td>
+        <td>9.2</td><td>41.6</td>
+        <td>2.41</td>
+        <td>23.93</td>
+        <td>16.4</td>
+        <td>107</td><td>★</td></tr><tr class=" gm">
+        <td>100</td><td class="l">300750.SZ</td>
+        <td class="l"><b>宁德时代</b></td>
+        <td><b class="score">46.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.5%;background:#c62828"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:74.1%;background:#1565c0"></div><span>74</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.0%;background:#2e7d32"></div><span>29</span></div></td>
+        <td>20.6</td><td>0.61</td>
+        <td>22.3</td><td>26.2</td>
+        <td>1.11</td>
+        <td>7.49</td>
+        <td>33.6</td>
+        <td>17,535</td><td>★</td></tr><tr class=" gm">
+        <td>101</td><td class="l">600352.SH</td>
+        <td class="l"><b>浙江龙盛</b></td>
+        <td><b class="score">46.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.7%;background:#c62828"></div><span>45</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.6%;background:#1565c0"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.9%;background:#2e7d32"></div><span>58</span></div></td>
+        <td>21.5</td><td>0.46</td>
+        <td>8.3</td><td>31.5</td>
+        <td>2.22</td>
+        <td>8.96</td>
+        <td>53.5</td>
+        <td>409</td><td>★</td></tr><tr class=" gm">
+        <td>102</td><td class="l">001203.SZ</td>
+        <td class="l"><b>大中矿业</b></td>
+        <td><b class="score">46.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.8%;background:#c62828"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.4%;background:#1565c0"></div><span>72</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.9%;background:#2e7d32"></div><span>38</span></div></td>
+        <td>64.3</td><td>0.39</td>
+        <td>14.3</td><td>46.2</td>
+        <td>2.02</td>
+        <td>3.14</td>
+        <td>59.0</td>
+        <td>419</td><td>★</td></tr><tr class=" gm">
+        <td>103</td><td class="l">002946.SZ</td>
+        <td class="l"><b>新乳业</b></td>
+        <td><b class="score">45.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.3%;background:#c62828"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:71.0%;background:#1565c0"></div><span>71</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.7%;background:#2e7d32"></div><span>36</span></div></td>
+        <td>17.8</td><td>0.83</td>
+        <td>19.1</td><td>29.3</td>
+        <td>0.82</td>
+        <td>12.01</td>
+        <td>20.8</td>
+        <td>139</td><td>★</td></tr><tr class="">
+        <td>104</td><td class="l">600388.SH</td>
+        <td class="l"><b>紫金龙净</b></td>
+        <td><b class="score">45.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.8%;background:#c62828"></div><span>47</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.9%;background:#1565c0"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.5%;background:#2e7d32"></div><span>44</span></div></td>
+        <td>18.7</td><td>0.63</td>
+        <td>12.2</td><td>25.2</td>
+        <td>1.84</td>
+        <td>6.99</td>
+        <td>29.2</td>
+        <td>229</td><td></td></tr><tr class=" gm">
+        <td>105</td><td class="l">603568.SH</td>
+        <td class="l"><b>伟明环保</b></td>
+        <td><b class="score">45.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.0%;background:#c62828"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:76.8%;background:#1565c0"></div><span>77</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.3%;background:#2e7d32"></div><span>37</span></div></td>
+        <td>17.9</td><td>0.86</td>
+        <td>15.5</td><td>50.8</td>
+        <td>1.2</td>
+        <td>10.09</td>
+        <td>14.3</td>
+        <td>308</td><td>★</td></tr><tr class=" gm">
+        <td>106</td><td class="l">000997.SZ</td>
+        <td class="l"><b>新 大 陆</b></td>
+        <td><b class="score">45.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.9%;background:#c62828"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.6%;background:#1565c0"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:60.5%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>19.0</td><td>0.86</td>
+        <td>13.5</td><td>35.0</td>
+        <td>1.49</td>
+        <td>901.59</td>
+        <td>8.4</td>
+        <td>210</td><td>★</td></tr><tr class=" gm">
+        <td>107</td><td class="l">600572.SH</td>
+        <td class="l"><b>康恩贝</b></td>
+        <td><b class="score">45.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.9%;background:#c62828"></div><span>31</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.0%;background:#1565c0"></div><span>49</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:70.8%;background:#2e7d32"></div><span>71</span></div></td>
+        <td>22.6</td><td>0.67</td>
+        <td>8.8</td><td>53.9</td>
+        <td>3.2</td>
+        <td>9.17</td>
+        <td>35.8</td>
+        <td>113</td><td>★</td></tr><tr class=" gm">
+        <td>108</td><td class="l">600160.SH</td>
+        <td class="l"><b>巨化股份</b></td>
+        <td><b class="score">44.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.2%;background:#c62828"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.2%;background:#1565c0"></div><span>78</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:23.7%;background:#2e7d32"></div><span>24</span></div></td>
+        <td>23.5</td><td>0.49</td>
+        <td>23.1</td><td>29.6</td>
+        <td>0.96</td>
+        <td>6.41</td>
+        <td>54.3</td>
+        <td>1,030</td><td>★</td></tr><tr class="">
+        <td>109</td><td class="l">603596.SH</td>
+        <td class="l"><b>伯特利</b></td>
+        <td><b class="score">44.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.9%;background:#c62828"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:58.3%;background:#1565c0"></div><span>58</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:7.9%;background:#2e7d32"></div><span>8</span></div></td>
+        <td>17.6</td><td>0.54</td>
+        <td>17.1</td><td>20.0</td>
+        <td>0.56</td>
+        <td>4.23</td>
+        <td>25.6</td>
+        <td>230</td><td></td></tr><tr class=" gm">
+        <td>110</td><td class="l">600988.SH</td>
+        <td class="l"><b>赤峰黄金</b></td>
+        <td><b class="score">44.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.7%;background:#c62828"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:89.0%;background:#1565c0"></div><span>89</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:15.1%;background:#2e7d32"></div><span>15</span></div></td>
+        <td>24.8</td><td>0.48</td>
+        <td>26.0</td><td>40.6</td>
+        <td>0.45</td>
+        <td>7.04</td>
+        <td>51.4</td>
+        <td>890</td><td>★</td></tr><tr class="">
+        <td>111</td><td class="l">605507.SH</td>
+        <td class="l"><b>国邦医药</b></td>
+        <td><b class="score">44.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.2%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.7%;background:#1565c0"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:47.1%;background:#2e7d32"></div><span>47</span></div></td>
+        <td>17.0</td><td>0.74</td>
+        <td>10.1</td><td>25.2</td>
+        <td>1.97</td>
+        <td>7.41</td>
+        <td>9.7</td>
+        <td>120</td><td></td></tr><tr class=" gm">
+        <td>112</td><td class="l">600548.SH</td>
+        <td class="l"><b>深高速</b></td>
+        <td><b class="score">44.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.9%;background:#c62828"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:26.1%;background:#1565c0"></div><span>26</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:91.9%;background:#2e7d32"></div><span>92</span></div></td>
+        <td>18.9</td><td>0.89</td>
+        <td>5.3</td><td>30.6</td>
+        <td>4.59</td>
+        <td>22.12</td>
+        <td>27.9</td>
+        <td>210</td><td>★</td></tr><tr class=" gm">
+        <td>113</td><td class="l">000729.SZ</td>
+        <td class="l"><b>燕京啤酒</b></td>
+        <td><b class="score">43.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.2%;background:#c62828"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:58.8%;background:#1565c0"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.2%;background:#2e7d32"></div><span>28</span></div></td>
+        <td>16.4</td><td>0.82</td>
+        <td>11.7</td><td>44.5</td>
+        <td>1.02</td>
+        <td>7.79</td>
+        <td>22.6</td>
+        <td>324</td><td>★</td></tr><tr class="">
+        <td>114</td><td class="l">000700.SZ</td>
+        <td class="l"><b>模塑科技</b></td>
+        <td><b class="score">43.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:33.3%;background:#c62828"></div><span>33</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.0%;background:#1565c0"></div><span>45</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.0%;background:#2e7d32"></div><span>62</span></div></td>
+        <td>20.0</td><td>0.76</td>
+        <td>13.6</td><td>18.4</td>
+        <td>2.44</td>
+        <td>9.11</td>
+        <td>24.4</td>
+        <td>101</td><td></td></tr><tr class=" gm">
+        <td>115</td><td class="l">600031.SH</td>
+        <td class="l"><b>三一重工</b></td>
+        <td><b class="score">42.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.7%;background:#c62828"></div><span>41</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.7%;background:#1565c0"></div><span>43</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.9%;background:#2e7d32"></div><span>47</span></div></td>
+        <td>20.6</td><td>0.6</td>
+        <td>10.8</td><td>27.7</td>
+        <td>1.55</td>
+        <td>10.98</td>
+        <td>27.3</td>
+        <td>1,734</td><td>★</td></tr><tr class="">
+        <td>116</td><td class="l">603713.SH</td>
+        <td class="l"><b>密尔克卫</b></td>
+        <td><b class="score">42.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.1%;background:#c62828"></div><span>43</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:39.1%;background:#1565c0"></div><span>39</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.2%;background:#2e7d32"></div><span>45</span></div></td>
+        <td>16.8</td><td>0.81</td>
+        <td>14.2</td><td>11.2</td>
+        <td>0.77</td>
+        <td>1137.69</td>
+        <td>18.9</td>
+        <td>110</td><td></td></tr><tr class=" gm">
+        <td>117</td><td class="l">002130.SZ</td>
+        <td class="l"><b>沃尔核材</b></td>
+        <td><b class="score">42.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.2%;background:#c62828"></div><span>45</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:63.9%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:14.7%;background:#2e7d32"></div><span>15</span></div></td>
+        <td>20.9</td><td>0.48</td>
+        <td>15.1</td><td>31.2</td>
+        <td>0.79</td>
+        <td>4.8</td>
+        <td>34.2</td>
+        <td>241</td><td>★</td></tr><tr class=" gm">
+        <td>118</td><td class="l">688169.SH</td>
+        <td class="l"><b>石头科技</b></td>
+        <td><b class="score">42.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.1%;background:#c62828"></div><span>50</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.5%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:4.2%;background:#2e7d32"></div><span>4</span></div></td>
+        <td>20.4</td><td>0.46</td>
+        <td>13.0</td><td>42.0</td>
+        <td>0.64</td>
+        <td>1.38</td>
+        <td>47.8</td>
+        <td>342</td><td>★</td></tr><tr class=" gm">
+        <td>119</td><td class="l">002832.SZ</td>
+        <td class="l"><b>比音勒芬</b></td>
+        <td><b class="score">42.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.9%;background:#c62828"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.8%;background:#1565c0"></div><span>65</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.6%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>22.8</td><td>0.69</td>
+        <td>12.0</td><td>75.1</td>
+        <td>2.06</td>
+        <td>5.71</td>
+        <td>32.7</td>
+        <td>138</td><td>★</td></tr><tr class=" gm">
+        <td>120</td><td class="l">601958.SH</td>
+        <td class="l"><b>金钼股份</b></td>
+        <td><b class="score">41.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.2%;background:#c62828"></div><span>21</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:78.9%;background:#1565c0"></div><span>79</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.8%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>21.2</td><td>0.85</td>
+        <td>17.5</td><td>41.2</td>
+        <td>2.47</td>
+        <td>3.11</td>
+        <td>27.6</td>
+        <td>744</td><td>★</td></tr><tr class="">
+        <td>121</td><td class="l">603345.SH</td>
+        <td class="l"><b>安井食品</b></td>
+        <td><b class="score">41.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.9%;background:#c62828"></div><span>46</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.1%;background:#1565c0"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.6%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>17.1</td><td>0.74</td>
+        <td>10.2</td><td>22.2</td>
+        <td>1.29</td>
+        <td>9.95</td>
+        <td>26.1</td>
+        <td>257</td><td></td></tr><tr class="">
+        <td>122</td><td class="l">603236.SH</td>
+        <td class="l"><b>XD移远通</b></td>
+        <td><b class="score">41.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.0%;background:#c62828"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.7%;background:#1565c0"></div><span>50</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.7%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>22.9</td><td>0.5</td>
+        <td>15.2</td><td>18.0</td>
+        <td>0.59</td>
+        <td>188.41</td>
+        <td>45.1</td>
+        <td>222</td><td></td></tr><tr class="">
+        <td>123</td><td class="l">000065.SZ</td>
+        <td class="l"><b>北方国际</b></td>
+        <td><b class="score">41.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:61.7%;background:#c62828"></div><span>62</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:12.4%;background:#1565c0"></div><span>12</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.3%;background:#2e7d32"></div><span>30</span></div></td>
+        <td>15.7</td><td>0.56</td>
+        <td>7.7</td><td>15.2</td>
+        <td>0.88</td>
+        <td>9.15</td>
+        <td>24.8</td>
+        <td>116</td><td></td></tr><tr class="">
+        <td>124</td><td class="l">300428.SZ</td>
+        <td class="l"><b>立中集团</b></td>
+        <td><b class="score">40.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.2%;background:#c62828"></div><span>65</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:22.5%;background:#1565c0"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:10.8%;background:#2e7d32"></div><span>11</span></div></td>
+        <td>14.0</td><td>0.63</td>
+        <td>10.6</td><td>10.0</td>
+        <td>0.81</td>
+        <td>2.91</td>
+        <td>19.0</td>
+        <td>129</td><td></td></tr><tr class=" gm">
+        <td>125</td><td class="l">603730.SH</td>
+        <td class="l"><b>岱美股份</b></td>
+        <td><b class="score">40.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:17.0%;background:#c62828"></div><span>17</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:64.1%;background:#1565c0"></div><span>64</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.2%;background:#2e7d32"></div><span>62</span></div></td>
+        <td>36.0</td><td>0.79</td>
+        <td>16.6</td><td>26.0</td>
+        <td>3.41</td>
+        <td>5.71</td>
+        <td>45.5</td>
+        <td>230</td><td>★</td></tr><tr class=" gm">
+        <td>126</td><td class="l">600258.SH</td>
+        <td class="l"><b>首旅酒店</b></td>
+        <td><b class="score">40.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:33.6%;background:#c62828"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.7%;background:#1565c0"></div><span>36</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.2%;background:#2e7d32"></div><span>57</span></div></td>
+        <td>16.5</td><td>0.96</td>
+        <td>7.2</td><td>40.5</td>
+        <td>1.46</td>
+        <td>24.4</td>
+        <td>16.3</td>
+        <td>138</td><td>★</td></tr><tr class="">
+        <td>127</td><td class="l">001696.SZ</td>
+        <td class="l"><b>宗申动力</b></td>
+        <td><b class="score">39.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.0%;background:#c62828"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:39.9%;background:#1565c0"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:57.9%;background:#2e7d32"></div><span>58</span></div></td>
+        <td>28.0</td><td>0.58</td>
+        <td>13.9</td><td>13.6</td>
+        <td>2.63</td>
+        <td>6.9</td>
+        <td>30.4</td>
+        <td>171</td><td></td></tr><tr class=" gm">
+        <td>128</td><td class="l">600754.SH</td>
+        <td class="l"><b>锦江酒店</b></td>
+        <td><b class="score">39.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.1%;background:#c62828"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.4%;background:#1565c0"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.4%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>19.8</td><td>0.71</td>
+        <td>7.0</td><td>38.7</td>
+        <td>1.15</td>
+        <td>18.31</td>
+        <td>28.9</td>
+        <td>204</td><td>★</td></tr><tr class=" gm">
+        <td>129</td><td class="l">600196.SH</td>
+        <td class="l"><b>复星医药</b></td>
+        <td><b class="score">39.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.4%;background:#c62828"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.5%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.8%;background:#2e7d32"></div><span>35</span></div></td>
+        <td>18.0</td><td>0.82</td>
+        <td>7.8</td><td>50.5</td>
+        <td>1.25</td>
+        <td>8.41</td>
+        <td>17.3</td>
+        <td>610</td><td>★</td></tr><tr class=" gm">
+        <td>130</td><td class="l">600395.SH</td>
+        <td class="l"><b>盘江股份</b></td>
+        <td><b class="score">39.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:25.6%;background:#c62828"></div><span>26</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:23.3%;background:#1565c0"></div><span>23</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:81.5%;background:#2e7d32"></div><span>82</span></div></td>
+        <td>30.1</td><td>0.65</td>
+        <td>4.6</td><td>28.8</td>
+        <td>4.08</td>
+        <td>11.76</td>
+        <td>55.4</td>
+        <td>120</td><td>★</td></tr><tr class="">
+        <td>131</td><td class="l">600089.SH</td>
+        <td class="l"><b>特变电工</b></td>
+        <td><b class="score">38.8</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.2%;background:#c62828"></div><span>35</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.7%;background:#1565c0"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:62.9%;background:#2e7d32"></div><span>63</span></div></td>
+        <td>18.3</td><td>0.84</td>
+        <td>8.0</td><td>19.0</td>
+        <td>2.63</td>
+        <td>8.58</td>
+        <td>7.1</td>
+        <td>973</td><td></td></tr><tr class="">
+        <td>132</td><td class="l">601808.SH</td>
+        <td class="l"><b>中海油服</b></td>
+        <td><b class="score">38.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.2%;background:#c62828"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:22.8%;background:#1565c0"></div><span>23</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:50.6%;background:#2e7d32"></div><span>51</span></div></td>
+        <td>15.2</td><td>0.94</td>
+        <td>9.0</td><td>17.6</td>
+        <td>1.24</td>
+        <td>19.27</td>
+        <td>17.0</td>
+        <td>589</td><td></td></tr><tr class="">
+        <td>133</td><td class="l">600956.SH</td>
+        <td class="l"><b>新天绿能</b></td>
+        <td><b class="score">38.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.5%;background:#c62828"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:19.9%;background:#1565c0"></div><span>20</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.2%;background:#2e7d32"></div><span>72</span></div></td>
+        <td>19.1</td><td>0.85</td>
+        <td>7.7</td><td>20.4</td>
+        <td>2.21</td>
+        <td>20.07</td>
+        <td>11.8</td>
+        <td>324</td><td></td></tr><tr class=" gm">
+        <td>134</td><td class="l">002487.SZ</td>
+        <td class="l"><b>大金重工</b></td>
+        <td><b class="score">38.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:47.6%;background:#c62828"></div><span>48</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.3%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:13.2%;background:#2e7d32"></div><span>13</span></div></td>
+        <td>22.5</td><td>0.35</td>
+        <td>9.9</td><td>33.4</td>
+        <td>0.24</td>
+        <td>6.76</td>
+        <td>38.4</td>
+        <td>261</td><td>★</td></tr><tr class="">
+        <td>135</td><td class="l">002984.SZ</td>
+        <td class="l"><b>森麒麟</b></td>
+        <td><b class="score">38.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:54.3%;background:#c62828"></div><span>54</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:24.1%;background:#1565c0"></div><span>24</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:19.6%;background:#2e7d32"></div><span>20</span></div></td>
+        <td>16.9</td><td>0.6</td>
+        <td>8.1</td><td>20.7</td>
+        <td>1.02</td>
+        <td>4.9</td>
+        <td>4.9</td>
+        <td>148</td><td></td></tr><tr class="">
+        <td>136</td><td class="l">301035.SZ</td>
+        <td class="l"><b>润丰股份</b></td>
+        <td><b class="score">38.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.7%;background:#c62828"></div><span>33</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.9%;background:#1565c0"></div><span>56</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.2%;background:#2e7d32"></div><span>31</span></div></td>
+        <td>20.8</td><td>0.72</td>
+        <td>15.1</td><td>23.6</td>
+        <td>1.17</td>
+        <td>8.14</td>
+        <td>22.4</td>
+        <td>206</td><td></td></tr><tr class=" gm">
+        <td>137</td><td class="l">300693.SZ</td>
+        <td class="l"><b>盛弘股份</b></td>
+        <td><b class="score">37.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.7%;background:#c62828"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:85.5%;background:#1565c0"></div><span>86</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:20.9%;background:#2e7d32"></div><span>21</span></div></td>
+        <td>23.9</td><td>0.76</td>
+        <td>23.3</td><td>39.3</td>
+        <td>0.87</td>
+        <td>5.73</td>
+        <td>28.6</td>
+        <td>130</td><td>★</td></tr><tr class="">
+        <td>138</td><td class="l">600486.SH</td>
+        <td class="l"><b>扬农化工</b></td>
+        <td><b class="score">36.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.0%;background:#c62828"></div><span>36</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:39.2%;background:#1565c0"></div><span>39</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.2%;background:#2e7d32"></div><span>36</span></div></td>
+        <td>17.2</td><td>0.86</td>
+        <td>11.6</td><td>21.2</td>
+        <td>1.07</td>
+        <td>10.57</td>
+        <td>13.9</td>
+        <td>219</td><td></td></tr><tr class="">
+        <td>139</td><td class="l">600699.SH</td>
+        <td class="l"><b>均胜电子</b></td>
+        <td><b class="score">36.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.1%;background:#c62828"></div><span>35</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.9%;background:#1565c0"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:48.6%;background:#2e7d32"></div><span>49</span></div></td>
+        <td>21.5</td><td>0.62</td>
+        <td>10.2</td><td>18.3</td>
+        <td>1.23</td>
+        <td>18.08</td>
+        <td>34.8</td>
+        <td>294</td><td></td></tr><tr class="">
+        <td>140</td><td class="l">000422.SZ</td>
+        <td class="l"><b>湖北宜化</b></td>
+        <td><b class="score">36.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.3%;background:#c62828"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:27.5%;background:#1565c0"></div><span>28</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:60.5%;background:#2e7d32"></div><span>60</span></div></td>
+        <td>18.5</td><td>0.93</td>
+        <td>10.5</td><td>16.0</td>
+        <td>1.63</td>
+        <td>28.22</td>
+        <td>7.3</td>
+        <td>135</td><td></td></tr><tr class=" gm">
+        <td>141</td><td class="l">000937.SZ</td>
+        <td class="l"><b>冀中能源</b></td>
+        <td><b class="score">35.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:18.8%;background:#c62828"></div><span>19</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:20.7%;background:#1565c0"></div><span>21</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.1%;background:#2e7d32"></div><span>84</span></div></td>
+        <td>47.4</td><td>0.75</td>
+        <td>4.2</td><td>26.1</td>
+        <td>8.75</td>
+        <td>10.82</td>
+        <td>36.3</td>
+        <td>192</td><td>★</td></tr><tr class=" gm">
+        <td>142</td><td class="l">688016.SH</td>
+        <td class="l"><b>心脉医疗</b></td>
+        <td><b class="score">35.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.8%;background:#c62828"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:73.8%;background:#1565c0"></div><span>74</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:23.3%;background:#2e7d32"></div><span>23</span></div></td>
+        <td>19.3</td><td>1.0</td>
+        <td>13.9</td><td>72.0</td>
+        <td>1.22</td>
+        <td>4.86</td>
+        <td>16.4</td>
+        <td>114</td><td>★</td></tr><tr class=" gm">
+        <td>143</td><td class="l">600872.SH</td>
+        <td class="l"><b>中炬高新</b></td>
+        <td><b class="score">34.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.4%;background:#c62828"></div><span>21</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:58.9%;background:#1565c0"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.4%;background:#2e7d32"></div><span>37</span></div></td>
+        <td>20.6</td><td>0.92</td>
+        <td>12.0</td><td>41.1</td>
+        <td>1.71</td>
+        <td>6.03</td>
+        <td>30.7</td>
+        <td>143</td><td>★</td></tr><tr class="">
+        <td>144</td><td class="l">603092.SH</td>
+        <td class="l"><b>德力佳</b></td>
+        <td><b class="score">34.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.5%;background:#c62828"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:60.1%;background:#1565c0"></div><span>60</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.5%;background:#2e7d32"></div><span>36</span></div></td>
+        <td>19.8</td><td>0.95</td>
+        <td>15.6</td><td>24.9</td>
+        <td>—</td>
+        <td>3.85</td>
+        <td>18.3</td>
+        <td>167</td><td></td></tr><tr class="">
+        <td>145</td><td class="l">002258.SZ</td>
+        <td class="l"><b>利尔化学</b></td>
+        <td><b class="score">34.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.5%;background:#c62828"></div><span>32</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:14.9%;background:#1565c0"></div><span>15</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:56.1%;background:#2e7d32"></div><span>56</span></div></td>
+        <td>25.6</td><td>0.55</td>
+        <td>7.7</td><td>17.0</td>
+        <td>2.06</td>
+        <td>9.36</td>
+        <td>36.6</td>
+        <td>113</td><td></td></tr><tr class="">
+        <td>146</td><td class="l">002601.SZ</td>
+        <td class="l"><b>龙佰集团</b></td>
+        <td><b class="score">33.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:27.0%;background:#c62828"></div><span>27</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:14.8%;background:#1565c0"></div><span>15</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:65.8%;background:#2e7d32"></div><span>66</span></div></td>
+        <td>51.9</td><td>0.6</td>
+        <td>6.5</td><td>18.8</td>
+        <td>2.25</td>
+        <td>11.47</td>
+        <td>26.8</td>
+        <td>387</td><td></td></tr><tr class=" gm">
+        <td>147</td><td class="l">002304.SZ</td>
+        <td class="l"><b>洋河股份</b></td>
+        <td><b class="score">33.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:2.6%;background:#c62828"></div><span>3</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.1%;background:#1565c0"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:89.6%;background:#2e7d32"></div><span>90</span></div></td>
+        <td>59.2</td><td>0.98</td>
+        <td>5.7</td><td>70.8</td>
+        <td>3.23</td>
+        <td>753.97</td>
+        <td>29.2</td>
+        <td>601</td><td>★</td></tr><tr class=" gm">
+        <td>148</td><td class="l">002158.SZ</td>
+        <td class="l"><b>汉钟精机</b></td>
+        <td><b class="score">33.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:13.1%;background:#c62828"></div><span>13</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:55.1%;background:#1565c0"></div><span>55</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.7%;background:#2e7d32"></div><span>53</span></div></td>
+        <td>27.9</td><td>0.85</td>
+        <td>12.3</td><td>33.5</td>
+        <td>2.56</td>
+        <td>5.45</td>
+        <td>29.6</td>
+        <td>137</td><td>★</td></tr><tr class="">
+        <td>149</td><td class="l">000725.SZ</td>
+        <td class="l"><b>京东方Ａ</b></td>
+        <td><b class="score">33.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:26.0%;background:#c62828"></div><span>26</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:9.3%;background:#1565c0"></div><span>9</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:72.7%;background:#2e7d32"></div><span>73</span></div></td>
+        <td>35.6</td><td>0.63</td>
+        <td>5.8</td><td>15.6</td>
+        <td>2.21</td>
+        <td>21.28</td>
+        <td>42.1</td>
+        <td>2,119</td><td></td></tr><tr class="">
+        <td>150</td><td class="l">600458.SH</td>
+        <td class="l"><b>时代新材</b></td>
+        <td><b class="score">33.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.4%;background:#c62828"></div><span>36</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:11.5%;background:#1565c0"></div><span>12</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:49.3%;background:#2e7d32"></div><span>49</span></div></td>
+        <td>19.9</td><td>0.73</td>
+        <td>7.5</td><td>14.7</td>
+        <td>1.23</td>
+        <td>18.76</td>
+        <td>23.2</td>
+        <td>110</td><td></td></tr><tr class="">
+        <td>151</td><td class="l">002541.SZ</td>
+        <td class="l"><b>鸿路钢构</b></td>
+        <td><b class="score">32.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.8%;background:#c62828"></div><span>45</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:12.0%;background:#1565c0"></div><span>12</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.4%;background:#2e7d32"></div><span>29</span></div></td>
+        <td>21.3</td><td>0.47</td>
+        <td>8.3</td><td>9.9</td>
+        <td>1.55</td>
+        <td>4.84</td>
+        <td>44.1</td>
+        <td>137</td><td></td></tr><tr class=" gm">
+        <td>152</td><td class="l">001221.SZ</td>
+        <td class="l"><b>悍高集团</b></td>
+        <td><b class="score">32.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:16.0%;background:#c62828"></div><span>16</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:84.1%;background:#1565c0"></div><span>84</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:12.4%;background:#2e7d32"></div><span>12</span></div></td>
+        <td>21.0</td><td>0.95</td>
+        <td>23.1</td><td>36.5</td>
+        <td>0.61</td>
+        <td>5.51</td>
+        <td>17.5</td>
+        <td>153</td><td>★</td></tr><tr class=" gm">
+        <td>153</td><td class="l">002595.SZ</td>
+        <td class="l"><b>豪迈科技</b></td>
+        <td><b class="score">32.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:17.5%;background:#c62828"></div><span>18</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:77.2%;background:#1565c0"></div><span>77</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:16.4%;background:#2e7d32"></div><span>16</span></div></td>
+        <td>22.9</td><td>0.84</td>
+        <td>19.7</td><td>33.6</td>
+        <td>1.2</td>
+        <td>1.7</td>
+        <td>22.8</td>
+        <td>548</td><td>★</td></tr><tr class="">
+        <td>154</td><td class="l">002475.SZ</td>
+        <td class="l"><b>立讯精密</b></td>
+        <td><b class="score">32.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:33.5%;background:#c62828"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:54.7%;background:#1565c0"></div><span>55</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:6.6%;background:#2e7d32"></div><span>7</span></div></td>
+        <td>24.8</td><td>0.53</td>
+        <td>21.1</td><td>12.0</td>
+        <td>0.43</td>
+        <td>4.09</td>
+        <td>38.2</td>
+        <td>4,419</td><td></td></tr><tr class="">
+        <td>155</td><td class="l">603296.SH</td>
+        <td class="l"><b>华勤技术</b></td>
+        <td><b class="score">31.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.7%;background:#c62828"></div><span>31</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:45.1%;background:#1565c0"></div><span>45</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:20.3%;background:#2e7d32"></div><span>20</span></div></td>
+        <td>22.7</td><td>0.65</td>
+        <td>16.8</td><td>8.0</td>
+        <td>1.37</td>
+        <td>1.49</td>
+        <td>44.6</td>
+        <td>1,170</td><td></td></tr><tr class="">
+        <td>156</td><td class="l">603606.SH</td>
+        <td class="l"><b>东方电缆</b></td>
+        <td><b class="score">31.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.6%;background:#c62828"></div><span>29</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:59.0%;background:#1565c0"></div><span>59</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:10.2%;background:#2e7d32"></div><span>10</span></div></td>
+        <td>20.8</td><td>0.79</td>
+        <td>16.4</td><td>22.2</td>
+        <td>0.77</td>
+        <td>3.54</td>
+        <td>21.8</td>
+        <td>284</td><td></td></tr><tr class=" gm">
+        <td>157</td><td class="l">300130.SZ</td>
+        <td class="l"><b>新国都</b></td>
+        <td><b class="score">31.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:24.5%;background:#c62828"></div><span>24</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.3%;background:#1565c0"></div><span>52</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:24.9%;background:#2e7d32"></div><span>25</span></div></td>
+        <td>24.1</td><td>0.72</td>
+        <td>11.8</td><td>32.8</td>
+        <td>1.39</td>
+        <td>3.59</td>
+        <td>21.2</td>
+        <td>112</td><td>★</td></tr><tr class="">
+        <td>158</td><td class="l">002938.SZ</td>
+        <td class="l"><b>鹏鼎控股</b></td>
+        <td><b class="score">31.5</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:15.1%;background:#c62828"></div><span>15</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.2%;background:#1565c0"></div><span>52</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.8%;background:#2e7d32"></div><span>44</span></div></td>
+        <td>53.4</td><td>0.81</td>
+        <td>13.7</td><td>23.6</td>
+        <td>2.31</td>
+        <td>3.06</td>
+        <td>40.5</td>
+        <td>2,023</td><td></td></tr><tr class=" gm">
+        <td>159</td><td class="l">688278.SH</td>
+        <td class="l"><b>特宝生物</b></td>
+        <td><b class="score">31.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:11.1%;background:#c62828"></div><span>11</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:97.8%;background:#1565c0"></div><span>98</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:5.1%;background:#2e7d32"></div><span>5</span></div></td>
+        <td>22.7</td><td>0.96</td>
+        <td>31.4</td><td>91.1</td>
+        <td>0.61</td>
+        <td>2.68</td>
+        <td>16.8</td>
+        <td>245</td><td>★</td></tr><tr class="">
+        <td>160</td><td class="l">600141.SH</td>
+        <td class="l"><b>兴发集团</b></td>
+        <td><b class="score">31.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.0%;background:#c62828"></div><span>28</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:15.5%;background:#1565c0"></div><span>16</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.9%;background:#2e7d32"></div><span>53</span></div></td>
+        <td>22.8</td><td>0.7</td>
+        <td>7.4</td><td>18.1</td>
+        <td>3.25</td>
+        <td>2.27</td>
+        <td>29.7</td>
+        <td>365</td><td></td></tr><tr class="">
+        <td>161</td><td class="l">002683.SZ</td>
+        <td class="l"><b>广东宏大</b></td>
+        <td><b class="score">31.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:18.5%;background:#c62828"></div><span>18</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:54.9%;background:#1565c0"></div><span>55</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.1%;background:#2e7d32"></div><span>32</span></div></td>
+        <td>23.0</td><td>0.83</td>
+        <td>15.4</td><td>20.9</td>
+        <td>1.25</td>
+        <td>7.39</td>
+        <td>25.0</td>
+        <td>224</td><td></td></tr><tr class="">
+        <td>162</td><td class="l">002340.SZ</td>
+        <td class="l"><b>格林美</b></td>
+        <td><b class="score">29.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:34.4%;background:#c62828"></div><span>34</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:17.4%;background:#1565c0"></div><span>17</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.0%;background:#2e7d32"></div><span>32</span></div></td>
+        <td>21.4</td><td>0.64</td>
+        <td>8.2</td><td>15.9</td>
+        <td>0.84</td>
+        <td>10.35</td>
+        <td>20.6</td>
+        <td>340</td><td></td></tr><tr class=" gm">
+        <td>163</td><td class="l">301665.SZ</td>
+        <td class="l"><b>泰禾股份</b></td>
+        <td><b class="score">29.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:16.4%;background:#c62828"></div><span>16</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.8%;background:#1565c0"></div><span>53</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:31.3%;background:#2e7d32"></div><span>31</span></div></td>
+        <td>20.9</td><td>0.95</td>
+        <td>13.4</td><td>27.3</td>
+        <td>1.01</td>
+        <td>9.11</td>
+        <td>20.0</td>
+        <td>109</td><td>★</td></tr><tr class="">
+        <td>164</td><td class="l">600116.SH</td>
+        <td class="l"><b>三峡水利</b></td>
+        <td><b class="score">29.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:38.2%;background:#c62828"></div><span>38</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:4.4%;background:#1565c0"></div><span>4</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.4%;background:#2e7d32"></div><span>35</span></div></td>
+        <td>15.8</td><td>0.93</td>
+        <td>5.2</td><td>12.7</td>
+        <td>1.19</td>
+        <td>9.19</td>
+        <td>39.9</td>
+        <td>121</td><td></td></tr><tr class="">
+        <td>165</td><td class="l">601038.SH</td>
+        <td class="l"><b>一拖股份</b></td>
+        <td><b class="score">28.6</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:25.3%;background:#c62828"></div><span>25</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:26.8%;background:#1565c0"></div><span>27</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:36.8%;background:#2e7d32"></div><span>37</span></div></td>
+        <td>19.5</td><td>0.91</td>
+        <td>10.5</td><td>15.4</td>
+        <td>1.51</td>
+        <td>7.43</td>
+        <td>7.7</td>
+        <td>161</td><td></td></tr><tr class=" gm">
+        <td>166</td><td class="l">301362.SZ</td>
+        <td class="l"><b>民爆光电</b></td>
+        <td><b class="score">28.2</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:12.2%;background:#c62828"></div><span>12</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.7%;background:#1565c0"></div><span>36</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:52.8%;background:#2e7d32"></div><span>53</span></div></td>
+        <td>123.7</td><td>0.82</td>
+        <td>9.4</td><td>27.5</td>
+        <td>3.63</td>
+        <td>1.21</td>
+        <td>34.2</td>
+        <td>164</td><td>★</td></tr><tr class=" gm">
+        <td>167</td><td class="l">300888.SZ</td>
+        <td class="l"><b>稳健医疗</b></td>
+        <td><b class="score">28.1</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:11.1%;background:#c62828"></div><span>11</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.9%;background:#1565c0"></div><span>44</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:46.2%;background:#2e7d32"></div><span>46</span></div></td>
+        <td>22.2</td><td>0.99</td>
+        <td>7.8</td><td>47.8</td>
+        <td>1.57</td>
+        <td>10.52</td>
+        <td>22.8</td>
+        <td>176</td><td>★</td></tr><tr class="">
+        <td>168</td><td class="l">002597.SZ</td>
+        <td class="l"><b>金禾实业</b></td>
+        <td><b class="score">27.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.8%;background:#c62828"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:8.1%;background:#1565c0"></div><span>8</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:44.0%;background:#2e7d32"></div><span>44</span></div></td>
+        <td>56.5</td><td>0.53</td>
+        <td>6.3</td><td>14.3</td>
+        <td>2.02</td>
+        <td>5.58</td>
+        <td>51.8</td>
+        <td>114</td><td></td></tr><tr class="">
+        <td>169</td><td class="l">600063.SH</td>
+        <td class="l"><b>皖维高新</b></td>
+        <td><b class="score">27.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.4%;background:#c62828"></div><span>37</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:7.5%;background:#1565c0"></div><span>8</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:28.7%;background:#2e7d32"></div><span>29</span></div></td>
+        <td>24.2</td><td>0.48</td>
+        <td>7.2</td><td>12.7</td>
+        <td>1.42</td>
+        <td>5.01</td>
+        <td>48.6</td>
+        <td>119</td><td></td></tr><tr class="">
+        <td>170</td><td class="l">601231.SH</td>
+        <td class="l"><b>环旭电子</b></td>
+        <td><b class="score">27.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:25.2%;background:#c62828"></div><span>25</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:19.3%;background:#1565c0"></div><span>19</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.1%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>31.3</td><td>0.65</td>
+        <td>10.2</td><td>9.5</td>
+        <td>2.1</td>
+        <td>3.3</td>
+        <td>31.6</td>
+        <td>638</td><td></td></tr><tr class=" gm">
+        <td>171</td><td class="l">300951.SZ</td>
+        <td class="l"><b>博硕科技</b></td>
+        <td><b class="score">27.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:17.7%;background:#c62828"></div><span>18</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:32.7%;background:#1565c0"></div><span>33</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:41.0%;background:#2e7d32"></div><span>41</span></div></td>
+        <td>788.2</td><td>0.72</td>
+        <td>7.8</td><td>29.7</td>
+        <td>2.25</td>
+        <td>1.5</td>
+        <td>29.2</td>
+        <td>116</td><td>★</td></tr><tr class="">
+        <td>172</td><td class="l">603885.SH</td>
+        <td class="l"><b>吉祥航空</b></td>
+        <td><b class="score">26.9</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:27.7%;background:#c62828"></div><span>28</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:9.9%;background:#1565c0"></div><span>10</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:42.2%;background:#2e7d32"></div><span>42</span></div></td>
+        <td>20.2</td><td>0.84</td>
+        <td>7.7</td><td>13.2</td>
+        <td>0.71</td>
+        <td>34.25</td>
+        <td>-20.2</td>
+        <td>229</td><td></td></tr><tr class="">
+        <td>173</td><td class="l">600875.SH</td>
+        <td class="l"><b>东方电气</b></td>
+        <td><b class="score">25.7</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:22.4%;background:#c62828"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:21.9%;background:#1565c0"></div><span>22</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:35.9%;background:#2e7d32"></div><span>36</span></div></td>
+        <td>19.2</td><td>0.99</td>
+        <td>9.3</td><td>16.1</td>
+        <td>2.01</td>
+        <td>2.91</td>
+        <td>16.0</td>
+        <td>891</td><td></td></tr><tr class="">
+        <td>174</td><td class="l">002913.SZ</td>
+        <td class="l"><b>奥士康</b></td>
+        <td><b class="score">24.4</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:15.0%;background:#c62828"></div><span>15</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:29.5%;background:#1565c0"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:37.9%;background:#2e7d32"></div><span>38</span></div></td>
+        <td>84.6</td><td>0.78</td>
+        <td>9.6</td><td>20.2</td>
+        <td>2.08</td>
+        <td>1.7</td>
+        <td>52.6</td>
+        <td>180</td><td></td></tr><tr class="">
+        <td>175</td><td class="l">600312.SH</td>
+        <td class="l"><b>平高电气</b></td>
+        <td><b class="score">23.3</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:24.3%;background:#c62828"></div><span>24</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:40.3%;background:#1565c0"></div><span>40</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:4.3%;background:#2e7d32"></div><span>4</span></div></td>
+        <td>21.8</td><td>0.81</td>
+        <td>11.2</td><td>24.0</td>
+        <td>0.66</td>
+        <td>1.22</td>
+        <td>25.1</td>
+        <td>277</td><td></td></tr><tr class="">
+        <td>176</td><td class="l">603920.SH</td>
+        <td class="l"><b>世运电路</b></td>
+        <td><b class="score">23.0</b></td>
+        <td><div class="bar"><div class="bar-fill" style="width:9.0%;background:#c62828"></div><span>9</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:30.2%;background:#1565c0"></div><span>30</span></div></td>
+        <td><div class="bar"><div class="bar-fill" style="width:43.8%;background:#2e7d32"></div><span>44</span></div></td>
+        <td>69.9</td><td>0.85</td>
+        <td>11.1</td><td>16.7</td>
+        <td>2.41</td>
+        <td>2.78</td>
+        <td>14.0</td>
+        <td>268</td><td></td></tr>
+</table>
+
+<p class="note"><b>方法诚实性：</b>① 评分是对已通过刘旭框架筛选的候选池内排序，
+不改变筛选标准；② 因子百分位在候选池内计算（非全市场），反映相对优劣；
+③ 数据来自 juzi PIT 快照 + 腾讯行情，无合成；④ 本名单不构成投资建议；
+⑤ 回测区间 2021-08~2026-06 超额等权全A +7.1pp（core）/ MDD -13.9%（gm）。</p>
+
+</body></html>

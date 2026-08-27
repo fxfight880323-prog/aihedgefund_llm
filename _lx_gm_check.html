@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>毛利率质量层 · 阈值实现差异归因</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+ body { font-family: "Microsoft YaHei", sans-serif; margin: 24px 40px;
+        background: #fafafa; color: #222; }
+ h1 { font-size: 22px; } h2 { font-size: 17px; margin-top: 30px;
+        border-left: 4px solid #8250df; padding-left: 10px; }
+ .sub { color: #666; font-size: 13px; margin-top: -8px; }
+ table { border-collapse: collapse; margin: 12px 0; font-size: 13.5px;
+         background: #fff; }
+ th, td { border: 1px solid #ddd; padding: 6px 12px; }
+ td.num { text-align: right; font-variant-numeric: tabular-nums; }
+ th { background: #f0f0f0; } td:first-child { text-align: left; }
+ tr.hl { background: #f3e8ff; }
+ .pos { color: #c62828; } .neg { color: #1b5e20; }
+ .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+         padding: 14px 18px; margin: 10px 0; font-size: 13.5px; line-height: 1.75; }
+ .verdict { border-left: 4px solid #1a7f37; background: #f1f8e9; }
+ .warn { border-left: 4px solid #e65100; background: #fff8e1; }
+ .note { color: #888; font-size: 12px; }
+ canvas { background: #fff; border: 1px solid #eee; }
+ .sub2 { display:block; font-size: 11px; color: #888; font-weight: 400; }
+</style></head><body>
+
+<h1>毛利率质量层 · 阈值实现差异归因（juzi 版修正后交叉验证）</h1>
+<p class="sub">池子 = 万得全A(881001.WI) PIT 成分 · 半年度调仓 · 2021-08 ~ 2026-06 ·
+成本 5bp+10bp · juzi 真实数据（估值面板 / HF因子 / 一致预期 / 腾讯月K）· 2026-08-21 生成</p>
+
+<div class="card verdict">
+<b>核心结论：</b>juzi 版加入与申万版一致的 <b>固定 30% 阈值</b> 变体后，两数据源结论<b>收敛统一</b>：
+① 毛利率层的价值是<b>回撤保护</b>，保护强度依赖<b>动态中位数阈值</b>（gm MDD -13.9% vs gm30 -21.0%）；
+② 固定 30% 本身不亏钱（juzi gm30 总收益 +62.5% 正常），申万版暴亏（+3.5%）的主因是
+<b>月度调仓 + 缺 L5 低预期过滤</b>，阈值差异只是放大器。
+</div>
+
+<h2>① juzi 版绩效对比（修正后, 半年度调仓, 超额对等权全A）</h2>
+<table>
+<tr><th>变体</th><th>总收益</th><th>年化</th><th>最大回撤</th><th>超额 vs 等权全A</th></tr>
+
+        <tr><td><b>LX-core</b>
+          <span class="sub">基准(无质量层)</span></td>
+          <td class="num">+60.0%</td>
+          <td class="num">+9.4%</td>
+          <td class="num">-24.9%</td>
+          <td class="num">+7.1%</td></tr>
+        <tr class="hl"><td><b>GM</b>
+          <span class="sub">毛利率≥市场中位数(动态)</span></td>
+          <td class="num">+58.1%</td>
+          <td class="num">+9.1%</td>
+          <td class="num">-13.9%</td>
+          <td class="num">+5.2%</td></tr>
+        <tr><td><b>GM25</b>
+          <span class="sub">毛利率≥25%(固定)</span></td>
+          <td class="num">+58.8%</td>
+          <td class="num">+9.2%</td>
+          <td class="num">-12.9%</td>
+          <td class="num">+5.9%</td></tr>
+        <tr class="hl"><td><b>GM30</b>
+          <span class="sub">毛利率≥30%(固定)</span></td>
+          <td class="num">+62.5%</td>
+          <td class="num">+9.7%</td>
+          <td class="num">-21.0%</td>
+          <td class="num">+9.6%</td></tr>
+        <tr><td><b>GM35</b>
+          <span class="sub">毛利率≥35%(固定)</span></td>
+          <td class="num">+60.3%</td>
+          <td class="num">+9.4%</td>
+          <td class="num">-21.0%</td>
+          <td class="num">+7.4%</td></tr>
+        <tr><td><b>FULL</b>
+          <span class="sub">完整近似</span></td>
+          <td class="num">+51.1%</td>
+          <td class="num">+8.2%</td>
+          <td class="num">-28.4%</td>
+          <td class="num">-1.8%</td></tr>
+        <tr><td>EW-全A（等权基准）</td><td class="num">+52.9%</td>
+          <td class="num">+8.4%</td><td class="num">—</td>
+          <td class="num">0.0%</td></tr>
+</table>
+
+<h2>② 申万版对照（月度调仓, 零成本, 超额对沪深300）</h2>
+<table>
+<tr><th>变体</th><th>总收益</th><th>年化</th><th>最大回撤</th><th>超额 vs 沪深300</th></tr>
+
+        <tr><td><b>LX-core近似</b></td>
+          <td class="num">+23.7%</td>
+          <td class="num">+4.4%</td>
+          <td class="num">-22.6%</td>
+          <td class="num">+26.3%</td></tr>
+        <tr><td><b>LX-gm近似(固定30%)</b></td>
+          <td class="num">+3.5%</td>
+          <td class="num">+0.7%</td>
+          <td class="num">-25.4%</td>
+          <td class="num">+6.0%</td></tr>
+</table>
+<p class="note">两版超额基准不同不可直接横比；对比重点是<b>同一版内 gm 相对 core 的增量贡献方向</b>。</p>
+
+<h2>③ 每期全市场 gpm 中位数 vs 固定30% 阈值位置（juzi 版）</h2>
+<table>
+<tr><th>调仓期</th><th>全市场 gpm 中位数</th><th>30% 相对位置</th>
+<th>gm(≥中位)命中</th><th>gm30(≥30%)命中</th></tr>
+
+        <tr><td>2021-08</td><td class="num">27.0%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2022-04</td><td class="num">26.0%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2022-08</td><td class="num">25.6%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2023-04</td><td class="num">25.1%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2023-08</td><td class="num">25.1%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2024-04</td><td class="num">25.2%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2024-08</td><td class="num">24.8%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2025-04</td><td class="num">24.1%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2025-08</td><td class="num">24.0%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+        <tr><td>2026-04</td><td class="num">24.2%</td>
+          <td class="num">30%高于中位数</td>
+          <td class="num">40</td><td class="num">40</td></tr>
+</table>
+
+<h2>④ 净值对比（juzi 版, 累计收益 %）</h2>
+<canvas id="nav" height="110"></canvas>
+
+<h2>⑤ 年度收益（juzi 版）</h2>
+<table>
+<tr><th>年度</th><th>core</th><th>gm(≥中位)</th><th>gm30(≥30%)</th><th>gm35(≥35%)</th><th>等权全A</th></tr>
+
+        <tr><td>2022</td>
+          <td class="num">-8.9%</td>
+          <td class="num">-10.3%</td>
+          <td class="num">-16.4%</td>
+          <td class="num">-15.0%</td>
+          <td class="num">-10.1%</td></tr>
+        <tr><td>2023</td>
+          <td class="num">+8.8%</td>
+          <td class="num">+17.6%</td>
+          <td class="num">+26.8%</td>
+          <td class="num">+24.5%</td>
+          <td class="num">+7.5%</td></tr>
+        <tr><td>2024</td>
+          <td class="num">+41.9%</td>
+          <td class="num">+19.5%</td>
+          <td class="num">+19.8%</td>
+          <td class="num">+18.2%</td>
+          <td class="num">+3.0%</td></tr>
+        <tr><td>2025</td>
+          <td class="num">+15.3%</td>
+          <td class="num">+15.0%</td>
+          <td class="num">+14.8%</td>
+          <td class="num">+11.2%</td>
+          <td class="num">+38.9%</td></tr>
+        <tr><td>2026</td>
+          <td class="num">-0.8%</td>
+          <td class="num">+1.3%</td>
+          <td class="num">+1.6%</td>
+          <td class="num">+3.8%</td>
+          <td class="num">+0.1%</td></tr>
+</table>
+
+<h2>⑥ 归因结论（修正后）</h2>
+<div class="card warn">
+<b>1. 阈值实现影响的是"回撤保护强度"，不是收益方向</b> — juzi 版固定 30% 没有暴亏：
+gm30 总收益 +62.5%（超额 +9.6%，甚至略高于 core 的 +7.1%），但 MDD 从 gm 的 -13.9%
+恶化到 -21.0%（接近 core 的 -24.9%）。2022 熊市 gm30 -16.4% vs gm -10.3% vs core -8.9%，
+2023 反弹 gm30 +26.8% 最强 —— 固定阈值把高毛利板块（医药/软件/出版/消费）集中度抬高，
+波动加大、熊市防御变差。毛利率层的价值在于<b>回撤保护</b>，而保护强度依赖
+<b>动态中位数（每期自适应）</b>：固定阈值越高保护越弱。
+</div>
+<div class="card warn">
+<b>2. 申万版 sw_gm 暴亏的主因是月度调仓 + 缺 L5，而非固定 30% 本身</b> —
+juzi 版在相同固定 30% 阈值、但<b>半年度调仓 + 保留 L5 低预期过滤</b>下总收益 +62.5% 正常；
+申万版月度调仓 + 无 L5 → +3.5%、2022 年 -21.6%。月度重选每月买入"高毛利+低估值"，
+2022 年医药/出版杀跌时<b>持续接刀、反复反向轮动</b>，亏损被高频调仓放大；
+L5（预期增速≤25% 且 0&lt;PEG≤2）拦截了高预期接盘，是 juzi 版没暴亏的第二道防线。
+</div>
+<div class="card verdict">
+<b>3. 跨数据源结论统一</b> — 修正前"两版 gm 结论相反"的真相：
+不是数据源矛盾，而是<b>三个实现参数未对齐</b>（阈值形态 / 调仓频率 / L5 有无）。
+对齐后收敛为：<b>毛利率质量层仅在"半年度持有 + 动态中位数阈值"组合下稳健（MDD 砍半）</b>；
+换成固定阈值→回撤保护消失；再叠加月度高频→退化为亏损。
+</div>
+<div class="card warn">
+<b>4. 方法论铁律升级</b> — 任何质量层变体做跨数据源验证，必须<b>先对齐三要素</b>：
+①阈值形态（动态分位 vs 固定值）②调仓频率 ③前置过滤层（L5 等）。否则差异可能全部
+来自实现细节而非策略本质。申万版如无一致预期数据，gm 层应改跑"全市场毛利率分位≥50%"
+的动态形态，而非固定 30%。
+</div>
+
+<p class="note">本报告为研究参考，不构成投资建议。juzi 版数据：_bt_lx_allA_results.json（2026-08-21 修正版, 12 变体）；申万版数据：_lx_sw_data.py。</p>
+
+<script>
+const labels = ["2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12", "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"];
+new Chart(document.getElementById('nav'), {
+  type: 'line',
+  data: { labels: labels, datasets: [{"label": "LX-core", "data": [0.0, 0.0, 0.0, -0.14, -5.53, -6.65, -0.46, 2.16, 1.72, 9.11, 7.03, -1.26, 1.18, -4.0, -5.85, -10.38, -18.03, -4.14, -9.29, -6.38, -5.05, -6.21, 1.69, -2.61, -4.29, 4.74, 0.03, 6.1, 0.73, -1.36, -1.32, 6.64, 12.11, 13.05, 17.67, 23.76, 19.18, 19.63, 14.09, 35.52, 33.11, 35.67, 39.99, 38.64, 34.21, 38.94, 39.41, 49.09, 54.18, 56.81, 59.05, 54.69, 62.09, 60.46, 61.38, 64.91, 64.97, 60.44, 61.38, 56.46, 45.75, 64.26, 60.02], "borderColor": "#8a6d3b", "fill": false, "tension": 0.15, "borderWidth": 2},{"label": "LX-gm(\u2265\u5e02\u573a\u4e2d\u4f4d)", "data": [0.0, 0.0, 0.0, -0.13, -6.51, -5.08, 7.82, 1.06, 5.43, 7.8, 5.05, 4.89, 11.38, 6.47, 5.68, -2.83, -8.76, 2.06, -3.33, 3.58, 7.34, 8.93, 14.86, 8.8, 8.58, 13.76, 9.96, 16.71, 12.82, 16.29, 13.69, 13.46, 24.33, 27.75, 31.15, 34.96, 28.47, 26.49, 18.01, 37.62, 34.72, 35.13, 35.87, 33.0, 29.45, 32.44, 27.53, 29.85, 31.15, 37.7, 44.86, 49.91, 56.44, 55.18, 56.18, 65.79, 72.34, 69.88, 70.02, 62.3, 48.41, 64.11, 58.13], "borderColor": "#1a7f37", "fill": false, "tension": 0.15, "borderWidth": 2},{"label": "LX-gm30(\u226530%\u56fa\u5b9a)", "data": [0.0, 0.0, 0.0, -0.13, -4.43, -1.43, 9.77, 1.12, 4.2, 3.16, -2.03, -0.35, 4.37, -1.21, -1.22, -9.16, -13.27, -3.96, -8.28, -2.12, 3.37, 9.69, 18.31, 12.32, 11.96, 16.59, 12.46, 19.63, 15.58, 18.96, 16.27, 16.58, 26.97, 29.59, 33.38, 37.65, 31.58, 28.63, 20.7, 41.0, 38.07, 38.98, 39.34, 36.23, 32.19, 34.91, 29.06, 31.28, 33.59, 44.71, 52.23, 54.78, 60.15, 58.11, 59.91, 69.68, 73.84, 71.81, 69.5, 67.0, 53.55, 68.08, 62.53], "borderColor": "#8250df", "fill": false, "tension": 0.15, "borderWidth": 2,"borderDash": [5,3]},{"label": "LX-full", "data": [0.0, 0.0, 0.0, -0.14, -3.22, 0.27, 10.39, 1.47, 3.4, -2.07, -12.89, -9.16, -2.98, -9.18, -10.35, -17.85, -20.97, -11.67, -14.37, -8.52, -2.9, 2.77, 3.69, -0.01, 1.62, 5.8, 2.42, 6.97, 3.71, 8.15, 4.16, -2.53, 9.5, 9.56, 15.91, 17.91, 7.16, 4.04, -2.47, 19.74, 15.35, 17.81, 17.0, 12.58, 11.97, 14.2, 10.5, 12.17, 12.58, 20.36, 31.73, 34.28, 37.04, 35.88, 40.02, 50.27, 57.86, 49.58, 53.86, 52.68, 41.84, 55.8, 51.11], "borderColor": "#c62828", "fill": false, "tension": 0.15, "borderWidth": 2},{"label": "EW-全A", "data": [0.0, 0.0, 0.0, -1.94, -4.09, 6.96, 10.58, -0.06, 5.02, -0.52, -16.2, -6.61, 1.4, 4.66, 1.46, -7.84, -4.33, 3.69, -0.61, 7.73, 11.46, 10.13, 6.93, 7.08, 9.87, 11.21, 6.61, 6.43, 5.38, 9.23, 6.87, -13.38, -8.11, -3.65, -5.26, -6.5, -14.64, -13.95, -17.17, 2.38, 9.74, 15.05, 10.05, 8.19, 16.41, 16.68, 13.79, 19.77, 27.42, 34.54, 46.31, 48.1, 50.39, 50.02, 52.83, 65.02, 71.94, 55.78, 66.33, 61.65, 55.25, 45.26, 52.94], "borderColor": "#666", "fill": false, "tension": 0.1, "borderWidth": 1.6, "borderDash": [6,4]}] },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    scales: { y: { ticks: { callback: v => v + '%' } } },
+    plugins: { legend: { position: 'bottom' } }
+  }
+});
+</script>
+</body></html>

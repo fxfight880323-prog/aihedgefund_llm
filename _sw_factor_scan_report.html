@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申万金工因子库全景扫描 — IC 与 Alpha 验证</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: "PingFang SC","Microsoft YaHei",system-ui,sans-serif; background:#f0f3f7; color:#22303f; line-height:1.6; padding:28px 16px; }
+  .wrap { max-width:1120px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#1f3a5f 0%,#2c5282 100%); color:#fff; border-radius:14px; padding:30px 36px; margin-bottom:22px; }
+  header h1 { font-size:26px; font-weight:700; letter-spacing:1px; }
+  header .sub { margin-top:8px; font-size:13.5px; opacity:.85; }
+  header .meta { margin-top:14px; display:flex; flex-wrap:wrap; gap:8px; }
+  header .meta span { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:3px 12px; font-size:12px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-bottom:24px; }
+  .card { background:#fff; border-radius:12px; padding:18px 20px; box-shadow:0 1px 4px rgba(31,58,95,.08); border-top:4px solid #2c5282; }
+  .card h3 { font-size:14px; color:#8395a7; font-weight:600; margin-bottom:8px; letter-spacing:.5px; }
+  .card .big { font-size:19px; font-weight:700; color:#1f3a5f; }
+  .card p { font-size:12.5px; color:#5a6b7d; margin-top:6px; }
+  .card.red { border-top-color:#d64541; } .card.green { border-top-color:#2e8b57; } .card.orange { border-top-color:#e67e22; }
+  section { background:#fff; border-radius:12px; padding:26px 30px; margin-bottom:22px; box-shadow:0 1px 4px rgba(31,58,95,.08); }
+  section h2 { font-size:18px; color:#1f3a5f; border-left:4px solid #d64541; padding-left:12px; margin-bottom:6px; }
+  section .desc { font-size:12.5px; color:#8395a7; margin-bottom:16px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { background:#1f3a5f; color:#fff; padding:8px 8px; font-weight:600; text-align:center; white-space:nowrap; }
+  td { padding:7px 8px; border-bottom:1px solid #e8edf2; text-align:center; }
+  tr:nth-child(even) td { background:#f7fafc; }
+  td.left, th.left { text-align:left; }
+  .pos { color:#d64541; font-weight:600; } .neg { color:#2e8b57; font-weight:600; }
+  .badge { display:inline-block; border-radius:4px; padding:1px 8px; font-size:11px; font-weight:700; color:#fff; white-space:nowrap; }
+  .b-t1 { background:#d64541; } .b-t2 { background:#e67e22; } .b-t3 { background:#e8b40c; color:#5c4a00; } .b-t4 { background:#95a5a6; }
+  .b-ok { background:#2e8b57; } .b-warn { background:#e67e22; } .b-bad { background:#95a5a6; }
+  .chart { width:100%; overflow-x:auto; }
+  .grid2x4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media (max-width:980px){ .grid2x4 { grid-template-columns:repeat(2,1fr); } }
+  .qbox { background:#fbfcfe; border:1px solid #e3eaf1; border-radius:10px; padding:10px 10px 6px; }
+  .qbox .qt { font-size:12.5px; font-weight:700; color:#1f3a5f; }
+  .qbox .qs { font-size:11px; color:#8395a7; margin-bottom:4px; }
+  .note { background:#fff8e6; border:1px solid #f0d98c; border-radius:8px; padding:12px 16px; font-size:12.5px; color:#7a5c00; margin-top:14px; }
+  .method { font-size:13px; color:#3d4f63; }
+  .method li { margin-bottom:10px; margin-left:18px; }
+  .method b { color:#1f3a5f; }
+  .corr-table td { text-align:left; }
+  footer { text-align:center; font-size:11.5px; color:#8395a7; padding:10px 0 30px; }
+  .tag { font-size:10.5px; color:#d64541; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>申万金工因子库全景扫描 — 谁的 IC 高，谁有真 Alpha</h1>
+  <div class="sub">16 个股票因子 · 月频 Spearman Rank IC（全A口径）· 8 个候选因子分组收益（Q1–Q5 五分位）· 因子相关性结构</div>
+  <div class="meta">
+    <span>区间 2019-02 ~ 2026-07（90 个月）</span>
+    <span>GBM量价 2021-04 起（64 个月）</span>
+    <span>universe = all_a</span>
+    <span>数据源：申万宏源金工 MCP</span>
+    <span>生成于 2026-08-24</span>
+  </div>
+</header>
+
+<div class="cards">
+  <div class="card red">
+    <h3>IC 最强</h3>
+    <div class="big">GBM量价 IC 0.114 / IR 0.85</div>
+    <p>全库第一，84% 月份正向，分组严格单调（Q1 -7.6% → Q5 +3.5%），多空年化 +10.5%。但 IC 逐年衰减：0.157(2022) → 0.052(2026前7月)。</p>
+  </div>
+  <div class="card green">
+    <h3>Alpha 兑现最稳</h3>
+    <div class="big">成长：多空 +12.4%/年</div>
+    <p>MDD 仅 ~16%（8 因子中最小），Q1→Q5 单调递增，2019–2026 每年 IC 为正。IC 只有 0.028，却是兑现质量最高的因子。</p>
+  </div>
+  <div class="card orange">
+    <h3>最大陷阱</h3>
+    <div class="big">IC ≠ Alpha（两个反例）</div>
+    <p>筹码成本 IC 0.038 看似不错，但被 2026-07 单月 +0.647 极端值污染，多空实际 -1.6%/年；低波 raw IC 0.099 全库第二，官方"低波"方向却全程失效——跑赢的是高波动端。</p>
+  </div>
+  <div class="card">
+    <h3>推荐组合</h3>
+    <div class="big">成长 + 筹码合成 + 行业轮动</div>
+    <p>三类低相关信息源（基本面 / 筹码结构 / 行业动量，行业轮动与全部因子 ρ&lt;0.03）。GBM量价可作增强层，但需挂衰减监控。</p>
+  </div>
+</div>
+
+<section>
+  <h2>一、方向调整 IC 排名</h2>
+  <div class="desc">方向调整 IC = 原始 IC × 官方方向（正向+1 / 负向−1）。正值 = 按官方方向使用有预测力。低波 / 低流动性为负 = 官方方向失效（低波反向后 IC +0.099 反而全库第二强）。</div>
+  <div class="chart"><svg id="chartIC" width="980" height="520" xmlns="http://www.w3.org/2000/svg"></svg></div>
+</section>
+
+<section>
+  <h2>二、16 因子全景总表</h2>
+  <div class="desc">按 |方向调整 IC| 降序。近三年列 = 该年原始 IC 均值（2026 为前 7 个月）。"分组验证"仅对 8 个候选因子回测了五分位收益。</div>
+  <table id="tblMain"></table>
+</section>
+
+<section>
+  <h2>三、年度 IC 热力图</h2>
+  <div class="desc">红色 = 正 IC，绿色 = 负 IC（原始口径）。用于观察方向稳定性与衰减：GBM量价 2026 明显转淡；市值、反转方向逐年反复；低波 8 年全红。</div>
+  <div class="chart"><svg id="chartHeat" width="820" height="560" xmlns="http://www.w3.org/2000/svg"></svg></div>
+</section>
+
+<section>
+  <h2>四、分组收益验证（Q1–Q5 五分位年化收益）</h2>
+  <div class="desc">Q1 = 因子值最小 20%，Q5 = 最大 20%，全A加权月度再平衡。红色 = 正收益，绿色 = 负收益。⚠ 负向因子（低波 / 筹码合成 / 低流动性）的 alpha 端在 Q1；正向因子的 alpha 端应在 Q5。</div>
+  <div class="grid2x4" id="gridQ"></div>
+  <table id="tblAlpha" style="margin-top:18px"></table>
+</section>
+
+<section>
+  <h2>五、相关性结构 — 谁和谁在重复计票</h2>
+  <div class="desc">基于月度因子值截面相关性（2019–2026）。高相关因子组合不会带来分散，只会在同一笔暴露上下双倍注。</div>
+  <table class="corr-table">
+    <tr><th class="left">因子对</th><th>相关系数</th><th class="left">解读</th></tr>
+    <tr><td>筹码合成 × 机构筹码集中度</td><td class="pos">0.72</td><td class="left">同族因子，二选一即可（筹码合成 IC 更强、分组单调性更好）</td></tr>
+    <tr><td>GBM量价 × 低波</td><td class="pos">0.50</td><td class="left">信息高度重叠：GBM 量价约一半是"做多高波动/高beta"暴露，不是纯量价 alpha</td></tr>
+    <tr><td>筹码合成 × 筹码成本</td><td class="neg">-0.42</td><td class="left">负相关同族，筹码成本 IC 本就不可靠，忽略</td></tr>
+    <tr><td>筹码成本差 × 筹码成本</td><td class="pos">0.40</td><td class="left">同族，两者 IC 都弱（0.014 / 0.038），整族仅筹码合成可用</td></tr>
+    <tr><td>GBM量价 × 低流动性</td><td class="pos">0.28</td><td class="left">中等重叠，量价 ML 与流动性溢价部分同源</td></tr>
+    <tr><td>GBM量价 × 市值</td><td class="neg">-0.27</td><td class="left">GBM 偏小市值——其多空收益含小盘风格暴露</td></tr>
+    <tr><td>行业轮动 × 全部其他因子</td><td class="neg">|ρ|&lt;0.03</td><td class="left"><b>全库唯一完全独立的信息源</b>，与任何因子组合都是真分散</td></tr>
+  </table>
+  <div class="note">组合含义：成长（基本面）+ 筹码合成（筹码结构）+ 行业轮动（行业动量）两两相关性都极低，是天然的多元组合；GBM量价 与 低波（反向）重叠 50%，二者只能算一个暴露。</div>
+</section>
+
+<section>
+  <h2>六、结论与分层</h2>
+  <table id="tblVerdict"></table>
+  <div class="note">落地到本仓库投资认知框架：成长 / 筹码合成 / 行业轮动可登记为 L1 因子槽位候选（需先通过万得全A PIT 池组合回测）；GBM量价挂"衰减监控"标签（监控指标：滚动12个月IC &lt; 0.03 即降权）；低波反向登记为"风格依赖，禁止外推"。估值月频 IC≈0 与刘旭框架 PE 升序半年频 +60% 并不矛盾——IC 是月频横截面排序度量，深度价值是低频组合构造，两个口径不可互推。</div>
+</section>
+
+<section>
+  <h2>七、方法论笔记</h2>
+  <ul class="method">
+    <li><b>IC 高 ≠ alpha 可兑现。</b>筹码成本 IC 0.038（正向月份 68.9%），但多空 90 个月总收益 -11.7%，2026-07 单月 IC +0.647 的极端值把全期均值抬起来了——因子检验必须看分组收益，不能只看 IC 摘要。</li>
+    <li><b>IC 低 ≠ 没 alpha。</b>成长 IC 仅 0.028，但分组单调性全库第一、多空 MDD 最小、8 年 IC 无一年转负。月频 Rank IC 天然不利于低频、慢变量因子（财报类因子半年才更新一次，月度 IC 会被稀释）。</li>
+    <li><b>低波因子的官方方向在 2019–2026 全程失效。</b>raw IC +0.099 / IR 1.07 / 8 年全正，跑赢的是高波动端（Q4 +6.9% vs Q1 -3.3%）。这与"A股低波异象"的长期文献相反，本质是本期小盘高beta风格主导（与我们全A回测中等权池 +52.9%、微盘行情互证）。它是风格 beta，不是稳定 alpha，一旦大盘蓝筹风格回归会反向绞杀。</li>
+    <li><b>GBM量价三重风险：</b>① 年度 IC 逐年衰减（0.157 → 0.052，2026 年 5、6 月连续转负后 7 月暴力反弹 0.443，波动加大）；② 与低波 ρ=0.50、与市值 ρ=-0.27，alpha 中混有高波动 + 小市值风格暴露；③ ML 周频因子的真实换手成本在月频 IC 口径下被低估。可用，但要当"租来的 alpha"对待。</li>
+    <li><b>行业轮动是唯一的独立增量源</b>（与所有因子 |ρ|&lt;0.03），但多空净值 2019–2021 长期在 1 下方、2022 后转正、2025 下半年才爆发——alpha 时段集中，MDD ~33%，适合做卫星仓位而非核心仓。</li>
+    <li><b>市值因子 adj IC 0.046 排第 4，但不要当成 alpha。</b>2020（+0.014）、2024（+0.010）两年方向反转，它是小盘风格 beta 的化身，与我们"严格基准 = 等权万得全A"的方法论判断一致：赚的是池子风格的钱。</li>
+  </ul>
+</section>
+
+<footer>数据来源：申万宏源金工 MCP（get_factor_ic / get_factor_quintile_returns / get_factor_correlation）· 全A口径 · 分析区间 2019-02 ~ 2026-07 · 生成于 2026-08-24 · 仅供研究，不构成投资建议</footer>
+</div>
+
+<script>
+const RED = "#d64541", GREEN = "#2e8b57", BLUE = "#1f3a5f", GRAY = "#b0bec5";
+
+// ===== 数据 =====
+const F = [
+ {name:"GBM量价", d:+1, dl:"正向", ic:0.114, std:0.134, ir:0.851, pos:84.4, adj:0.114, m:64, y:{2021:.094,2022:.157,2023:.135,2024:.118,2025:.095,2026:.052}, tier:"T1", tag:"IC最强/衰减中",
+  q:{ls:"+10.5%", mdd:"~30%", arr:[-7.6,-0.3,-0.7,3.2,3.5], mono:"严格递增 ✓", ok:"✅ 核心可用（挂衰减监控）"}},
+ {name:"低波", d:-1, dl:"负向", ic:0.099, std:0.093, ir:1.074, pos:86.7, adj:-0.099, m:90, y:{2019:.084,2020:.090,2021:.083,2022:.121,2023:.124,2024:.088,2025:.107,2026:.092}, tier:"T2", tag:"官方方向失效/反向可用",
+  q:{ls:"+7.4%(反向)", mdd:"~21%", arr:[-3.3,4.3,1.5,6.9,4.7], mono:"非单调 ✗", ok:"⚠️ 反向=高波动端跑赢，风格依赖"}},
+ {name:"筹码合成", d:-1, dl:"负向", ic:-0.054, std:0.108, ir:-0.504, pos:24.4, adj:0.054, m:90, y:{2019:-.035,2020:-.008,2021:-.062,2022:-.101,2023:-.075,2024:-.055,2025:-.044,2026:-.053}, tier:"T1", tag:"负向标准兑现",
+  q:{ls:"-6.9%(空头端)", mdd:"~58%", arr:[6.8,5.2,3.4,3.3,1.1], mono:"严格递减 ✓", ok:"✅ 核心可用：Q1(筹码集中)端 alpha 明确"}},
+ {name:"市值", d:-1, dl:"负向", ic:-0.046, std:0.156, ir:-0.295, pos:32.2, adj:0.046, m:90, y:{2019:-.025,2020:.014,2021:-.058,2022:-.056,2023:-.137,2024:.010,2025:-.087,2026:-.025}, tier:"T2", tag:"风格beta非alpha"},
+ {name:"低流动性", d:-1, dl:"负向", ic:0.044, std:0.101, ir:0.432, pos:65.6, adj:-0.044, m:90, y:{2019:.040,2020:.038,2021:.066,2022:.055,2023:.032,2024:.035,2025:.047,2026:.034}, tier:"T3", tag:"alpha弱",
+  q:{ls:"-0.5%", mdd:"~17%", arr:[-1.1,4.4,4.3,4.1,2.4], mono:"非单调 ✗", ok:"❌ 多空无肉，不推荐单独使用"}},
+ {name:"动量", d:+1, dl:"正向", ic:0.039, std:0.097, ir:0.400, pos:70.0, adj:0.039, m:90, y:{2019:.029,2020:.053,2021:.030,2022:.032,2023:.054,2024:.035,2025:.030,2026:.050}, tier:"T3", tag:"IC有/兑现打折",
+  q:{ls:"+5.4%", mdd:"~24%", arr:[-2.7,3.7,7.1,7.5,5.0], mono:"非单调(顶部回落)", ok:"⚠️ 2021后 Q5 被 Q4 反超，alpha 兑现不完整"}},
+ {name:"筹码成本", d:+1, dl:"正向", ic:0.038, std:0.097, ir:0.394, pos:68.9, adj:0.038, m:90, y:{2019:.050,2020:.010,2021:.024,2022:.047,2023:.033,2024:.060,2025:.032,2026:.083}, tier:"T4", tag:"极端值污染",
+  q:{ls:"-1.6%", mdd:"~44%", arr:[4.8,7.1,5.2,7.1,6.3], mono:"凹形 ✗", ok:"❌ 2026-07 单月 IC+0.647 虚抬均值，多空实际亏损"}},
+ {name:"行业轮动", d:+1, dl:"正向", ic:0.036, std:0.122, ir:0.292, pos:64.4, adj:0.036, m:90, y:{2019:-.007,2020:.026,2021:.097,2022:.039,2023:-.005,2024:.060,2025:.043,2026:.024}, tier:"T2", tag:"完全独立源",
+  q:{ls:"+12.6%", mdd:"~33%", arr:[-3.8,2.9,7.9,2.9,10.3], mono:"大至递增 ✓", ok:"✅ 增量源：ρ<0.03 独立，但 alpha 时段集中、回撤大"}},
+ {name:"机构筹码集中度", d:-1, dl:"负向", ic:-0.032, std:0.088, ir:-0.367, pos:31.1, adj:0.032, m:90, y:{2019:-.011,2020:-.041,2021:-.029,2022:-.054,2023:-.064,2024:-.029,2025:-.009,2026:-.012}, tier:"T3", tag:"筹码合成替身(ρ=0.72)"},
+ {name:"成长", d:+1, dl:"正向", ic:0.028, std:0.061, ir:0.451, pos:71.1, adj:0.028, m:90, y:{2019:.042,2020:.037,2021:.027,2022:.018,2023:.003,2024:.027,2025:.038,2026:.026}, tier:"T1", tag:"兑现最稳",
+  q:{ls:"+12.4%", mdd:"~16%", arr:[-2.3,3.6,3.5,6.7,9.7], mono:"严格递增 ✓", ok:"✅ 核心可用：单调+低回撤，8年IC全正"}},
+ {name:"盈利", d:+1, dl:"正向", ic:0.017, std:0.064, ir:0.263, pos:65.6, adj:0.017, m:90, y:{2019:.025,2020:.031,2021:.002,2022:-.004,2023:.023,2024:.022,2025:.011,2026:.015}, tier:"T3", tag:"弱"},
+ {name:"筹码成本差", d:+1, dl:"正向", ic:0.014, std:0.091, ir:0.150, pos:56.7, adj:0.014, m:90, y:{}, tier:"T4", tag:"弱/同族"},
+ {name:"反转", d:-1, dl:"负向", ic:-0.011, std:0.098, ir:-0.116, pos:48.9, adj:0.011, m:90, y:{2019:-.031,2020:.023,2021:-.023,2022:-.022,2023:.019,2024:-.039,2025:-.011,2026:-.008}, tier:"T4", tag:"逐年衰减"},
+ {name:"分析师", d:+1, dl:"正向", ic:0.008, std:0.047, ir:0.167, pos:53.3, adj:0.008, m:90, y:{2019:.005,2020:.012,2021:.007,2022:.002,2023:-.001,2024:.027,2025:.000,2026:.013}, tier:"T4", tag:"IR 0.17 无预测力"},
+ {name:"估值", d:+1, dl:"正向", ic:0.005, std:0.068, ir:0.070, pos:48.9, adj:0.005, m:90, y:{2019:-.002,2020:-.011,2021:-.002,2022:.006,2023:.018,2024:.029,2025:-.007,2026:.008}, tier:"T4", tag:"月频口径无IC"},
+ {name:"红利", d:+1, dl:"正向", ic:-0.007, std:0.058, ir:-0.123, pos:44.4, adj:-0.007, m:90, y:{2019:.005,2020:.006,2021:-.020,2022:-.022,2023:.007,2024:.002,2025:-.027,2026:.004}, tier:"T4", tag:"方向为负"},
+];
+const YEARS = ["2019","2020","2021","2022","2023","2024","2025","2026"];
+const fmt = v => (v>0?"+":"") + (v*100).toFixed(1);
+
+// ===== 图1：方向调整IC条形图 =====
+(function(){
+  const svg = document.getElementById("chartIC");
+  const x0 = 480, scale = 3000, rowH = 30, top = 14;
+  let s = "";
+  // 轴
+  s += `<line x1="${x0}" y1="${top-4}" x2="${x0}" y2="${top+16*rowH}" stroke="#90a4ae" stroke-width="1.5"/>`;
+  [-0.10,-0.05,0,0.05,0.10].forEach(t=>{
+    const x = x0 + t*scale;
+    s += `<line x1="${x}" y1="${top+16*rowH}" x2="${x}" y2="${top+16*rowH+4}" stroke="#90a4ae"/>`;
+    s += `<text x="${x}" y="${top+16*rowH+18}" font-size="10" fill="#78909c" text-anchor="middle">${t.toFixed(2)}</text>`;
+  });
+  s += `<line x1="${x0-0.10*scale}" y1="${top+16*rowH}" x2="${x0+0.115*scale}" y2="${top+16*rowH}" stroke="#cfd8dc"/>`;
+  F.forEach((f,i)=>{
+    const y = top + i*rowH;
+    const bw = Math.abs(f.adj)*scale;
+    const col = f.adj>=0 ? RED : GREEN;
+    const x = f.adj>=0 ? x0 : x0-bw;
+    s += `<text x="${x0-12}" y="${y+14}" font-size="12" fill="#22303f" text-anchor="end" font-weight="${f.tier==="T1"?700:400}">${f.name}</text>`;
+    s += `<rect x="${x}" y="${y+3}" width="${bw}" height="${rowH-12}" rx="2" fill="${col}" opacity="${f.tier==="T1"?0.95: f.tier==="T2"?0.8:0.55}"/>`;
+    const tx = f.adj>=0 ? x0+bw+6 : x0-bw-6, anchor = f.adj>=0?"start":"end";
+    let lbl = fmt(f.adj);
+    if(f.name==="低波") lbl += " (反向+9.9)";
+    if(f.name==="筹码成本") lbl += " ⚠极端值";
+    s += `<text x="${tx}" y="${y+14}" font-size="11" fill="${f.tier==="T1"?"#d64541":"#607d8b"}" text-anchor="${anchor}" font-weight="${f.tier==="T1"?700:400}">${lbl}</text>`;
+  });
+  svg.innerHTML = s;
+})();
+
+// ===== 表1：16因子全景 =====
+(function(){
+  const tierName = {T1:"核心可用",T2:"增量/条件",T3:"弱信号",T4:"无效/不可靠"};
+  let h = "<tr><th>#</th><th class='left'>因子</th><th>方向</th><th>IC均值</th><th>IC std</th><th>IR</th><th>正向月占比</th><th>方向调整IC</th><th>2024</th><th>2025</th><th>2026</th><th>月数</th><th>分组验证</th><th>评级</th></tr>";
+  F.forEach((f,i)=>{
+    const q = f.q ? (f.q.ok.startsWith("✅")?"<span class='pos'>已验✓</span>": (f.q.ok.startsWith("⚠")||f.q.ok.startsWith("❌")?"已验(异常)":"-")) : "未测";
+    const c24 = f.y["2024"]!==undefined?fmt(f.y["2024"]):"-", c25 = f.y["2025"]!==undefined?fmt(f.y["2025"]):"-", c26 = f.y["2026"]!==undefined?fmt(f.y["2026"]):"-";
+    h += `<tr><td>${i+1}</td><td class="left"><b>${f.name}</b>${f.tag?` <span class="tag">${f.tag}</span>`:""}</td><td>${f.dl}</td><td class="${f.ic>=0?"pos":"neg"}">${fmt(f.ic)}</td><td>${(f.std*100).toFixed(1)}</td><td class="${f.ir>=0?"pos":"neg"}">${f.ir.toFixed(3)}</td><td>${f.pos.toFixed(1)}%</td><td class="${f.adj>=0?"pos":"neg"}"><b>${fmt(f.adj)}</b></td><td>${c24}</td><td>${c25}</td><td>${c26}</td><td>${f.m}</td><td>${q}</td><td><span class="badge b-${f.tier.toLowerCase()}">${f.tier} ${tierName[f.tier]}</span></td></tr>`;
+  });
+  document.getElementById("tblMain").innerHTML = h;
+})();
+
+// ===== 图2：年度IC热力图 =====
+(function(){
+  const svg = document.getElementById("chartHeat");
+  const cw = 72, ch = 27, left = 128, top = 26;
+  const MAXV = 0.16;
+  const col = v => {
+    if (v === undefined || v === null) return "#eceff1";
+    const t = Math.min(Math.abs(v)/MAXV, 1);
+    if (v >= 0) return `rgb(${Math.round(255-81*t)},${Math.round(255-206*t)},${Math.round(255-214*t)})`;
+    return `rgb(${Math.round(255-216*t)},${Math.round(255-81*t)},${Math.round(255-159*t)})`;
+  };
+  let s = "";
+  YEARS.forEach((yr,j)=>{ s += `<text x="${left+j*cw+cw/2}" y="${top-8}" font-size="11.5" fill="#546e7a" text-anchor="middle" font-weight="600">${yr}</text>`; });
+  F.forEach((f,i)=>{
+    const y = top + i*ch;
+    s += `<text x="${left-8}" y="${y+18}" font-size="12" fill="#22303f" text-anchor="end">${f.name}</text>`;
+    YEARS.forEach((yr,j)=>{
+      const v = f.y[yr];
+      const x = left + j*cw;
+      const c = col(v);
+      const dark = v!==undefined && Math.abs(v)>0.09;
+      s += `<rect x="${x}" y="${y}" width="${cw-3}" height="${ch-3}" rx="3" fill="${c}"/>`;
+      if (v !== undefined) s += `<text x="${x+(cw-3)/2}" y="${y+17}" font-size="10.5" text-anchor="middle" fill="${dark?"#fff":"#455a64"}">${fmt(v)}</text>`;
+      else s += `<text x="${x+(cw-3)/2}" y="${y+17}" font-size="10" text-anchor="middle" fill="#b0bec5">无数据</text>`;
+    });
+  });
+  // 图例
+  const ly = top + 16*ch + 16;
+  const steps = 12;
+  for (let k=0;k<steps;k++){
+    const v = -MAXV + k*(2*MAXV/steps) + MAXV/steps;
+    s += `<rect x="${left+k*36}" y="${ly}" width="36" height="12" fill="${col(v)}"/>`;
+  }
+  s += `<text x="${left-8}" y="${ly+11}" font-size="10" fill="#78909c" text-anchor="end">-0.16</text>`;
+  s += `<text x="${left+steps*36/2}" y="${ly+24}" font-size="10" fill="#78909c" text-anchor="middle">0</text>`;
+  s += `<text x="${left+steps*36+8}" y="${ly+11}" font-size="10" fill="#78909c">+0.16</text>`;
+  s += `<text x="${left}" y="${ly+40}" font-size="10.5" fill="#78909c">红 = 正IC（因子值大→收益高） · 绿 = 负IC · 灰 = 无数据（GBM量价2021-04起 / 筹码成本差未取年度）</text>`;
+  svg.innerHTML = s;
+})();
+
+// ===== 图3：分组收益小倍数 + 表 =====
+(function(){
+  const grid = document.getElementById("gridQ");
+  const qs = F.filter(f=>f.q);
+  qs.forEach(f=>{
+    const arr = f.q.arr, W = 210, H = 150, plotH = 96, top = 22, zero = top + plotH*(12/22); // y: -10..12
+    const yv = v => zero - v*(plotH/22);
+    let bars = "";
+    const bw = 26, gap = (W-30-5*bw)/4;
+    arr.forEach((v,k)=>{
+      const x = 18 + k*(bw+gap);
+      const y0 = Math.min(zero, yv(v)), hh = Math.abs(yv(v)-zero);
+      bars += `<rect x="${x}" y="${y0}" width="${bw}" height="${Math.max(hh,1)}" rx="2" fill="${v>=0?RED:GREEN}" opacity="0.88"/>`;
+      bars += `<text x="${x+bw/2}" y="${v>=0?y0-4:y0+hh+11}" font-size="9.5" text-anchor="middle" fill="${v>=0?RED:GREEN}" font-weight="600">${v.toFixed(1)}</text>`;
+      bars += `<text x="${x+bw/2}" y="${zero+14}" font-size="9" text-anchor="middle" fill="#90a4ae">Q${k+1}</text>`;
+    });
+    const axis = `<line x1="12" y1="${zero}" x2="${W-8}" y2="${zero}" stroke="#b0bec5"/>`;
+    const box = document.createElement("div");
+    box.className = "qbox";
+    box.innerHTML = `<div class="qt">${f.name} <span style="font-weight:400;color:#8395a7">· 多空 ${f.q.ls} · MDD ${f.q.mdd}</span></div><div class="qs">${f.dl==="负向"?"负向因子：alpha端=Q1":"正向因子：alpha端=Q5"} · 单调性 ${f.q.mono}</div><svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">${axis}${bars}</svg>`;
+    grid.appendChild(box);
+  });
+
+  let h = "<tr><th class='left'>因子</th><th>官方方向</th><th>多空年化(Q5−Q1)</th><th>多空MDD</th><th>分组单调性</th><th class='left'>判定</th></tr>";
+  qs.forEach(f=>{
+    const lsCls = f.q.ls.startsWith("+") ? "pos" : "neg";
+    h += `<tr><td class="left"><b>${f.name}</b></td><td>${f.dl}</td><td class="${lsCls}"><b>${f.q.ls}</b></td><td>${f.q.mdd}</td><td>${f.q.mono}</td><td class="left">${f.q.ok}</td></tr>`;
+  });
+  document.getElementById("tblAlpha").innerHTML = h;
+})();
+
+// ===== 表：结论分层 =====
+(function(){
+  const rows = [
+    ["T1","核心可用","成长","多空 +12.4%/年 · MDD ~16%（最小）· Q1→Q5 严格单调 · 8年IC无一年转负。低IC高兑现的典型。"],
+    ["T1","核心可用","筹码合成","负向因子标准兑现：Q1(筹码集中) +6.8% → Q5 +1.1% 单调递减，近三年方向调整IC 0.055/0.044/0.053 全库最稳。"],
+    ["T1","核心可用","GBM量价","IC 0.114 / IR 0.85 全库最强，分组严格单调，多空 +10.5%/年。三重风险：2026衰减、高波动+小市值暴露(ρ=0.50/-0.27)、换手成本被月频口径低估。"],
+    ["T2","增量/条件","行业轮动","全库唯一完全独立信息源(|ρ|<0.03)，多空 +12.6%/年，但2019-2021净值<1、alpha集中在2022后与2025H2，MDD~33%。卫星仓位定位。"],
+    ["T2","增量/条件","低波(反向)","官方低波方向全程失效；反向(做多高波动)多空+7.4%/年、raw IC 8年全正。本质是本期小盘高beta风格beta，风格回归时反噬，禁止外推。"],
+    ["T2","增量/条件","市值","adjIC 0.046 排第4，但2020/2024方向反转——小盘风格beta，赚的是池子风格的钱，不算选股alpha。"],
+    ["T3","弱信号","动量 / 机构筹码集中度 / 盈利 / 低流动性","动量IC 0.039但2021后Q5被Q4反超；机构筹码集中度与筹码合成ρ=0.72(用后者)；盈利/低流动性IC弱且分组无肉。"],
+    ["T4","无效/不可靠","筹码成本 / 筹码成本差 / 估值 / 分析师 / 反转 / 红利","筹码成本被2026-07单月+0.647极端值污染(多空实际-1.6%)；估值月频IC≈0(与刘旭半年频深度价值不矛盾)；分析师IR 0.17；反转逐年衰减；红利方向为负。"],
+  ];
+  let h = "<tr><th>层级</th><th>定位</th><th class='left'>因子</th><th class='left'>依据</th></tr>";
+  rows.forEach(r=>{
+    h += `<tr><td><span class="badge b-${r[0].toLowerCase()}">${r[0]}</span></td><td>${r[1]}</td><td class="left"><b>${r[2]}</b></td><td class="left">${r[3]}</td></tr>`;
+  });
+  document.getElementById("tblVerdict").innerHTML = h;
+})();
+</script>
+</body>
+</html>

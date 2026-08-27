@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>刘旭框架 5 年回测 · 双数据源交叉验证</title>
+<style>
+  body{font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;
+       background:#f5f7fa;color:#263238;margin:0;padding:24px}
+  .wrap{max-width:980px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px}
+  .meta{color:#78909c;font-size:12px;margin-bottom:18px}
+  h2{font-size:16px;margin:28px 0 10px;border-left:4px solid #c0392b;
+     padding-left:10px}
+  .card{background:#fff;border-radius:10px;padding:18px 20px;
+        box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:8px 10px;border-bottom:1px solid #eceff1;text-align:left}
+  th{color:#607d8b;font-weight:600;font-size:12px;background:#fafbfc}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .sub{display:block;font-size:11px;color:#90a4ae;font-weight:400}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;
+       margin-right:6px}
+  .ok{background:#e8f5e9;color:#2e7d32}
+  .warn{background:#fff3e0;color:#e65100}
+  .diff{background:#fce4ec;color:#c62828}
+  .note{font-size:12px;color:#546e7a;line-height:1.7}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap}
+  .kpi .box{flex:1;min-width:150px;background:#fff;border-radius:10px;
+            padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .kpi .v{font-size:20px;font-weight:700}
+  .kpi .l{font-size:11px;color:#90a4ae;margin-top:2px}
+  .red{color:#c0392b} .green{color:#27ae60}
+  .concl{border-left:4px solid #2e7d32;background:#f1f8e9;padding:12px 16px;
+          border-radius:0 8px 8px 0;font-size:13px;line-height:1.8}
+  .concl.warn{border-color:#e65100;background:#fff8e1}
+</style></head><body><div class="wrap">
+
+<h1>刘旭选股框架 · 过去 5 年回测</h1>
+<div class="meta">双数据源交叉验证 · juzi(万得全A PIT成分, 半年度调仓) vs 申万金工MCP(全A, 月度调仓) ·
+2026-08-21 生成</div>
+
+<div class="card">
+<h2 style="margin-top:0">① 核心结论（摘要）</h2>
+<div class="kpi">
+  <div class="box"><div class="v red">+23.7%</div><div class="l">申万版 LX-core 5年总收益</div></div>
+  <div class="box"><div class="v red">+60.0%</div><div class="l">juzi版 LX-core 5年总收益</div></div>
+  <div class="box"><div class="v red">+26.3pp</div><div class="l">申万版超额(沪深300)</div></div>
+  <div class="box"><div class="v red">+7.1pp</div><div class="l">juzi版超额(等权全A)</div></div>
+  <div class="box"><div class="v">-22.6%</div><div class="l">申万版最大回撤</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">② 方法论对比</h2>
+<table>
+<tr><th style="width:16%">维度</th><th>juzi 全A诚实版（基准实验）</th><th>申万MCP 近似版（本次交叉验证）</th></tr>
+<tr><td>股票池</td><td>万得全A 881001.WI PIT 成分（4441→5500只）</td><td>全A universe（~5617只, 2026-07-31）</td></tr>
+<tr><td>调仓频率</td><td>半年度（2021-08 起 10 期）</td><td>月度（59 个月, 每月末重选）</td></tr>
+<tr><td>筛选器</td><td>L4(PE≤25或股息率≥2%) + L5(预期增速≤25%且0&lt;PEG≤2) + 市值≥100亿 + PE&gt;0</td><td>PE≤25 + 市值≥100亿 + 估值因子top40（<b>缺 L5 一致预期约束</b>, 申万无预期数据）</td></tr>
+<tr><td>排序信念</td><td>PE 升序（便宜优先）</td><td>估值因子高分前40（官方正向: 值大=估值低=便宜）→ 等价</td></tr>
+<tr><td>组合</td><td>top-40 等权, 单票5%, 成本5bp+10bp</td><td>top-40 等权, 零交易成本（工具固定）</td></tr>
+<tr><td>基准</td><td>等权万得全A NAV（PIT成分+真实月K）+52.9% / 中证全指 +0.2%</td><td>沪深300（申万自动对标）-2.6%</td></tr>
+<tr><td>数据源</td><td>juzi 估值面板 + HF因子 + 一致预期（PIT快照）</td><td>申万月度指标 + 16因子（z-score横截面）</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">③ 核心指标对比（申万版 / juzi版）</h2>
+<table>
+<tr><th>变体</th><th>juzi 对应</th><th>总收益</th><th>年化</th><th>最大回撤</th><th>超额</th><th>夏普(申万)</th></tr>
+
+        <tr>
+          <td><b>LX-core近似(申万)</b><br><span class="sub">市盈率≤25 → 总市值≥100亿 → 估值top40</span></td>
+          <td>LX-core</td>
+          <td class="num">+23.7%<span class="sub">/+60.0%</span></td>
+          <td class="num">+4.4%<span class="sub">/+9.4%</span></td>
+          <td class="num">-22.6%<span class="sub">/-24.9%</span></td>
+          <td class="num">+26.3%<span class="sub">/+7.1%</span></td>
+          <td class="num">0.21</td>
+        </tr>
+        <tr>
+          <td><b>LX-纯便宜(申万)</b><br><span class="sub">市盈率≤25 → 估值top40(无市值)</span></td>
+          <td>LX-core_mv0</td>
+          <td class="num">+16.1%<span class="sub">/+49.9%</span></td>
+          <td class="num">+3.1%<span class="sub">/+8.0%</span></td>
+          <td class="num">-24.2%<span class="sub">/-23.1%</span></td>
+          <td class="num">+18.7%<span class="sub">/-3.1%</span></td>
+          <td class="num">0.16</td>
+        </tr>
+        <tr>
+          <td><b>LX-gm近似(申万)</b><br><span class="sub">市盈率≤25 → 总市值≥100亿 → 毛利率≥30% → 估值top40</span></td>
+          <td>LX-gm</td>
+          <td class="num">+3.5%<span class="sub">/+58.1%</span></td>
+          <td class="num">+0.7%<span class="sub">/+9.1%</span></td>
+          <td class="num">-25.4%<span class="sub">/-13.9%</span></td>
+          <td class="num">+6.0%<span class="sub">/+5.2%</span></td>
+          <td class="num">0.04</td>
+        </tr>
+</table>
+<p class="note">超额口径不同不可直接横比：申万版超额对沪深300，juzi版超额对等权全A（+52.9%）。同一行内"申万/juzi"两值可比。</p>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">④ 净值曲线（申万版, 2021-09 ~ 2026-07）</h2>
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#fff;border-radius:10px"><line x1="60" y1="310.0" x2="884" y2="310.0" stroke="#eceff1" stroke-width="1"/><text x="54" y="314.0" font-size="11" fill="#90a4ae" text-anchor="end">0.6</text><line x1="60" y1="246.44444444444443" x2="884" y2="246.44444444444443" stroke="#eceff1" stroke-width="1"/><text x="54" y="250.44444444444443" font-size="11" fill="#90a4ae" text-anchor="end">0.8</text><line x1="60" y1="182.88888888888889" x2="884" y2="182.88888888888889" stroke="#eceff1" stroke-width="1"/><text x="54" y="186.88888888888889" font-size="11" fill="#90a4ae" text-anchor="end">1.0</text><line x1="60" y1="119.33333333333334" x2="884" y2="119.33333333333334" stroke="#eceff1" stroke-width="1"/><text x="54" y="123.33333333333334" font-size="11" fill="#90a4ae" text-anchor="end">1.2</text><line x1="60" y1="55.7777777777778" x2="884" y2="55.7777777777778" stroke="#eceff1" stroke-width="1"/><text x="54" y="59.7777777777778" font-size="11" fill="#90a4ae" text-anchor="end">1.4</text><text x="187.86206896551724" y="332" font-size="11" fill="#90a4ae" text-anchor="middle">2021</text><text x="230.48275862068965" y="332" font-size="11" fill="#90a4ae" text-anchor="middle">2022</text><text x="400.9655172413793" y="332" font-size="11" fill="#90a4ae" text-anchor="middle">2023</text><text x="571.448275862069" y="332" font-size="11" fill="#90a4ae" text-anchor="middle">2024</text><text x="741.9310344827586" y="332" font-size="11" fill="#90a4ae" text-anchor="middle">2025</text><path d="M60.0,177.8 L74.2,204.1 L88.4,204.2 L102.6,178.9 L116.8,196.4 L131.0,186.6 L145.2,168.5 L159.4,194.0 L173.7,181.8 L187.9,177.7 L202.1,194.5 L216.3,203.8 L230.5,227.5 L244.7,230.2 L258.9,187.1 L273.1,208.9 L287.3,190.7 L301.5,183.0 L315.7,184.1 L329.9,163.3 L344.1,182.3 L358.3,188.7 L372.6,175.5 L386.8,194.8 L401.0,195.7 L415.2,217.4 L429.4,223.2 L443.6,227.4 L457.8,234.0 L472.0,208.7 L486.2,216.3 L500.4,210.4 L514.6,208.1 L528.8,227.5 L543.0,227.9 L557.2,239.4 L571.4,179.3 L585.7,182.3 L599.9,174.3 L614.1,178.0 L628.3,186.8 L642.5,172.1 L656.7,162.6 L670.9,170.1 L685.1,166.7 L699.3,163.8 L713.5,147.5 L727.7,125.0 L741.9,117.6 L756.1,102.6 L770.3,114.5 L784.6,107.1 L798.8,89.5 L813.0,78.5 L827.2,89.0 L841.4,90.4 L855.6,92.8 L869.8,144.4 L884.0,107.5" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/><path d="M60.0,172.3 L74.2,184.8 L88.4,180.1 L102.6,158.3 L116.8,179.4 L131.0,162.6 L145.2,142.4 L159.4,176.1 L173.7,147.8 L187.9,146.5 L202.1,156.5 L216.3,165.0 L230.5,194.2 L244.7,194.1 L258.9,149.4 L273.1,172.1 L287.3,153.0 L301.5,142.4 L315.7,146.4 L329.9,123.0 L344.1,140.3 L358.3,143.4 L372.6,128.0 L386.8,154.1 L401.0,155.7 L415.2,164.6 L429.4,165.1 L443.6,173.9 L457.8,194.8 L472.0,179.8 L486.2,175.5 L500.4,171.6 L514.6,174.1 L528.8,199.4 L543.0,195.6 L557.2,207.4 L571.4,150.2 L585.7,151.3 L599.9,131.8 L614.1,139.0 L628.3,148.5 L642.5,138.5 L656.7,133.3 L670.9,145.9 L685.1,137.0 L699.3,134.1 L713.5,115.9 L727.7,100.4 L741.9,94.2 L756.1,83.2 L770.3,91.7 L784.6,69.7 L798.8,57.0 L813.0,49.5 L827.2,71.6 L841.4,82.3 L855.6,106.9 L869.8,158.6 L884.0,131.6" fill="none" stroke="#e67e22" stroke-width="2" stroke-linejoin="round"/><path d="M60.0,180.3 L74.2,204.3 L88.4,190.5 L102.6,171.6 L116.8,192.9 L131.0,177.7 L145.2,179.4 L159.4,218.1 L173.7,208.4 L187.9,205.8 L202.1,222.6 L216.3,221.7 L230.5,243.2 L244.7,245.2 L258.9,219.7 L273.1,242.5 L287.3,224.3 L301.5,216.6 L315.7,216.1 L329.9,203.2 L344.1,215.6 L358.3,223.2 L372.6,226.7 L386.8,239.0 L401.0,232.7 L415.2,246.7 L429.4,237.8 L443.6,239.6 L457.8,253.0 L472.0,222.1 L486.2,223.1 L500.4,220.5 L514.6,220.3 L528.8,243.5 L543.0,248.3 L557.2,255.3 L571.4,202.4 L585.7,209.6 L599.9,205.7 L614.1,203.6 L628.3,209.6 L642.5,214.9 L656.7,208.3 L670.9,209.2 L685.1,200.7 L699.3,206.5 L713.5,194.3 L727.7,184.9 L741.9,193.9 L756.1,185.6 L770.3,182.5 L784.6,185.4 L798.8,167.6 L813.0,161.9 L827.2,166.4 L841.4,164.4 L855.6,175.7 L869.8,207.9 L884.0,171.9" fill="none" stroke="#8e44ad" stroke-width="2" stroke-linejoin="round"/><path d="M60.0,180.1 L74.2,185.1 L88.4,178.1 L102.6,202.7 L116.8,201.5 L131.0,224.9 L145.2,238.4 L159.4,233.5 L173.7,207.8 L187.9,228.4 L202.1,234.3 L216.3,252.2 L230.5,271.5 L244.7,249.1 L258.9,247.8 L273.1,229.2 L287.3,234.9 L301.5,236.1 L315.7,237.6 L329.9,252.6 L344.1,249.7 L358.3,238.5 L372.6,254.8 L386.8,259.7 L401.0,267.4 L415.2,272.4 L429.4,276.6 L443.6,290.7 L457.8,271.1 L472.0,269.7 L486.2,265.3 L500.4,266.9 L514.6,274.6 L528.8,275.9 L543.0,283.8 L557.2,238.3 L571.4,246.6 L585.7,244.9 L599.9,243.7 L614.1,251.4 L628.3,246.6 L642.5,246.8 L656.7,254.5 L670.9,249.9 L685.1,243.6 L699.3,234.5 L713.5,207.0 L727.7,197.6 L741.9,197.6 L756.1,205.1 L770.3,198.3 L784.6,193.3 L798.8,193.1 L813.0,210.1 L827.2,186.7 L841.4,181.2 L855.6,175.5 L869.8,201.1 L884.0,191.1" fill="none" stroke="#95a5a6" stroke-width="2" stroke-linejoin="round"/><rect x="68" y="8" width="14" height="4" rx="2" fill="#c0392b"/><text x="86" y="12" font-size="11" fill="#37474f">LX-core近似</text><rect x="193" y="8" width="14" height="4" rx="2" fill="#e67e22"/><text x="211" y="12" font-size="11" fill="#37474f">LX-纯便宜</text><rect x="285" y="8" width="14" height="4" rx="2" fill="#8e44ad"/><text x="303" y="12" font-size="11" fill="#37474f">LX-gm近似</text><rect x="388" y="8" width="14" height="4" rx="2" fill="#95a5a6"/><text x="406" y="12" font-size="11" fill="#37474f">沪深300</text></svg>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">⑤ 年度收益对比</h2>
+<table>
+<tr><th>年度</th><th>申万 core</th><th>juzi core</th><th>申万 gm</th><th>juzi gm</th><th>等权全A</th></tr>
+<tr><td class="y">2022</td><td>-9.3%</td><td>-8.9%</td><td>-21.6%</td><td>-10.3%</td><td>-10.1%</td></tr><tr><td class="y">2023</td><td>-6.4%</td><td>+8.8%</td><td>+1.1%</td><td>+17.6%</td><td>+7.5%</td></tr><tr><td class="y">2024</td><td>+18.1%</td><td>+41.9%</td><td>+13.8%</td><td>+19.5%</td><td>+3.0%</td></tr><tr><td class="y">2025</td><td>+21.9%</td><td>+15.3%</td><td>+6.1%</td><td>+15.0%</td><td>+38.9%</td></tr><tr><td class="y">2026</td><td>-0.1%</td><td>-0.8%</td><td>+4.3%</td><td>+1.3%</td><td>+0.1%</td></tr>
+</table>
+<p class="note">juzi版 2026 仅至 2026-04；申万版 2026 至 2026-07。2021 各版本起始月不同故省略。</p>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">⑥ 交叉验证结论</h2>
+<div class="concl">
+<b>1. 核心alpha在独立数据源上复现 ✅</b> — "便宜优先 + 大市值保护"的深度价值筛选，无论用 juzi 半年度还是申万月度，5年都显著跑赢沪深300（申万版超额 +26.3pp）。深度价值逻辑不是单一数据源的产物。
+</div>
+<div class="concl warn" style="margin-top:10px">
+<b>2. 市值保护结论一致 ✅</b> — 申万版 加市值≥100亿 比不加好（+23.7% vs +16.1%, MDD -22.6% vs -24.2%）；juzi版同样 mv100(+7.1pp) &gt; mv30(-5.8pp) &gt; mv0(-3.1pp)。两个独立实现都指向：100亿下限是质量保护而非风格暴露。
+</div>
+<div class="concl warn" style="margin-top:10px">
+<b>3. 毛利率质量层结论已修正，两版统一 ✅</b> — juzi 版新增 gm25/gm30/gm35 固定阈值变体后（详见 <code>_lx_gm_check.html</code>），原"gm 结论相反"澄清为三个实现参数未对齐：①阈值形态：juzi gm(≥动态中位数) MDD -13.9% 砍半 vs gm30(≥固定30%) -21.0% 保护消失，但 gm30 总收益 +62.5% 并不亏损；②调仓频率：申万月度调仓 2022 年反复接刀高毛利板块（医药/出版）杀跌，才是 sw_gm 暴亏(+3.5%)的主因；③L5 缺失：申万无一致预期过滤，拦截不了高预期接盘。<b>统一结论：毛利率层仅在"半年度持有 + 动态中位数阈值"组合下稳健；固定阈值→回撤保护消失；再叠加月度高频→退化为亏损。跨数据源验证必须先对齐 阈值形态/调仓频率/前置过滤 三要素。</b>
+</div>
+<div class="concl warn" style="margin-top:10px">
+<b>4. 绝对收益差 -36pp 的方法论归因</b> — 申万版年化+4.4% vs juzi版+9.4%：①月度调仓换手频繁（每月重选便宜股≈追跌杀跌的反向轮动）vs 半年度持有；②申万缺 L5 一致预期低预期过滤（juzi 版关键层, 拦截高预期接盘）；③基准/池子口径差异。月度+零成本是申万工具的固定设定，非刘旭框架本身参数。
+</div>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">⑦ 备注与数据来源</h2>
+<p class="note">
+- juzi版：<code>_bt_lx_allA_results.json</code>（2026-08-20 跑, 万得全A PIT成分, 半年度调仓, 成本5bp+10bp）<br>
+- 申万版：<code>backtest_strategy</code> 3变体（2026-08-21 跑, 月度调仓等权, 零成本, 59个月）<br>
+- 申万版映射为"近似"：缺一致预期(con_roe/con_np_yoy/con_peg)，故 qual 层(ROE≥12%)无法实现；gm 层用固定30%近似动态中位数<br>
+- 本报告仅供研究参考，不构成投资建议。
+</p>
+</div>
+
+</div></body></html>

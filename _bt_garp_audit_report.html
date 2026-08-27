@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Type D 合规审计 · garp 系列回测</title>
+<style>
+:root { --red:#c0392b; --green:#1e824c; --ink:#222; --muted:#777; --line:#e5e5e5; --bg:#fafafa; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; color:var(--ink); background:#fff; line-height:1.65; padding:28px 20px 60px; }
+.wrap { max-width:1060px; margin:0 auto; }
+h1 { font-size:22px; margin-bottom:4px; }
+h2 { font-size:17px; margin:34px 0 12px; padding-left:10px; border-left:4px solid var(--red); }
+h3 { font-size:14.5px; margin:16px 0 8px; color:#444; }
+.sub { color:var(--muted); font-size:13px; margin-bottom:18px; }
+.meta-line { font-size:12.5px; color:#999; margin-bottom:14px; }
+table { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0 6px; }
+th,td { border:1px solid var(--line); padding:6px 8px; text-align:right; vertical-align:top; }
+th { background:#f4f6f8; font-weight:600; text-align:center; white-space:nowrap; }
+td:first-child, td:nth-child(2), td:nth-child(3) { text-align:left; }
+.mono { font-family:Consolas,Menlo,monospace; font-size:12px; }
+.pos { color:var(--red); font-weight:600; }
+.neg { color:var(--green); font-weight:600; }
+.ev { font-size:12px; color:#555; text-align:left !important; }
+.hl-best { background:#fdf3f2; }
+.b { display:inline-block; padding:1px 10px; border-radius:10px; font-size:11px; font-weight:700; }
+.b-pass { background:#e8f5e9; color:#1e824c; }
+.b-fail { background:#fdecea; color:#c0392b; }
+.verdict { border:2px solid var(--red); border-radius:10px; padding:18px 20px; background:#fff8f7; margin:14px 0 6px; }
+.verdict h2 { border:none; margin:0 0 10px; padding:0; color:var(--red); }
+.verdict ol { padding-left:22px; }
+.verdict li { margin:7px 0; font-size:13.5px; }
+.kpi { display:flex; gap:12px; flex-wrap:wrap; margin:14px 0; }
+.kpi div { flex:1; min-width:150px; border:1px solid var(--line); border-radius:8px; padding:10px 14px; background:#fff; }
+.kpi .k { font-size:11.5px; color:var(--muted); }
+.kpi .v { font-size:19px; font-weight:700; margin-top:2px; }
+.vcard { border:1px solid var(--line); border-left:5px solid var(--red); border-radius:8px; margin:12px 0; background:#fff; overflow:hidden; }
+.vhead { background:#fdecea; padding:8px 14px; font-size:13.5px; display:flex; gap:10px; align-items:center; }
+.vid { background:var(--red); color:#fff; border-radius:5px; padding:1px 9px; font-weight:700; font-size:12px; }
+.vrule { color:var(--red); font-size:12px; font-weight:600; }
+.vbody { padding:10px 16px; font-size:13px; }
+.vbody p { margin:5px 0; }
+.note { font-size:12px; color:var(--muted); margin:6px 0 0; }
+.flag { display:inline-block; background:#fff4e5; color:#b25e09; border-radius:5px; padding:1px 8px; font-size:11.5px; font-weight:600; margin-left:6px; }
+.two { display:flex; gap:16px; flex-wrap:wrap; }
+.two > div { flex:1; min-width:420px; }
+footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:#999; }
+.svgbox { border:1px solid var(--line); border-radius:10px; padding:12px; background:#fff; margin:10px 0; }
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>Type D 合规审计报告：garp 系列回测</h1>
+<div class="sub">审计依据 <b>docs/prompt_template_fund_framework.md v1.0</b>（10 条铁律 + ⑤ 自查清单）· 审计对象：garp 采纳实验（_bt_garp.py）与增速上限实验（_bt_garp_ceiling.py）及其报告结论</div>
+<div class="meta-line">运行 2026-08-26T14:29:16 · 数据窗口 2021-05-06 ~ 2026-08-24 · 日K 覆盖 497 只（修复后全覆盖）· 28 组回测（双基座 × 14 变体）</div>
+
+<div class="verdict">
+<h2>裁决：三项违规 → 已修复复跑 → 结论重大修正</h2>
+<ol>
+<li><b>三项违规确认并全部修复</b>：V1 金融剔除贯穿回测管线（违反铁律10）→ 增跑全池基座；V2 缺同口径等权基准（违反铁律5/8）→ 接入双基准；V3 持仓丢股 bug（违反铁律1/⑤，选股并集 496 只中日K 仅覆盖 242 只，缺行情股票静默变现金）→ 补拉 255 只至 497 只全覆盖。</li>
+<li><b>审计管线通过双锚点校验</b>：core/全池 = 55.55%（= LX-core 已验证口径 55.55%）；core/finex = 29.45%（= 历史 finex 精确值）——修复未引入新偏差。</li>
+<li><b>garp 门控采纳决策维持且强化</b>：合规口径（全池）下 g60（增速≤60% + PEG≤1）总收益 <b class="pos">67.0%</b> vs core 55.6%，增量 <b class="pos">+11.5%pp</b>（旧口径仅 +5.12pp），MDD 16.67% vs 19.13% 双优。</li>
+<li><b>参数结论修正</b>：旧『g60 平台期、&gt;100% 断崖』系丢股 bug + 金融剔除双重失真。全池口径下峰值移至 <b>g30（增速≤30%）75.3%</b>，且『断崖』变缓坡（nolimit 无上限仍有 69.3%）。机制A 分桶证实增速&gt;100% 前瞻收益确实转负（12M −4.2% / −14.7%），但组合层金融股缓冲使断崖变缓。</li>
+<li><b>排序信念不动摇</b>：peg_sort（PEG 替代 PE 排序）修复丢股后仍全场最差（29.0%/MDD 34.0%），确认无效清单条目。</li>
+</ol>
+</div>
+
+<div class="kpi">
+<div><div class="k">最优变体 g30（全池）</div><div class="v pos">75.3%</div><div class="k">超等权全A +34.1%pp · MDD 17.1%</div></div>
+<div><div class="k">已采纳 garp（g60，全池）</div><div class="v pos">67.0%</div><div class="k">vs core ++11.5%pp · MDD 16.7%</div></div>
+<div><div class="k">基准：等权全A（半年调仓）</div><div class="v">41.1%</div><div class="k">MDD 31.9% · 中证全指 0.1%</div></div>
+<div><div class="k">断崖确认（增速&gt;100% 桶）</div><div class="v neg">12M −4.2% / −14.7%</div><div class="k">200%+ 桶胜率仅 23.4%</div></div>
+</div>
+
+<h2>§1 Type D 检查点（10 铁律 + ⑤ 自查 + 锚点）</h2>
+<table>
+<tr><th style="width:56px">编号</th><th style="width:170px">铁律 / 检查项</th><th style="width:70px">原实验</th><th style="width:70px">修复后</th><th>证据</th></tr>
+<tr><td class="mono">铁律1</td><td>真实数据，禁编造</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">juzi 真实日K 497 只（含补拉 255 只），覆盖 2021-05-06 ~ 2026-08-24；估值/一致预期走 parquet 原始快照</td></tr><tr><td class="mono">铁律2</td><td>池子 = 万得全A PIT 成分</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">10 期 PIT 成分 4441 → 5503 只；禁止手工精选股票池</td></tr><tr><td class="mono">铁律3</td><td>日频颗粒度统计</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">1288 个交易日逐日推进；annual_periods=252</td></tr><tr><td class="mono">铁律4</td><td>复权价一致</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">抽样 240 条中 240 条 adj≠close（100% 存在复权调整）</td></tr><tr><td class="mono">铁律5</td><td>同口径基准</td><td style="text-align:center"><span class="b b-fail">FAIL</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">原报告仅对中证全指；本审计接入双基准：半年调仓等权全A 41.1% / 中证全指 0.1%</td></tr><tr><td class="mono">铁律6</td><td>零未来函数</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">T+1 撮合（N 期下单→N+1 期成交）；因子用 as_of 前一交易日；PIT 成分按调仓月取数</td></tr><tr><td class="mono">铁律7</td><td>IC≠alpha</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">结论全部来自组合层回测；机制验证用前瞻收益（6M/12M）而非横截面 IC</td></tr><tr><td class="mono">铁律8</td><td>先对比等权池子再下结论</td><td style="text-align:center"><span class="b b-fail">FAIL</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">全部 28 组回测均附超等权全A 与超中证全指列；旧报告缺等权对比</td></tr><tr><td class="mono">铁律9</td><td>MDD = (peak−trough)/peak 日频全序列</td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">全部变体 MDD 由 1270 个日频净值点计算</td></tr><tr><td class="mono">铁律10</td><td>金融剔除只用于展示层，不进回测排序管线</td><td style="text-align:center"><span class="b b-fail">FAIL</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">原实验 excl_fin 贯穿全部变体基座；本审计增跑 full 基座（金融持仓每期 15~32 只），finex 仅保留作对照</td></tr><tr><td class="mono">⑤自查</td><td>持仓数量目标 = 实际</td><td style="text-align:center"><span class="b b-fail">FAIL</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">原实验丢股 bug：无行情股票被静默跳过变现金（peg_sort 每期丢 15~29 只）；修复后 497 只全覆盖、全部变体持仓均值 40.0</td></tr><tr><td class="mono">锚点</td><td>审计管线与已验证回测同口径</td><td style="text-align:center"><span class="b b-pass">—</span></td><td style="text-align:center"><span class="b b-pass">PASS</span></td><td class="ev">core/full = 55.55% ≈ LX-core 历史值 55.55%；core/finex = 29.45% = finex 历史值 29.45%（双锚点精确复现）</td></tr>
+</table>
+<div class="note">『原实验』列指被审计的两份历史报告（_bt_garp_report.html / _bt_garp_ceiling_report.html）的合规状态；『修复后』列指本审计复跑管线的状态。</div>
+
+<h2>§2 三项违规详情与影响量化</h2>
+<div class="vcard">
+<div class="vhead"><span class="vid">V1</span><span class="vrule">违反 铁律10</span><b>金融剔除贯穿回测管线</b></div>
+<div class="vbody"><p><b>问题</b>：原 garp 采纳实验与增速上限实验的全部变体都构建在 excl_fin（剔除 123 只金融股）基座之上，违反『金融剔除只用于展示层』铁律。</p><p><b>修复</b>：增跑 full 基座（全池含金融）× 14 变体，finex 基座保留作对照。金融/期持仓列验证金融股真实进入组合（每期 15~32 只）。</p><p><b>影响</b>：全池基座系统性抬升全部变体收益（core 29.5% → 55.6%），且剂量响应形态改变：finex 断崖陡峭（g40 47.5% vs nolimit 21.1%），full 变为缓坡（g40 71.5% vs nolimit 69.3%）——『>100% 断崖』的形态部分是剔除金融的产物。</p></div></div><div class="vcard">
+<div class="vhead"><span class="vid">V2</span><span class="vrule">违反 铁律5 + 8</span><b>缺同口径等权基准</b></div>
+<div class="vbody"><p><b>问题</b>：原报告只对中证全指（价格指数，不含分红），未与『半年调仓等权全A』对比，无法区分 alpha 与池子 beta。</p><p><b>修复</b>：接入 _bt_daily_ew_hold.py 产出的同口径基准（期初等权买 PIT 成分持有、权重漂移）。</p><p><b>影响</b>：等权全A 41.1%/MDD 31.9% 显著强于中证全指 0.1%——只看指数会高估超额。全池最优变体 g30 超等权 +34.1%pp。</p></div></div><div class="vcard">
+<div class="vhead"><span class="vid">V3</span><span class="vrule">违反 铁律1 + ⑤</span><b>持仓丢股 bug（隐性变现金）</b></div>
+<div class="vbody"><p><b>问题</b>：原实验日K 仅覆盖 242 只，选股并集 496 只。引擎对无行情股票静默跳过 → 持仓变现金，且无任何告警。peg_sort 每期丢 15~29 只（丢股率最高），g30/g40 每期丢 1~19 只。</p><p><b>修复</b>：补拉 255 只日K 合并为 _bt_daily_px_full.json（497 只），覆盖断言 cov_after_ok=True；持仓均值全部回到 40.0。</p><p><b>影响</b>：丢股对高增速变体是双向失真：g30/g40 修复后 +11.2pp（丢的是后来上涨的股票），nolimit 修复后 −6.1pp（丢的高增速股下跌，现金化反而虚高）；garp_q50 修复后 +24.3pp、peg_sort +17.9pp——旧实验的相对排序整体失效。</p></div></div>
+
+<h2>§3 双基座 × 14 变体复跑总表（修复后）</h2>
+<table>
+<tr><th>变体</th><th>定义</th><th>系列</th>
+<th colspan="3">finex 基座（剔除金融，仅对照）</th>
+<th colspan="5">full 基座（全池含金融，铁律10 合规口径）</th></tr>
+<tr><th></th><th></th><th></th><th>总收益</th><th>MDD</th><th>超EW</th><th>总收益</th><th>年化</th><th>MDD</th><th>超EW</th><th>超指数</th></tr>
+<tr><td class="mono">core</td><td>LX-core 基准（增速≤25% + PEG≤2）</td><td>基准</td>
+<td class="mono pos">29.5%</td><td class="mono">22.1%</td>
+<td class="mono neg">-11.7%</td>
+<td class="mono pos"><b>55.6%</b></td><td class="mono">9.2%</td><td class="mono">19.1%</td>
+<td class="mono pos">+14.4%</td>
+<td class="mono pos">+55.4%</td></tr><tr><td class="mono">g40p2</td><td>增速≤40% + PEG≤2</td><td>PEG≤2 系</td>
+<td class="mono pos">35.1%</td><td class="mono">22.3%</td>
+<td class="mono neg">-6.1%</td>
+<td class="mono pos"><b>54.2%</b></td><td class="mono">9.0%</td><td class="mono">18.6%</td>
+<td class="mono pos">+13.0%</td>
+<td class="mono pos">+54.1%</td></tr><tr><td class="mono">g60p2</td><td>增速≤60% + PEG≤2</td><td>PEG≤2 系</td>
+<td class="mono pos">25.2%</td><td class="mono">23.5%</td>
+<td class="mono neg">-15.9%</td>
+<td class="mono pos"><b>56.0%</b></td><td class="mono">9.2%</td><td class="mono">15.3%</td>
+<td class="mono pos">+14.8%</td>
+<td class="mono pos">+55.8%</td></tr><tr><td class="mono">g99</td><td>增速≤99% + PEG≤2</td><td>PEG≤2 系</td>
+<td class="mono pos">19.6%</td><td class="mono">25.6%</td>
+<td class="mono neg">-21.6%</td>
+<td class="mono pos"><b>55.7%</b></td><td class="mono">9.2%</td><td class="mono">15.5%</td>
+<td class="mono pos">+14.6%</td>
+<td class="mono pos">+55.6%</td></tr><tr class="hl-best"><td class="mono">g30</td><td>增速≤30% + PEG≤1</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">42.7%</td><td class="mono">21.4%</td>
+<td class="mono pos">+1.5%</td>
+<td class="mono pos"><b>75.3%</b></td><td class="mono">11.8%</td><td class="mono">17.1%</td>
+<td class="mono pos">+34.1%</td>
+<td class="mono pos">+75.1%</td></tr><tr><td class="mono">g40</td><td>增速≤40% + PEG≤1</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">47.5%</td><td class="mono">21.2%</td>
+<td class="mono pos">+6.3%</td>
+<td class="mono pos"><b>71.5%</b></td><td class="mono">11.3%</td><td class="mono">17.1%</td>
+<td class="mono pos">+30.4%</td>
+<td class="mono pos">+71.4%</td></tr><tr><td class="mono">g60</td><td>增速≤60% + PEG≤1（=已采纳 garp 门控）</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">37.3%</td><td class="mono">21.4%</td>
+<td class="mono neg">-3.8%</td>
+<td class="mono pos"><b>67.0%</b></td><td class="mono">10.7%</td><td class="mono">16.7%</td>
+<td class="mono pos">+25.9%</td>
+<td class="mono pos">+66.9%</td></tr><tr><td class="mono">g80</td><td>增速≤80% + PEG≤1</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">33.1%</td><td class="mono">22.5%</td>
+<td class="mono neg">-8.0%</td>
+<td class="mono pos"><b>65.0%</b></td><td class="mono">10.4%</td><td class="mono">16.7%</td>
+<td class="mono pos">+23.8%</td>
+<td class="mono pos">+64.8%</td></tr><tr><td class="mono">g100</td><td>增速≤100% + PEG≤1</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">30.7%</td><td class="mono">22.4%</td>
+<td class="mono neg">-10.4%</td>
+<td class="mono pos"><b>67.6%</b></td><td class="mono">10.8%</td><td class="mono">16.7%</td>
+<td class="mono pos">+26.4%</td>
+<td class="mono pos">+67.4%</td></tr><tr><td class="mono">g150</td><td>增速≤150% + PEG≤1</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">25.3%</td><td class="mono">24.3%</td>
+<td class="mono neg">-15.8%</td>
+<td class="mono pos"><b>68.4%</b></td><td class="mono">10.9%</td><td class="mono">16.7%</td>
+<td class="mono pos">+27.3%</td>
+<td class="mono pos">+68.3%</td></tr><tr><td class="mono">nolimit</td><td>无增速上限 + PEG≤1</td><td>PEG≤1 剂量系</td>
+<td class="mono pos">21.1%</td><td class="mono">26.1%</td>
+<td class="mono neg">-20.1%</td>
+<td class="mono pos"><b>69.3%</b></td><td class="mono">11.0%</td><td class="mono">17.4%</td>
+<td class="mono pos">+28.2%</td>
+<td class="mono pos">+69.2%</td></tr><tr><td class="mono">peg_sort</td><td>PEG 升序排序（替代 PE 排序）</td><td>排序系</td>
+<td class="mono pos">24.9%</td><td class="mono">38.9%</td>
+<td class="mono neg">-16.3%</td>
+<td class="mono pos"><b>29.0%</b></td><td class="mono">5.2%</td><td class="mono">34.0%</td>
+<td class="mono neg">-12.1%</td>
+<td class="mono pos">+28.9%</td></tr><tr><td class="mono">garp_q20</td><td>0.8×PE + 0.2×质量</td><td>排序系</td>
+<td class="mono pos">39.7%</td><td class="mono">21.5%</td>
+<td class="mono neg">-1.4%</td>
+<td class="mono pos"><b>62.5%</b></td><td class="mono">10.1%</td><td class="mono">18.7%</td>
+<td class="mono pos">+21.4%</td>
+<td class="mono pos">+62.4%</td></tr><tr><td class="mono">garp_q50</td><td>0.5×PE + 0.5×质量</td><td>排序系</td>
+<td class="mono pos">48.2%</td><td class="mono">23.1%</td>
+<td class="mono pos">+7.0%</td>
+<td class="mono pos"><b>59.2%</b></td><td class="mono">9.7%</td><td class="mono">22.8%</td>
+<td class="mono pos">+18.0%</td>
+<td class="mono pos">+59.0%</td></tr>
+<tr style="background:#f4f6f8"><td class="mono">基准</td><td>半年调仓等权全A / 中证全指</td><td>—</td>
+<td class="mono">41.1%</td><td class="mono">31.9%</td><td>—</td>
+<td class="mono">41.1%</td><td class="mono">7.1%</td><td class="mono">31.9%</td><td>—</td><td>—</td></tr>
+</table>
+<div class="note">超EW/超指数 = 变体总收益 − 等权全A/中证全指总收益（pp）。full 基座各变体金融持仓每期 15~32 只（详见 §5 数据），finex 基座全部为 0（验证剔除生效）。高亮行 = 全场最优 g30。</div>
+
+<h2>§4 修正前后对照：旧失真数字 vs 修复后数字</h2>
+<h3>PEG≤1 剂量系（对照旧增速上限实验）</h3>
+<table>
+<tr><th>变体</th><th>定义</th><th>旧（丢股 bug + finex）</th><th>修复后 finex</th><th>Δ</th><th>修复后 full</th><th>full − 旧</th></tr>
+<tr><td class="mono">core</td><td>LX-core 基准（增速≤25% + PEG≤2）</td>
+<td class="mono pos">29.5%</td><td class="mono pos">29.5%</td><td class="mono">0.0%</td>
+<td class="mono pos"><b>55.6%</b></td>
+<td class="mono pos">+26.1%</td></tr><tr><td class="mono">g40p2</td><td>增速≤40% + PEG≤2</td>
+<td class="mono pos">34.4%</td><td class="mono pos">35.1%</td>
+<td class="mono pos">+0.6%</td>
+<td class="mono pos"><b>54.2%</b></td>
+<td class="mono pos">+19.8%</td></tr><tr><td class="mono">g60p2</td><td>增速≤60% + PEG≤2</td>
+<td class="mono pos">28.3%</td><td class="mono pos">25.2%</td>
+<td class="mono neg">-3.1%</td>
+<td class="mono pos"><b>56.0%</b></td>
+<td class="mono pos">+27.6%</td></tr><tr><td class="mono">g99</td><td>增速≤99% + PEG≤2</td>
+<td class="mono pos">26.1%</td><td class="mono pos">19.6%</td>
+<td class="mono neg">-6.5%</td>
+<td class="mono pos"><b>55.7%</b></td>
+<td class="mono pos">+29.6%</td></tr><tr><td class="mono">g30</td><td>增速≤30% + PEG≤1</td>
+<td class="mono pos">31.5%</td><td class="mono pos">42.7%</td>
+<td class="mono pos">+11.2%</td>
+<td class="mono pos"><b>75.3%</b></td>
+<td class="mono pos">+43.8%</td></tr><tr><td class="mono">g40</td><td>增速≤40% + PEG≤1</td>
+<td class="mono pos">36.3%</td><td class="mono pos">47.5%</td>
+<td class="mono pos">+11.2%</td>
+<td class="mono pos"><b>71.5%</b></td>
+<td class="mono pos">+35.3%</td></tr><tr><td class="mono">g60</td><td>增速≤60% + PEG≤1（=已采纳 garp 门控）</td>
+<td class="mono pos">34.6%</td><td class="mono pos">37.3%</td>
+<td class="mono pos">+2.7%</td>
+<td class="mono pos"><b>67.0%</b></td>
+<td class="mono pos">+32.4%</td></tr><tr><td class="mono">g80</td><td>增速≤80% + PEG≤1</td>
+<td class="mono pos">32.8%</td><td class="mono pos">33.1%</td>
+<td class="mono pos">+0.3%</td>
+<td class="mono pos"><b>65.0%</b></td>
+<td class="mono pos">+32.1%</td></tr><tr><td class="mono">g100</td><td>增速≤100% + PEG≤1</td>
+<td class="mono pos">32.5%</td><td class="mono pos">30.7%</td>
+<td class="mono neg">-1.8%</td>
+<td class="mono pos"><b>67.6%</b></td>
+<td class="mono pos">+35.1%</td></tr><tr><td class="mono">g150</td><td>增速≤150% + PEG≤1</td>
+<td class="mono pos">27.7%</td><td class="mono pos">25.3%</td>
+<td class="mono neg">-2.3%</td>
+<td class="mono pos"><b>68.4%</b></td>
+<td class="mono pos">+40.7%</td></tr><tr><td class="mono">nolimit</td><td>无增速上限 + PEG≤1</td>
+<td class="mono pos">27.2%</td><td class="mono pos">21.1%</td>
+<td class="mono neg">-6.1%</td>
+<td class="mono pos"><b>69.3%</b></td>
+<td class="mono pos">+42.1%</td></tr><tr><td class="mono">peg_sort</td><td>PEG 升序排序（替代 PE 排序）</td>
+<td class="mono pos">6.9%</td><td class="mono pos">24.9%</td>
+<td class="mono pos">+18.0%</td>
+<td class="mono pos"><b>29.0%</b></td>
+<td class="mono pos">+22.1%</td></tr><tr><td class="mono">garp_q20</td><td>0.8×PE + 0.2×质量</td>
+<td class="mono pos">32.1%</td><td class="mono pos">39.7%</td>
+<td class="mono pos">+7.6%</td>
+<td class="mono pos"><b>62.5%</b></td>
+<td class="mono pos">+30.4%</td></tr><tr><td class="mono">garp_q50</td><td>0.5×PE + 0.5×质量</td>
+<td class="mono pos">23.8%</td><td class="mono pos">48.2%</td>
+<td class="mono pos">+24.3%</td>
+<td class="mono pos"><b>59.2%</b></td>
+<td class="mono pos">+35.3%</td></tr>
+</table>
+<div class="note">Δ 为同基座修复丢股前后的差值；『full − 旧』= 全部修复（丢股 + 金融剔除 + 双基准）后的总修正量。core 无丢股，其 finex 数字不变（锚点）；其 full 差值 100% 来自金融剔除违规的修复。</div>
+<div class="note" style="color:var(--red)"><b>读法</b>：garp_q50（+24.3pp）、peg_sort（+17.9pp）、g30/g40（+11.2pp）修复后大幅上移——旧实验对这些变体的低估源于丢掉的股票后来上涨；nolimit（−6.1pp）反向——丢的高增速股下跌，现金化反而虚高。<b>旧实验的全部相对排序与『断崖』形态不可再引用。</b></div>
+
+<h2>§5 剂量响应：断崖的真相</h2>
+<div class="svgbox"><svg viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px">
+<text x="60" y="20" font-size="13" fill="#333" font-weight="600">增速上限剂量响应（PEG≤1 系，总收益 %，2021-05 ~ 2026-08）</text>
+<line x1="60" y1="300" x2="648" y2="300" stroke="#e8e8e8" stroke-width="1"/><text x="52" y="304" text-anchor="end" font-size="11" fill="#888">0%</text><line x1="60" y1="235" x2="648" y2="235" stroke="#e8e8e8" stroke-width="1"/><text x="52" y="239" text-anchor="end" font-size="11" fill="#888">20%</text><line x1="60" y1="170" x2="648" y2="170" stroke="#e8e8e8" stroke-width="1"/><text x="52" y="174" text-anchor="end" font-size="11" fill="#888">40%</text><line x1="60" y1="105" x2="648" y2="105" stroke="#e8e8e8" stroke-width="1"/><text x="52" y="109" text-anchor="end" font-size="11" fill="#888">60%</text><line x1="60" y1="40" x2="648" y2="40" stroke="#e8e8e8" stroke-width="1"/><text x="52" y="44" text-anchor="end" font-size="11" fill="#888">80%</text>
+<line x1="60" y1="300.0" x2="648" y2="300.0" stroke="#999"/>
+<line x1="144.0" y1="40" x2="144.0" y2="300" stroke="#eee" stroke-dasharray="3,3"/>
+<line x1="60" y1="166.31306605220348" x2="648" y2="166.31306605220348" stroke="#8e44ad" stroke-dasharray="6,4" stroke-width="1.5"/>
+<text x="648" y="160.31306605220348" text-anchor="end" font-size="11" fill="#8e44ad">等权全A 41.1%</text>
+<polyline points="60.0,204.3 144.0,161.3 228.0,145.8 312.0,178.8 396.0,192.4 480.0,200.2 564.0,217.7 648.0,231.5" fill="none" stroke="#4a7dbe" stroke-width="2.2"/>
+<polyline points="60.0,119.4 144.0,55.4 228.0,67.6 312.0,82.2 396.0,88.9 480.0,80.4 564.0,77.7 648.0,74.7" fill="none" stroke="#c0392b" stroke-width="2.6"/>
+<circle cx="60.0" cy="204.3" r="3.5" fill="#4a7dbe"/><circle cx="144.0" cy="161.3" r="3.5" fill="#4a7dbe"/><circle cx="228.0" cy="145.8" r="3.5" fill="#4a7dbe"/><circle cx="312.0" cy="178.8" r="3.5" fill="#4a7dbe"/><circle cx="396.0" cy="192.4" r="3.5" fill="#4a7dbe"/><circle cx="480.0" cy="200.2" r="3.5" fill="#4a7dbe"/><circle cx="564.0" cy="217.7" r="3.5" fill="#4a7dbe"/><circle cx="648.0" cy="231.5" r="3.5" fill="#4a7dbe"/><circle cx="60.0" cy="119.4" r="3.5" fill="#c0392b"/><circle cx="144.0" cy="55.4" r="3.5" fill="#c0392b"/><circle cx="228.0" cy="67.6" r="3.5" fill="#c0392b"/><circle cx="312.0" cy="82.2" r="3.5" fill="#c0392b"/><circle cx="396.0" cy="88.9" r="3.5" fill="#c0392b"/><circle cx="480.0" cy="80.4" r="3.5" fill="#c0392b"/><circle cx="564.0" cy="77.7" r="3.5" fill="#c0392b"/><circle cx="648.0" cy="74.7" r="3.5" fill="#c0392b"/>
+<text x="60.0" y="318" text-anchor="middle" font-size="11" fill="#555">25
+(core)</text><text x="144.0" y="318" text-anchor="middle" font-size="11" fill="#555">30</text><text x="228.0" y="318" text-anchor="middle" font-size="11" fill="#555">40</text><text x="312.0" y="318" text-anchor="middle" font-size="11" fill="#555">60</text><text x="396.0" y="318" text-anchor="middle" font-size="11" fill="#555">80</text><text x="480.0" y="318" text-anchor="middle" font-size="11" fill="#555">100</text><text x="564.0" y="318" text-anchor="middle" font-size="11" fill="#555">150</text><text x="648.0" y="318" text-anchor="middle" font-size="11" fill="#555">∞</text>
+<text x="354.0" y="340" text-anchor="middle" font-size="11" fill="#777">增速上限（%，∞ = 无上限）</text>
+<line x1="60" y1="18" x2="86" y2="18" stroke="#c0392b" stroke-width="2.6"/><text x="92" y="22" font-size="11" fill="#c0392b">full 基座（全池含金融，铁律10 合规口径）</text>
+<line x1="60" y1="36" x2="86" y2="36" stroke="#4a7dbe" stroke-width="2.2"/><text x="92" y="40" font-size="11" fill="#4a7dbe">finex 基座（剔除金融，仅对照）</text>
+<text x="222.0" y="57.59344584816694" text-anchor="middle" font-size="10" fill="#c0392b">71.5%</text>
+<text x="140.0" y="45.3705524003355" text-anchor="middle" font-size="10" fill="#c0392b">75.3%</text>
+<text x="650.0" y="64.68299492950808" text-anchor="end" font-size="10" fill="#c0392b">69.3%</text>
+</svg></div>
+<div class="note">finex 基座（蓝）呈陡峭断崖：g40 峰值 47.5% → nolimit 21.1%（−26.4pp）；full 基座（红）为缓坡：g40 71.5% → nolimit 69.3%（仅 −2.2pp）。『增速上限断崖』的幅度约 80% 来自金融剔除后的组合结构，而非增速上限本身的组合层代价——机制层断崖（§6 前瞻收益）仍然真实存在。</div>
+
+<h2>§6 机制A：增速分桶前瞻收益（全市场面板，修复覆盖偏差）</h2>
+<div class="svgbox"><svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px">
+<text x="70" y="20" font-size="13" fill="#333" font-weight="600">PEG≤1 池内增速分桶 → 前瞻收益（全市场 5730 只面板，修复覆盖偏差后）</text>
+<text x="70" y="40" font-size="11" fill="#888">10 个调仓期 × PEG≤1 池（240~400 只/期）；修复前仅 242 只覆盖（偏差样本）</text>
+<line x1="70" y1="280" x2="650" y2="280" stroke="#e8e8e8"/><text x="62" y="284" text-anchor="end" font-size="11" fill="#888">-20%</text><line x1="70" y1="254" x2="650" y2="254" stroke="#e8e8e8"/><text x="62" y="258" text-anchor="end" font-size="11" fill="#888">-15%</text><line x1="70" y1="227" x2="650" y2="227" stroke="#e8e8e8"/><text x="62" y="231" text-anchor="end" font-size="11" fill="#888">-10%</text><line x1="70" y1="201" x2="650" y2="201" stroke="#e8e8e8"/><text x="62" y="205" text-anchor="end" font-size="11" fill="#888">-5%</text><line x1="70" y1="175" x2="650" y2="175" stroke="#e8e8e8"/><text x="62" y="179" text-anchor="end" font-size="11" fill="#888">0%</text><line x1="70" y1="149" x2="650" y2="149" stroke="#e8e8e8"/><text x="62" y="153" text-anchor="end" font-size="11" fill="#888">5%</text><line x1="70" y1="122" x2="650" y2="122" stroke="#e8e8e8"/><text x="62" y="126" text-anchor="end" font-size="11" fill="#888">10%</text><line x1="70" y1="96" x2="650" y2="96" stroke="#e8e8e8"/><text x="62" y="100" text-anchor="end" font-size="11" fill="#888">15%</text>
+<line x1="70" y1="174.85714285714286" x2="650" y2="174.85714285714286" stroke="#999" stroke-width="1.2"/>
+<rect x="82" y="174.9" width="39" height="42.4" fill="#d64541" rx="2"/><rect x="127" y="174.9" width="39" height="54.8" fill="#e8968c" rx="2"/><text x="101" y="169.9" text-anchor="middle" font-size="10" fill="#333" font-weight="600">+8.1</text><text x="147" y="169.9" text-anchor="middle" font-size="10" fill="#777">+10.4</text><text x="128" y="298" text-anchor="middle" font-size="11" fill="#555" font-weight="600">0-30%</text><text x="128" y="314" text-anchor="middle" font-size="9.5" fill="#999">n=1636 胜率889/1540=58%</text><rect x="198" y="174.9" width="39" height="53.3" fill="#d64541" rx="2"/><rect x="243" y="174.9" width="39" height="56.1" fill="#e8968c" rx="2"/><text x="217" y="169.9" text-anchor="middle" font-size="10" fill="#333" font-weight="600">+10.1</text><text x="263" y="169.9" text-anchor="middle" font-size="10" fill="#777">+10.7</text><text x="244" y="298" text-anchor="middle" font-size="11" fill="#555" font-weight="600">30-60%</text><text x="244" y="314" text-anchor="middle" font-size="9.5" fill="#999">n=889 胜率421/809=52%</text><rect x="314" y="174.9" width="39" height="25.7" fill="#d64541" rx="2"/><rect x="359" y="174.9" width="39" height="26.9" fill="#e8968c" rx="2"/><text x="333" y="169.9" text-anchor="middle" font-size="10" fill="#333" font-weight="600">+4.9</text><text x="379" y="169.9" text-anchor="middle" font-size="10" fill="#777">+5.1</text><text x="360" y="298" text-anchor="middle" font-size="11" fill="#555" font-weight="600">60-100%</text><text x="360" y="314" text-anchor="middle" font-size="9.5" fill="#999">n=333 胜率139/293=47%</text><rect x="430" y="174.9" width="39" height="1.5" fill="#d64541" rx="2"/><rect x="475" y="152.8" width="39" height="22.1" fill="#7cba8f" rx="2"/><text x="449" y="169.9" text-anchor="middle" font-size="10" fill="#333" font-weight="600">+0.2</text><text x="495" y="188.9" text-anchor="middle" font-size="10" fill="#777">-4.2</text><text x="476" y="298" text-anchor="middle" font-size="11" fill="#555" font-weight="600">100-200%</text><text x="476" y="314" text-anchor="middle" font-size="9.5" fill="#999">n=196 胜率59/165=36%</text><rect x="546" y="150.3" width="39" height="24.6" fill="#2e8b57" rx="2"/><rect x="591" y="97.5" width="39" height="77.3" fill="#7cba8f" rx="2"/><text x="565" y="188.9" text-anchor="middle" font-size="10" fill="#333" font-weight="600">-4.7</text><text x="611" y="188.9" text-anchor="middle" font-size="10" fill="#777">-14.7</text><text x="592" y="298" text-anchor="middle" font-size="11" fill="#555" font-weight="600">200%+</text><text x="592" y="314" text-anchor="middle" font-size="9.5" fill="#999">n=160 胜率48/145=33%</text>
+<rect x="418" y="88" width="232" height="228" fill="#fdecea" opacity="0.55"/>
+<text x="534" y="82" text-anchor="middle" font-size="11" fill="#c0392b" font-weight="700">断崖区：12M 前瞻转负</text>
+<rect x="70" y="64" width="14" height="10" fill="#d64541"/><text x="90" y="73" font-size="10.5" fill="#555">6M 前瞻均值</text>
+<rect x="160" y="64" width="14" height="10" fill="#e8968c"/><text x="180" y="73" font-size="10.5" fill="#555">12M 前瞻均值</text>
+</svg></div>
+<div class="note">修复前仅 242 只覆盖（组合层选股），修复后用全市场 5730 只日收益宽表面板计算 PEG≤1 池内全部持仓的前瞻收益。0-60% 增速为甜蜜区（12M +10.4% ~ +10.7%）；&gt;100% 断崖真实存在（12M −4.2%，200%+ 桶 −14.7%、胜率 23.4%）。<b>增速上限的机制基础成立，但 0-30% 与 30-60% 桶前瞻收益几乎无差（10.42% vs 10.67%）——g30 组合层最优更多来自选股交互而非增速单调性，参数收紧不宜过激。</b></div>
+
+<h2>§7 机制B：增速上限的侵入 / 挤出分析（finex 基座，nolimit vs g60）</h2>
+<div class="kpi">
+<div><div class="k">被 g60 上限挡出的股票</div><div class="v">28 只-期</div><div class="k">前瞻6M 均值 <span class="neg">-1.9%</span> · 胜率 39%</div></div>
+<div><div class="k">因侵入被挤出 top40 的股票</div><div class="v">28 只-期</div><div class="k">前瞻6M 均值 <span class="pos">+5.6%</span> · 胜率 75%</div></div>
+</div>
+<div class="two">
+<div>
+<h3>被上限挡出 top40 的股票（增速&gt;60%，PEG≤1）<span class="flag">挡对了：前瞻 −1.87%</span></h3>
+<table>
+<tr><th>调仓月</th><th>代码</th><th>PE</th><th>一致预期增速</th><th>PEG</th><th>前瞻6M</th></tr>
+<tr><td class="mono">2021-08</td><td class="mono">600012.SH</td><td class="mono">6.7</td>
+<td class="mono">61%</td><td class="mono">0.22</td><td class="mono pos">+27.1%</td></tr><tr><td class="mono">2021-08</td><td class="mono">601003.SH</td><td class="mono">6.6</td>
+<td class="mono">130%</td><td class="mono">0.09</td><td class="mono neg">-22.0%</td></tr><tr><td class="mono">2021-08</td><td class="mono">600028.SH</td><td class="mono">5.4</td>
+<td class="mono">96%</td><td class="mono">0.18</td><td class="mono pos">+8.0%</td></tr><tr><td class="mono">2021-08</td><td class="mono">000932.SZ</td><td class="mono">6.0</td>
+<td class="mono">74%</td><td class="mono">0.15</td><td class="mono neg">-20.5%</td></tr><tr><td class="mono">2021-08</td><td class="mono">000727.SZ</td><td class="mono">6.2</td>
+<td class="mono">159%</td><td class="mono">0.10</td><td class="mono pos">+1.5%</td></tr><tr><td class="mono">2021-08</td><td class="mono">002110.SZ</td><td class="mono">5.9</td>
+<td class="mono">82%</td><td class="mono">0.13</td><td class="mono neg">-18.0%</td></tr><tr><td class="mono">2021-08</td><td class="mono">300981.SZ</td><td class="mono">4.1</td>
+<td class="mono">61%</td><td class="mono">0.15</td><td class="mono neg">-27.5%</td></tr><tr><td class="mono">2021-08</td><td class="mono">600282.SH</td><td class="mono">6.6</td>
+<td class="mono">63%</td><td class="mono">0.16</td><td class="mono neg">-8.5%</td></tr><tr><td class="mono">2021-08</td><td class="mono">688298.SH</td><td class="mono">4.6</td>
+<td class="mono">197%</td><td class="mono">0.19</td><td class="mono pos">+37.8%</td></tr><tr><td class="mono">2022-04</td><td class="mono">688075.SH</td><td class="mono">3.4</td>
+<td class="mono">305%</td><td class="mono">0.08</td><td class="mono neg">-9.1%</td></tr><tr><td class="mono">2022-04</td><td class="mono">000933.SZ</td><td class="mono">5.9</td>
+<td class="mono">86%</td><td class="mono">0.10</td><td class="mono pos">+32.0%</td></tr><tr><td class="mono">2022-04</td><td class="mono">002932.SZ</td><td class="mono">4.8</td>
+<td class="mono">259%</td><td class="mono">0.04</td><td class="mono neg">-6.2%</td></tr>
+</table>
+</div>
+<div>
+<h3>因侵入被挤出 top40 的股票（增速≤60%）<span class="flag">挤出代价：前瞻 +5.55%</span></h3>
+<table>
+<tr><th>调仓月</th><th>代码</th><th>PE</th><th>一致预期增速</th><th>PEG</th><th>前瞻6M</th></tr>
+<tr><td class="mono">2021-08</td><td class="mono">000778.SZ</td><td class="mono">7.8</td>
+<td class="mono">38%</td><td class="mono">0.36</td><td class="mono pos">+16.1%</td></tr><tr><td class="mono">2021-08</td><td class="mono">601006.SH</td><td class="mono">7.1</td>
+<td class="mono">22%</td><td class="mono">0.58</td><td class="mono pos">+14.3%</td></tr><tr><td class="mono">2021-08</td><td class="mono">002233.SZ</td><td class="mono">6.9</td>
+<td class="mono">9%</td><td class="mono">0.73</td><td class="mono pos">+13.2%</td></tr><tr><td class="mono">2021-08</td><td class="mono">600820.SH</td><td class="mono">6.8</td>
+<td class="mono">18%</td><td class="mono">0.40</td><td class="mono pos">+5.7%</td></tr><tr><td class="mono">2021-08</td><td class="mono">600170.SH</td><td class="mono">7.1</td>
+<td class="mono">15%</td><td class="mono">0.43</td><td class="mono pos">+21.8%</td></tr><tr><td class="mono">2021-08</td><td class="mono">000672.SZ</td><td class="mono">7.7</td>
+<td class="mono">15%</td><td class="mono">0.46</td><td class="mono pos">+18.4%</td></tr><tr><td class="mono">2021-08</td><td class="mono">600027.SH</td><td class="mono">7.5</td>
+<td class="mono">0%</td><td class="mono">0.68</td><td class="mono pos">+8.9%</td></tr><tr><td class="mono">2021-08</td><td class="mono">600801.SH</td><td class="mono">7.0</td>
+<td class="mono">8%</td><td class="mono">0.51</td><td class="mono pos">+14.7%</td></tr><tr><td class="mono">2021-08</td><td class="mono">002081.SZ</td><td class="mono">7.8</td>
+<td class="mono">16%</td><td class="mono">0.43</td><td class="mono neg">-14.9%</td></tr><tr><td class="mono">2022-04</td><td class="mono">601678.SH</td><td class="mono">7.3</td>
+<td class="mono">7%</td><td class="mono">0.43</td><td class="mono pos">+0.3%</td></tr><tr><td class="mono">2022-04</td><td class="mono">000651.SZ</td><td class="mono">7.7</td>
+<td class="mono">12%</td><td class="mono">0.93</td><td class="mono pos">+2.9%</td></tr><tr><td class="mono">2022-04</td><td class="mono">000498.SZ</td><td class="mono">7.4</td>
+<td class="mono">25%</td><td class="mono">0.24</td><td class="mono neg">-31.4%</td></tr>
+</table>
+</div>
+</div>
+<div class="note">上限挡出的是前瞻收益为负的高增速股（净收益为正），挤出的低成本股平均前瞻 +5.55%（净收益为负）。两个方向合并后 g60 相对 nolimit 的 finex 基座净增益 +16.2pp（37.3% vs 21.1%）。</div>
+
+<h2>§8 修正后结论与落档</h2>
+<table>
+<tr><th style="width:220px">结论项</th><th>旧结论（失真口径）</th><th>修正后结论（全池 + 全覆盖 + 双基准）</th></tr>
+<tr><td><b>garp 门控采纳（L5 = 增速≤60% + PEG≤1）</b></td>
+<td>8 变体最优 +34.57%/MDD 18.54%，增量 +5.12pp</td>
+<td class="ev"><b class="pos">维持且强化</b>：全池 g60 67.0%/MDD 16.7%，增量 +11.5%pp；2022 熊市防御逻辑不变</td></tr>
+<tr><td><b>增速上限参数</b></td><td>g60 为平台期最优，&gt;100% 断崖，nolimit 不可用</td>
+<td class="ev">全池口径峰值移至 <b>g30 75.3%</b>（g40 71.5%），nolimit 仍有 69.3%——断崖变缓坡；但分桶前瞻收益 0-30% ≈ 30-60%，<b>建议维持 g60</b>（参数不依赖单一样本期交互），g30/g40 记为候选收紧方向，待样本外验证</td></tr>
+<tr><td><b>PE 升序排序信念</b></td><td>peg_sort 最差 +6.90%</td>
+<td class="ev"><b>确认有效</b>：修复丢股后 peg_sort 升至 29.0% 仍全场最差（MDD 34.0%）——PE 排序不可被 PEG 排序替代</td></tr>
+<tr><td><b>混合排序（garp_q20/q50）</b></td><td>稀释收益，q20 +32.14% &lt; 纯 PEG 系</td>
+<td class="ev">方向不变：全池 garp_q20 62.5% &lt; g60 67.0%；但 finex 修复后 garp_q50 48.2% 反超 finex/g40——质量权重的价值依赖基座，全池口径下仍是稀释</td></tr>
+<tr><td><b>金融剔除</b></td><td>excl_fin 贯穿全部变体</td>
+<td class="ev"><b class="neg">违规确认</b>：全池 vs finex 系统性差 26pp（core 差 +26.1%pp）。金融剔除仅保留在『当前名单展示层』（_bt_sw_fin_universe.json 123 只），回测/排序管线一律全池</td></tr>
+<tr><td><b>机制基础</b></td><td>增速&gt;100% 前瞻收益断崖（242 只覆盖）</td>
+<td class="ev"><b>成立且更干净</b>：全市场 5730 只面板复验，&gt;100% 桶 12M −4.2%、200%+ 桶 −14.7%/胜率 23.4%；0-60% 甜蜜区 +10.4~10.7%</td></tr>
+</table>
+
+<h3>无效清单 / 认知框架更新</h3>
+<div class="note" style="font-size:12.5px">
+① 无效清单新增标注：『peg_sort（PEG 替代 PE 排序）——丢股修复后仍最差，维持无效』；<br>
+② 投资认知框架（docs/投资认知框架.md v1.1）garp 段需按本报告修正：L5 门控增量从 +5.12pp 修正为 <b>+11.46pp（全池口径）</b>，并补记『断崖形态依赖金融剔除，全池下为缓坡』；<br>
+③ Obsidian 09（投资认知框架）此前为 08-25 版，本次同步将补 garp 段修正；<br>
+④ 历史报告 _bt_garp_report.html / _bt_garp_ceiling_report.html 中的全部对比数字标注为『旧口径（丢股 bug + 金融剔除 + 单基准）』，不再引用。
+</div>
+
+<footer>
+数据：juzi-mcp（万得全A PIT 成分 / 估值 / 一致预期 / 日K 497 只）· 引擎：日频 T+1 撮合，佣金 5bp + 滑点 10bp · 基准：半年调仓等权全A（_bt_daily_ew_hold.py）+ 中证全指 000985.SH<br>
+复现：_bt_garp_audit.py → _bt_garp_audit_results.json → _bt_garp_audit_report.py · 审计任务类型：Type D（模板 §检查点）· 生成于 2026-08-27
+</footer>
+</div></body></html>

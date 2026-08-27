@@ -43,6 +43,9 @@ deepseek-harness/
 # MCP 数据缓存
 _mx_cache/
 
+# style rotation 策略数据缓存（ETF K线/宏观/回测 pkl，可重拉）
+_sr_cache/
+
 # 一次性诊断脚本
 _diag_*.py
 
@@ -52,3 +55,10 @@ _*.csv
 _*.png
 _*.svg
 _*.js
+
+# 数据缓存（可重新拉取/重建，不入库）
+*.parquet
+_gbm_batches/
+_bt_band_val/
+_bt_ew_daily/
+data/
