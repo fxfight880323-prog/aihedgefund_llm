@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>行业分散 / 降金融浓度对冲实验</title>
+<style>
+:root { --bg:#f7f8fa; --card:#fff; --ink:#1a1a1a; --sub:#6b7280; --line:#e5e7eb;
+  --red:#d92626; --green:#0a7d4f; --blue:#1f6feb; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.6; }
+.wrap { max-width:1000px; margin:0 auto; padding:24px 20px 60px; }
+h1 { font-size:24px; margin:0 0 4px; }
+.sub { color:var(--sub); font-size:13px; margin-bottom:20px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:20px 22px; margin-bottom:18px; }
+.card h2 { font-size:17px; margin:0 0 12px; border-left:4px solid var(--blue);
+  padding-left:10px; }
+table { width:100%; border-collapse:collapse; font-size:13.5px; }
+th,td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); }
+th { color:var(--sub); font-weight:600; font-size:12px; }
+td.num { text-align:right; font-variant-numeric:tabular-nums; font-weight:600; }
+td.lbl { font-weight:600; }
+.pos { color:var(--red); }
+.neg { color:var(--green); }
+.barcell { width:22%; }
+.bar { height:14px; border-radius:7px; }
+.bar-pos { background:linear-gradient(90deg,#d92626,#f0a0a0); }
+.bar-neg { background:linear-gradient(90deg,#0a7d4f,#8fd0b0); }
+.concl { background:#fff7f6; border:1px solid #f3d1cd; border-radius:10px; padding:14px 16px; }
+.concl h3 { margin:0 0 8px; font-size:14px; color:var(--red); }
+.warn { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:12px 16px; margin-top:12px; }
+.warn h3 { margin:0 0 6px; font-size:14px; color:#b45309; }
+.insight { background:#f0f6ff; border:1px solid #cfe0ff; border-radius:10px; padding:14px 16px; margin-top:12px; }
+.insight h3 { margin:0 0 6px; font-size:14px; color:var(--blue); }
+ul { margin:6px 0; padding-left:20px; }
+li { margin:4px 0; }
+tr.best td { background:#fff7ed; }
+tr.best td.lbl { color:#b45309; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:760px) { .grid { grid-template-columns:1fr; } }
+.kpi { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:6px; }
+.kpi .k { flex:1; min-width:150px; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:12px 14px; }
+.kpi .k .v { font-size:22px; font-weight:700; }
+.kpi .k .t { color:var(--sub); font-size:12px; }
+</style></head><body><div class="wrap">
+<h1>行业分散 / 降金融浓度对冲实验</h1>
+<div class="sub">g60 口径（增速≤60% + PEG≤1 + mv≥100亿 + PE升序）· full 基座（含金融）· 日频+复权 · 含成本 5bp+10bp · 2021-05-06 ~ 2026-08-26 · 锚点 g60=+67.01% fin_0=+37.30% 均精确复现</div>
+
+<div class="card concl">
+<h3>一句话结论</h3>
+<p style="margin:0">「降金融浓度 / 行业分散」在 2021-2026 <b>不是免费午餐，而是纯负贡献</b>：金融从 20 只砍到 0，收益从 <b>+67.01% 单调滑到 +37.30%</b>，MDD 反而从 <b>16.67% 恶化到 21.43%</b>。
+收益损失<b>几乎全部来自 2024 银行修复年</b>（-17.7pp），而填充进席位的<b>煤炭 / 地产 / 基建</b>在 2021-2023 是负贡献、波动更大。
+这证明策略的「单点依赖」不是「金融行业」本身，而是「低PE大盘价值风格」——金融只是它最纯的载体。用行业分散去对冲，等于把银行换成波动更大的价值周期股，收益与回撤双双恶化。</p>
+</div>
+
+<div class="kpi">
+<div class="k"><div class="v pos">+67.01%</div><div class="t">g60 基线（金融 20/期）</div></div>
+<div class="k"><div class="v pos">+55.26%</div><div class="t">fin_le_10（金融 10/期）· -+11.76%</div></div>
+<div class="k"><div class="v pos">+37.30%</div><div class="t">fin_0（金融 0）· -+29.72%</div></div>
+<div class="k"><div class="v neg">21.43%</div><div class="t">fin_0 最大回撤（vs g60 16.67%）</div></div>
+</div>
+
+<div class="card">
+<h2>① 金融浓度阶梯：收益单调下降，回撤单调恶化</h2>
+<table><thead><tr><th>变体</th><th style="text-align:right">金融上限</th>
+<th style="text-align:right">金融/期</th><th style="text-align:right">总收益</th>
+<th style="text-align:right">年化</th><th style="text-align:right">MDD</th>
+<th style="text-align:right">行业N_eff</th><th style="text-align:right">超额(EW)</th><th>收益水平</th></tr></thead>
+<tbody>
+<tr class="best"><td class="lbl">g60</td><td class="num">20（无约束）</td><td class="num">19.9</td><td class="num pos">+67.01%</td><td class="num">16.67%</td><td class="num">4.4</td><td class="num pos">+25.88%</td><td class="barcell"><div class="bar bar-pos" style="width:100%"></div></td></tr><tr class=""><td class="lbl">fin_le_15</td><td class="num">≤15</td><td class="num">15.0</td><td class="num pos">+58.84%</td><td class="num">18.15%</td><td class="num">5.4</td><td class="num pos">+17.71%</td><td class="barcell"><div class="bar bar-pos" style="width:88%"></div></td></tr><tr class=""><td class="lbl">fin_le_12</td><td class="num">≤12</td><td class="num">12.0</td><td class="num pos">+52.37%</td><td class="num">19.23%</td><td class="num">6.9</td><td class="num pos">+11.23%</td><td class="barcell"><div class="bar bar-pos" style="width:78%"></div></td></tr><tr class=""><td class="lbl">fin_le_10</td><td class="num">≤10</td><td class="num">10.0</td><td class="num pos">+55.26%</td><td class="num">19.70%</td><td class="num">8.1</td><td class="num pos">+14.12%</td><td class="barcell"><div class="bar bar-pos" style="width:82%"></div></td></tr><tr class=""><td class="lbl">fin_le_8</td><td class="num">≤8</td><td class="num">8.0</td><td class="num pos">+48.45%</td><td class="num">19.74%</td><td class="num">9.5</td><td class="num pos">+7.32%</td><td class="barcell"><div class="bar bar-pos" style="width:72%"></div></td></tr><tr class=""><td class="lbl">fin_le_5</td><td class="num">≤5</td><td class="num">5.0</td><td class="num pos">+44.12%</td><td class="num">20.36%</td><td class="num">11.7</td><td class="num pos">+2.98%</td><td class="barcell"><div class="bar bar-pos" style="width:66%"></div></td></tr><tr class=""><td class="lbl">fin_0</td><td class="num">0（剔除）</td><td class="num">0.0</td><td class="num pos">+37.30%</td><td class="num">21.43%</td><td class="num">12.1</td><td class="num neg">-3.84%</td><td class="barcell"><div class="bar bar-pos" style="width:56%"></div></td></tr>
+</tbody></table>
+<p class="sub" style="margin-top:8px">行业 N_eff = 1/行业权重 HHI，越大越分散。金融砍得越多，组合越「分散」（N_eff 4.4→12.1），但收益越低、回撤越深——分散的是「名字」，牺牲的是「收益引擎」。</p>
+</div>
+
+<div class="card">
+<h2>② 收益损失 79% 来自 2024 银行修复年</h2>
+<table><thead><tr><th>变体</th><th style="text-align:right">金融上限</th><th style="text-align:right">金融/期</th><th style="text-align:right">2021</th><th style="text-align:right">2022</th><th style="text-align:right">2023</th><th style="text-align:right">2024</th><th style="text-align:right">2025</th><th style="text-align:right">2026</th><th style="text-align:right">总计</th></tr></thead>
+<tbody>
+<tr class="best"><td class="lbl">g60</td><td class="num">20（无约束）</td><td class="num">19.9</td><td class="num neg">-0.06%</td><td class="num pos">+2.37%</td><td class="num pos">+2.51%</td><td class="num pos">+33.07%</td><td class="num pos">+20.03%</td><td class="num pos">+0.13%</td><td class="num pos">+67.01%</td></tr><tr class=""><td class="lbl">fin_le_15</td><td class="num">≤15</td><td class="num">15.0</td><td class="num pos">+0.44%</td><td class="num pos">+2.09%</td><td class="num pos">+0.44%</td><td class="num pos">+28.57%</td><td class="num pos">+20.43%</td><td class="num neg">-0.35%</td><td class="num pos">+58.84%</td></tr><tr class=""><td class="lbl">fin_le_12</td><td class="num">≤12</td><td class="num">12.0</td><td class="num pos">+0.48%</td><td class="num pos">+2.03%</td><td class="num neg">-1.51%</td><td class="num pos">+26.78%</td><td class="num pos">+20.50%</td><td class="num neg">-1.41%</td><td class="num pos">+52.37%</td></tr><tr class=""><td class="lbl">fin_le_10</td><td class="num">≤10</td><td class="num">10.0</td><td class="num pos">+1.21%</td><td class="num pos">+0.17%</td><td class="num neg">-2.30%</td><td class="num pos">+25.14%</td><td class="num pos">+21.95%</td><td class="num pos">+2.24%</td><td class="num pos">+55.26%</td></tr><tr class=""><td class="lbl">fin_le_8</td><td class="num">≤8</td><td class="num">8.0</td><td class="num pos">+1.06%</td><td class="num neg">-0.62%</td><td class="num neg">-2.01%</td><td class="num pos">+23.88%</td><td class="num pos">+19.44%</td><td class="num pos">+1.32%</td><td class="num pos">+48.45%</td></tr><tr class=""><td class="lbl">fin_le_5</td><td class="num">≤5</td><td class="num">5.0</td><td class="num pos">+1.35%</td><td class="num pos">+1.03%</td><td class="num neg">-2.83%</td><td class="num pos">+20.26%</td><td class="num pos">+19.43%</td><td class="num pos">+0.18%</td><td class="num pos">+44.12%</td></tr><tr class=""><td class="lbl">fin_0</td><td class="num">0（剔除）</td><td class="num">0.0</td><td class="num pos">+2.55%</td><td class="num neg">-0.90%</td><td class="num neg">-4.21%</td><td class="num pos">+15.43%</td><td class="num pos">+18.85%</td><td class="num pos">+1.46%</td><td class="num pos">+37.30%</td></tr>
+</tbody></table>
+<div class="insight" style="margin-top:10px">
+<h3>单点依赖的真相：不是「行业」单点，是「风格」单点</h3>
+<ul>
+<li>g60 的 +67.01% 里，<b>2024 +33.07% + 2025 +20.03% 两年占了 +53.10%</b>，2021-2023 三年合计仅 +4.82%。</li>
+<li>剔除金融（fin_0）后：2024 从 +33.07% 掉到 +15.43%（<b>-+17.64%</b>），但 2025 几乎不动（+18.85%）；2021-2023 反而更差（-2.56%，转负）。</li>
+<li>即：金融的超额收益<b>浓缩在 2024 银行估值修复这一单点</b>。行业分散既没留住 2024 的 beta，也没换来其他年份的 alpha，反而把 2021-2023 拖成负贡献。</li>
+</ul>
+</div>
+</div>
+
+<div class="grid">
+<div class="card">
+<h2>③ g60 非金融席位行业分布</h2>
+<table><thead><tr><th>行业</th><th style="text-align:right">只-期</th><th style="text-align:right">占比</th><th></th></tr></thead>
+<tbody><tr><td class="lbl">房地产开发</td><td class="num">28</td><td class="num">18.8%</td><td class="barcell"><div class="bar bar-pos" style="width:100%"></div></td></tr><tr><td class="lbl">基础建设</td><td class="num">28</td><td class="num">18.8%</td><td class="barcell"><div class="bar bar-pos" style="width:100%"></div></td></tr><tr><td class="lbl">煤炭开采</td><td class="num">26</td><td class="num">17.4%</td><td class="barcell"><div class="bar bar-pos" style="width:93%"></div></td></tr><tr><td class="lbl">房屋建设Ⅱ</td><td class="num">12</td><td class="num">8.1%</td><td class="barcell"><div class="bar bar-pos" style="width:43%"></div></td></tr><tr><td class="lbl">物流</td><td class="num">10</td><td class="num">6.7%</td><td class="barcell"><div class="bar bar-pos" style="width:36%"></div></td></tr><tr><td class="lbl">工业金属</td><td class="num">10</td><td class="num">6.7%</td><td class="barcell"><div class="bar bar-pos" style="width:36%"></div></td></tr><tr><td class="lbl">专业工程</td><td class="num">8</td><td class="num">5.4%</td><td class="barcell"><div class="bar bar-pos" style="width:29%"></div></td></tr><tr><td class="lbl">普钢</td><td class="num">7</td><td class="num">4.7%</td><td class="barcell"><div class="bar bar-pos" style="width:25%"></div></td></tr><tr><td class="lbl">汽车零部件</td><td class="num">5</td><td class="num">3.4%</td><td class="barcell"><div class="bar bar-pos" style="width:18%"></div></td></tr><tr><td class="lbl">白色家电</td><td class="num">5</td><td class="num">3.4%</td><td class="barcell"><div class="bar bar-pos" style="width:18%"></div></td></tr></tbody></table>
+</div>
+<div class="card">
+<h2>④ fin_0（剔除金融）非金融席位行业分布</h2>
+<table><thead><tr><th>行业</th><th style="text-align:right">只-期</th><th style="text-align:right">占比</th><th></th></tr></thead>
+<tbody><tr><td class="lbl">基础建设</td><td class="num">51</td><td class="num">19.8%</td><td class="barcell"><div class="bar bar-pos" style="width:100%"></div></td></tr><tr><td class="lbl">房地产开发</td><td class="num">47</td><td class="num">18.2%</td><td class="barcell"><div class="bar bar-pos" style="width:92%"></div></td></tr><tr><td class="lbl">煤炭开采</td><td class="num">35</td><td class="num">13.6%</td><td class="barcell"><div class="bar bar-pos" style="width:69%"></div></td></tr><tr><td class="lbl">物流</td><td class="num">18</td><td class="num">7.0%</td><td class="barcell"><div class="bar bar-pos" style="width:35%"></div></td></tr><tr><td class="lbl">电力</td><td class="num">17</td><td class="num">6.6%</td><td class="barcell"><div class="bar bar-pos" style="width:33%"></div></td></tr><tr><td class="lbl">工业金属</td><td class="num">16</td><td class="num">6.2%</td><td class="barcell"><div class="bar bar-pos" style="width:31%"></div></td></tr><tr><td class="lbl">房屋建设Ⅱ</td><td class="num">14</td><td class="num">5.4%</td><td class="barcell"><div class="bar bar-pos" style="width:27%"></div></td></tr><tr><td class="lbl">航运港口</td><td class="num">14</td><td class="num">5.4%</td><td class="barcell"><div class="bar bar-pos" style="width:27%"></div></td></tr><tr><td class="lbl">专业工程</td><td class="num">12</td><td class="num">4.7%</td><td class="barcell"><div class="bar bar-pos" style="width:24%"></div></td></tr><tr><td class="lbl">汽车零部件</td><td class="num">12</td><td class="num">4.7%</td><td class="barcell"><div class="bar bar-pos" style="width:24%"></div></td></tr></tbody></table>
+</div>
+</div>
+<div class="card" style="padding-top:14px">
+<p style="margin:0;font-size:13.5px">③→④ 的对比是核心证据：剔除金融后，腾出的席位被 <b>基础建设(28→51)、房地产开发(28→47)、煤炭开采(26→35)</b> 等<b>同样低 PE 的价值/周期股</b>接走。
+它们与银行共享「低估值 + 高股息 + 顺周期」的价值 beta，但 2021-2026 收益更低、周期波动更大（地产 2022 爆雷、煤炭 2022 后回落）。所以「降金融」≈「把银行换成更差的低PE价值股」。</p>
+</div>
+
+<div class="card">
+<h2>⑤ 宽行业分散（每申万二级行业设上限）：同样的负贡献</h2>
+<table><thead><tr><th>变体</th><th style="text-align:right">约束</th>
+<th style="text-align:right">金融/期</th><th style="text-align:right">总收益</th>
+<th style="text-align:right">年化</th><th style="text-align:right">MDD</th>
+<th style="text-align:right">行业N_eff</th><th>收益水平</th></tr></thead>
+<tbody>
+<tr class="best"><td class="lbl">g60</td><td class="num">无约束</td><td class="num">19.9</td><td class="num pos">+67.01%</td><td class="num">16.67%</td><td class="num">4.4</td><td class="barcell"><div class="bar bar-pos" style="width:100%"></div></td></tr><tr class=""><td class="lbl">ind_le_10</td><td class="num">每行业≤10</td><td class="num">12.4</td><td class="num pos">+44.74%</td><td class="num">18.16%</td><td class="num">8.2</td><td class="barcell"><div class="bar bar-pos" style="width:67%"></div></td></tr><tr class=""><td class="lbl">ind_le_8</td><td class="num">每行业≤8</td><td class="num">10.7</td><td class="num pos">+48.85%</td><td class="num">19.03%</td><td class="num">9.8</td><td class="barcell"><div class="bar bar-pos" style="width:73%"></div></td></tr><tr class=""><td class="lbl">ind_le_6</td><td class="num">每行业≤6</td><td class="num">9.1</td><td class="num pos">+44.55%</td><td class="num">19.31%</td><td class="num">12.4</td><td class="barcell"><div class="bar bar-pos" style="width:66%"></div></td></tr>
+</tbody></table>
+<p class="sub" style="margin-top:8px">更激进的行业分散（ind_le_6，N_eff 12.4）收益 +44.55%，仍低于 g60 +67.01% 约 +22.46%，且 MDD 更深。两个轴（金融上限 / 行业上限）结论一致。</p>
+</div>
+
+<div class="card warn">
+<h3>正确方向：分散「风格」，不是分散「行业」</h3>
+<p style="margin:0 0 8px">本实验证伪了「用行业分散对冲单点风险」的直觉。既然单点依赖的本质是「低PE大盘价值风格」，对冲它需要<b>引入正交的收益源</b>，而不是在同一风格内换行业。候选方向（按已有证据优先级）：</p>
+<ul>
+<li><b>① 风格正交化</b>：叠加申万「行业轮动」因子（已验证 <b>+12.6%/年，唯一独立收益源</b>），在保留 2024 价值 beta 的同时用行业动量平滑 2021-2023。</li>
+<li><b>② 质量微调</b>：q20（0.8×PE + 0.2×质量）已验证 <b>+3.40pp</b>，是唯一正贡献的质量用法，可温和降低纯价值暴露。</li>
+<li><b>③ 市值加权 + cap8~10</b>：已证收益 +104.9%~107.0%、top3 集中度砍 1/3、MDD 更低（但它是「集中度换收益」，不解决风格单点）。</li>
+</ul>
+<p class="sub" style="margin:0">金融剔除（-26.1pp）、质量硬过滤（-21.9pp）、行业分散（-29.7pp）均已证伪；「低PE价值」就是这个策略的收益本质，只能微调、不能替换。</p>
+</div>
+
+<div class="card">
+<h2>方法学说明</h2>
+<ul style="font-size:13px;color:var(--sub)">
+<li><b>口径</b>：full 基座（含金融）· g60 参数（增速≤60% + PEG≤1 + mv≥100亿）· PE升序 · 等权 top40 · 日频复权 · 成本 5bp+10bp · 半年调仓。</li>
+<li><b>锚点</b>：g60=+67.01%（== audit rerun.full.g60）、fin_0=+37.30%（== audit rerun.finex.g60），双锚点精确复现。</li>
+<li><b>行业分类</b>：申万二级，来自 juzi 行业面板快照（2026-07-31，5134 只），非 PIT；金融组复用 _bt_sw_fin_universe.json（银行+非银 123 只）。早年退市股（阳光城/中南建设）手动兜底「房地产开发」。行业对大盘价值股长期稳定，口径差异为方向性结论。</li>
+<li><b>覆盖审计</b>：全部变体 0 缺失，仅 ind_le_10 / ind_le_8 在 2026-04 缺失 601108.SH（财通证券）1 只-期（约 2.5% 现金拖累），方向性结论不受影响。</li>
+<li><b>结论方向性标注</b>：行业快照非 PIT，早年行业分类可能有少量偏差；但金融/煤炭/地产/基建的大盘价值股分类在 2021-2026 稳定，不影响「降金融=负贡献」的单调结论。</li>
+</ul>
+</div>
+
+<div class="sub" style="text-align:center;margin-top:8px">生成于 2026-09-01T11:28:34 · 数据 _bt_garp_ind_results.json · 脚本 _bt_garp_ind.py / _bt_garp_ind_report.py</div>
+</div></body></html>

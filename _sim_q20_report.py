@@ -123,6 +123,11 @@ def gen_report(quotes=None):
     exc = cum - bm_cum
     reb_dates = {t["date"] for t in trades if str(t.get("type", "")).startswith("调仓")}
 
+    # 贡献率 = 个股盈亏 / 组合总盈亏（符号一致，合计 ≈ 100%）
+    contrib_share = []
+    for _, _, _, _, pnl, _ in rows:
+        contrib_share.append((pnl / tot_pnl * 100.0) if abs(tot_pnl) > 1.0 else 0.0)
+
     pos_html = []
     for i, (p, price, pct, mv, pnl, pnl_pct) in enumerate(rows, 1):
         pct_h = (f"<span class='{_cls(pct)}'>{pct:+.2f}%</span>" if pct is not None else "—")
@@ -138,18 +143,36 @@ def gen_report(quotes=None):
         bl = p.get("blend")
         qs_h = f"{qs:.0f}" if qs is not None else "—"
         bl_h = f"{bl:.1f}" if bl is not None else "—"
+        c_share = contrib_share[i - 1]
+        c_share_h = f"<span class='{_cls(c_share)}'>{c_share:+.1f}%</span>"
         pos_html.append(
             f"<tr><td>{i}</td><td class='l'>{p['code']} {p['name']}{flag_h}</td>"
             f"<td>{_d(p['init_date'])}</td><td>{p['cost']:.2f}</td>"
             f"<td>{price:.2f}</td><td>{pct_h}</td><td>{p['shares']:.1f}</td>"
             f"<td>{mv / 1e4:.2f}</td><td>{mv / tot_mv * 100:.1f}%</td>"
             f"<td>{qs_h}</td><td>{bl_h}</td>"
-            f"<td class='{_cls(pnl)}'>{pnl:+,.0f}</td><td class='{_cls(pnl_pct)}'>{pnl_pct:+.2%}</td></tr>")
+            f"<td class='{_cls(pnl)}'>{pnl:+,.0f}</td><td class='{_cls(pnl_pct)}'>{pnl_pct:+.2%}</td>"
+            f"<td>{c_share_h}</td></tr>")
     pos_html.append(
         f"<tr class='tot'><td></td><td class='l'>合计 {len(rows)} 只</td><td></td><td></td><td></td><td></td><td></td>"
         f"<td>{tot_mv / 1e4:.2f}</td><td>100%</td><td></td><td></td>"
         f"<td class='{_cls(tot_pnl)}'>{tot_pnl:+,.0f}</td>"
-        f"<td class='{_cls(cum)}'>{cum:+.2%}</td></tr>")
+        f"<td class='{_cls(cum)}'>{cum:+.2%}</td>"
+        f"<td>100.0%</td></tr>")
+
+    # 贡献分布表（按贡献率降序）
+    contrib_rows_sorted = sorted(
+        [(i + 1, r) for i, r in enumerate(rows)],
+        key=lambda ir: contrib_share[ir[0] - 1], reverse=True)
+    contrib_pos_html = []
+    for rank, (idx_in_orig, (p, price, pct, mv, pnl, pnl_pct)) in enumerate(contrib_rows_sorted, 1):
+        c_share = contrib_share[idx_in_orig - 1]
+        contrib_pos_html.append(
+            f"<tr><td>{rank}</td><td class='l'>{p['code']} {p['name']}</td>"
+            f"<td>{mv / 1e4:.2f}</td><td>{mv / tot_mv * 100:.2f}%</td>"
+            f"<td class='{_cls(pnl)}'>{pnl:+,.0f}</td>"
+            f"<td class='{_cls(pnl_pct)}'>{pnl_pct:+.2%}</td>"
+            f"<td class='{_cls(c_share)}'>{c_share:+.2f}%</td></tr>")
 
     tr_html = []
     for t in reversed(trades):
@@ -183,9 +206,16 @@ def gen_report(quotes=None):
 <div class="legend">━ 组合净值指数（初始资金=1）&nbsp;&nbsp;╌╌ 中证全指（归一）&nbsp;&nbsp;┆ 蓝色虚线 = 调仓日</div></div>
 
 <div class="panel"><h2>持仓明细（按 q20 blend 排名，碎股等权口径）</h2>
+<div class="note" style="margin:0 0 8px"><b>贡献率</b> = 个股盈亏 ÷ 组合总盈亏（当日盈亏为 0 时按 0% 计；建仓首日盈亏均摊建仓费，可忽略）。</div>
 <div class="scroll"><table>
-<tr><th>#</th><th class="l">代码/名称</th><th>建仓日</th><th>成本价</th><th>现价</th><th>今日</th><th>持股</th><th>市值(万)</th><th>权重</th><th>质量分</th><th>blend</th><th>浮动盈亏(元)</th><th>盈亏率</th></tr>
+<tr><th>#</th><th class="l">代码/名称</th><th>建仓日</th><th>成本价</th><th>现价</th><th>今日</th><th>持股</th><th>市值(万)</th><th>权重</th><th>质量分</th><th>blend</th><th>浮动盈亏(元)</th><th>盈亏率</th><th>贡献率</th></tr>
 {"".join(pos_html)}</table></div></div>
+
+<div class="panel"><h2>贡献分布（按贡献率排序）</h2>
+<div class="note" style="margin:0 0 8px">正贡献 = 拉升组合；负贡献 = 拖累组合。等权组合下，贡献率 = 2.5% × 个股盈亏率。</div>
+<div class="scroll"><table>
+<tr><th>#</th><th class='l'>代码/名称</th><th>市值(万)</th><th>权重</th><th>盈亏(元)</th><th>盈亏率</th><th>贡献率</th></tr>
+{"".join(contrib_pos_html)}</table></div></div>
 
 <div class="panel"><h2>交易流水（最新在前，共 {len(trades)} 笔）</h2>
 <div class="scroll"><table>

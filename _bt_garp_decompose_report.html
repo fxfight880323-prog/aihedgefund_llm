@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<title>LX-core 四环节归因分解</title>
+<style>
+:root { --bg:#f7f8fa; --card:#fff; --ink:#1a1a1a; --sub:#6b7280; --line:#e5e7eb;
+  --red:#d92626; --green:#0a7d4f; --blue:#1f6feb; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.6; }
+.wrap { max-width:980px; margin:0 auto; padding:24px 20px 60px; }
+h1 { font-size:24px; margin:0 0 4px; }
+.sub { color:var(--sub); font-size:13px; margin-bottom:20px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:20px 22px; margin-bottom:18px; }
+.card h2 { font-size:17px; margin:0 0 12px; border-left:4px solid var(--blue);
+  padding-left:10px; }
+table { width:100%; border-collapse:collapse; font-size:13.5px; }
+th,td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); }
+th { color:var(--sub); font-weight:600; font-size:12px; }
+td.num { text-align:right; font-variant-numeric:tabular-nums; font-weight:600; }
+td.lbl { font-weight:600; }
+td.inc,td.desc,td.tag { color:var(--sub); font-size:12.5px; }
+.pos { color:var(--red); }
+.neg { color:var(--green); }
+.barcell { width:38%; }
+.bar { height:14px; border-radius:7px; }
+.bar-pos { background:linear-gradient(90deg,#d92626,#f0a0a0); }
+.bar-neg { background:linear-gradient(90deg,#0a7d4f,#8fd0b0); }
+.concl { background:#fff7f6; border:1px solid #f3d1cd; border-radius:10px; padding:14px 16px; }
+.concl h3 { margin:0 0 8px; font-size:14px; color:var(--red); }
+.warn { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:12px 16px; margin-top:12px; }
+.warn h3 { margin:0 0 6px; font-size:14px; color:#b45309; }
+ul { margin:6px 0; padding-left:20px; }
+li { margin:4px 0; }
+.tag { white-space:nowrap; }
+tr.best td { background:#fff7ed; }
+tr.best td.lbl { color:#b45309; }
+</style></head><body><div class="wrap">
+<h1>LX-core / garp(g60) 四环节归因分解</h1>
+<div class="sub">full 基座（含金融）· 日频+复权 · 2021-08 ~ 2026-04 半年调仓 · 锚点校验 all_ew=+41.13% g60=+67.01% 均精确复现</div>
+
+<div class="card concl">
+<h3>一句话结论</h3>
+<p style="margin:0">g60 的 +67.01% alpha 主要来自 <b>「PE 升序排序」(+29pp) + 「L5 低预期门控」(+22pp) + 「L4 估值安全边际」(+14pp)</b> 三个环节；
+而 <b>「市值约束 mv≥100亿」(-39pp) 和「等权构建」(-39pp)</b> 是负贡献——它们在稀释「低PE大盘价值股（金融为主，top40 中占 50%）」的暴露。
+这解释了为何「金融剔除 = -26.1pp」：剔除金融就是砍掉收益主引擎。</p>
+</div>
+
+<div class="card">
+<h2>构建法链条（全市场 5730 只等权面板，无丢股、无成本）</h2>
+<table><thead><tr><th>环节</th><th style="text-align:right">累计收益</th><th>增量贡献</th><th style="width:38%">收益水平</th></tr></thead>
+<tbody>
+    <tr>
+      <td class="lbl">全A等权（基准）</td>
+      <td class="num">+41.13%</td>
+      <td class="inc">—</td>
+      <td class="barcell"><div class="bar bar-pos" style="width:46%"></div></td>
+    </tr>
+    <tr>
+      <td class="lbl">① 市值约束 mv≥30亿</td>
+      <td class="num">+18.84%</td>
+      <td class="inc"><span class='neg'>-0.22pp</span></td>
+      <td class="barcell"><div class="bar bar-pos" style="width:26%"></div></td>
+    </tr>
+    <tr>
+      <td class="lbl">① 市值约束 mv≥100亿</td>
+      <td class="num">+2.32%</td>
+      <td class="inc"><span class='neg'>-0.17pp</span></td>
+      <td class="barcell"><div class="bar bar-pos" style="width:11%"></div></td>
+    </tr>
+    <tr>
+      <td class="lbl">② L4 估值安全边际</td>
+      <td class="num">+15.87%</td>
+      <td class="inc"><span class='pos'>+0.14pp</span></td>
+      <td class="barcell"><div class="bar bar-pos" style="width:23%"></div></td>
+    </tr>
+    <tr>
+      <td class="lbl">③ L5 低预期门控</td>
+      <td class="num">+37.80%</td>
+      <td class="inc"><span class='pos'>+0.22pp</span></td>
+      <td class="barcell"><div class="bar bar-pos" style="width:43%"></div></td>
+    </tr>
+    <tr>
+      <td class="lbl">④ PE 升序 top40</td>
+      <td class="num">+67.01%</td>
+      <td class="inc"><span class='pos'>+0.29pp</span></td>
+      <td class="barcell"><div class="bar bar-pos" style="width:70%"></div></td>
+    </tr></tbody></table>
+<p class="sub" style="margin-top:8px">④ 为价格回测口径(含成本)，前三步为面板无成本口径；成本约 0.3%/年，对 +29pp 结论无实质影响。</p>
+</div>
+
+<div class="card">
+<h2>拆除法对比（530 只复权，含成本 5bp+10bp，ceteris paribus）</h2>
+<table><thead><tr><th>环节</th><th>对比</th><th style="text-align:right">A</th><th style="text-align:right">B</th><th style="text-align:right">差额</th><th>方向</th></tr></thead>
+<tbody>
+    <tr>
+      <td class="lbl">PE 排序方向</td>
+      <td class="desc">g60(PE升序) vs pe_desc(PE降序)</td>
+      <td class="num">+67.01%</td>
+      <td class="num">-2.49%</td>
+      <td class="num pos">+0.70pp</td>
+      <td class="tag">正向</td>
+    </tr>
+    <tr>
+      <td class="lbl">等权 vs 市值加权</td>
+      <td class="desc">g60(等权) vs mvweight(市值加权)</td>
+      <td class="num">+67.01%</td>
+      <td class="num">+106.46%</td>
+      <td class="num neg">-0.39pp</td>
+      <td class="tag">负向(等权稀释)</td>
+    </tr>
+    <tr>
+      <td class="lbl">PEG 门控松紧</td>
+      <td class="desc">g60(PEG≤1) vs no_peg(无上限)</td>
+      <td class="num">+67.01%</td>
+      <td class="num">+72.47%</td>
+      <td class="num neg">-0.05pp</td>
+      <td class="tag">微负</td>
+    </tr>
+    <tr>
+      <td class="lbl">增速上限松紧</td>
+      <td class="desc">g60(g≤60%) vs nolimit(无上限)</td>
+      <td class="num">+67.01%</td>
+      <td class="num">+69.33%</td>
+      <td class="num neg">-0.02pp</td>
+      <td class="tag">微负</td>
+    </tr>
+    <tr>
+      <td class="lbl">市值档位(top40后)</td>
+      <td class="desc">g60(mv100) vs mv0(无下限)</td>
+      <td class="num">+67.01%</td>
+      <td class="num">+63.92%</td>
+      <td class="num pos">+0.03pp</td>
+      <td class="tag">近似中性</td>
+    </tr></tbody></table>
+</div>
+
+<div class="card">
+<h2>四环节归因汇总（按 |贡献| 排序）</h2>
+<table><thead><tr><th>环节</th><th style="text-align:right">贡献</th><th>机制</th><th>定性</th></tr></thead>
+<tbody>
+    <tr>
+      <td class="lbl">PE 升序排序</td>
+      <td class="num pos">+29.21pp</td>
+      <td class="desc">最大单一 alpha 来源；反向(PE降序)则 -2.49%</td>
+      <td class="tag">核心</td>
+    </tr>
+    <tr>
+      <td class="lbl">L5 低预期门控(g≤60&PEG≤1)</td>
+      <td class="num pos">+21.93pp</td>
+      <td class="desc">从无到有；但门控松紧微调影响小</td>
+      <td class="tag">核心</td>
+    </tr>
+    <tr>
+      <td class="lbl">L4 估值安全边际(PE≤25/dy≥2%)</td>
+      <td class="num pos">+13.55pp</td>
+      <td class="desc">估值纪律的正贡献</td>
+      <td class="tag">核心</td>
+    </tr>
+    <tr>
+      <td class="lbl">市值约束(mv≥100亿)</td>
+      <td class="num neg">-38.81pp</td>
+      <td class="desc">排除小盘=放弃小盘收益(regime 特定)</td>
+      <td class="tag">负资产</td>
+    </tr>
+    <tr>
+      <td class="lbl">等权构建(vs 市值加权)</td>
+      <td class="num neg">-39.45pp</td>
+      <td class="desc">稀释大盘价值暴露；市值加权+106%但前3集中60%</td>
+      <td class="tag">负资产</td>
+    </tr></tbody></table>
+</div>
+
+<div class="card">
+<h2>面板等权各变体（全市场，无成本）</h2>
+<table><thead><tr><th>变体</th><th style="text-align:right">总收益</th><th style="text-align:right">年化</th><th style="text-align:right">MDD</th><th style="text-align:right">天数</th></tr></thead>
+<tbody><tr><td class='lbl'>all_ew</td><td class='num'>+41.13%</td><td class='num'>+7.08%</td><td class='num'>+31.94%</td><td class='num'>1270</td></tr><tr><td class='lbl'>mv30_ew</td><td class='num'>+18.84%</td><td class='num'>+3.48%</td><td class='num'>+37.18%</td><td class='num'>1270</td></tr><tr><td class='lbl'>mv100_ew</td><td class='num'>+2.32%</td><td class='num'>+0.46%</td><td class='num'>+39.61%</td><td class='num'>1270</td></tr><tr><td class='lbl'>l4_ew</td><td class='num'>+15.87%</td><td class='num'>+2.97%</td><td class='num'>+28.75%</td><td class='num'>1270</td></tr><tr><td class='lbl'>pool_ew</td><td class='num'>+37.80%</td><td class='num'>+6.57%</td><td class='num'>+22.24%</td><td class='num'>1270</td></tr></tbody></table>
+</div>
+
+<div class="card">
+<h2>价格回测各变体（含成本，覆盖审计）</h2>
+<table><thead><tr><th>变体</th><th style="text-align:right">总收益</th><th style="text-align:right">年化</th><th style="text-align:right">MDD</th><th style="text-align:right">丢股(只-期)</th></tr></thead>
+<tbody><tr><td class='lbl'>g60</td><td class='num'>+67.01%</td><td class='num'>+10.70%</td><td class='num'>+16.67%</td><td class='num'>✓</td></tr><tr><td class='lbl'>no_peg</td><td class='num'>+72.47%</td><td class='num'>+11.40%</td><td class='num'>+16.05%</td><td class='num'>⚠9</td></tr><tr><td class='lbl'>pe_desc</td><td class='num'>-2.49%</td><td class='num'>-0.50%</td><td class='num'>+21.60%</td><td class='num'>⚠278</td></tr><tr><td class='lbl'>mvweight</td><td class='num'>+106.46%</td><td class='num'>+15.44%</td><td class='num'>+14.93%</td><td class='num'>✓</td></tr><tr><td class='lbl'>mv30_top40</td><td class='num'>+66.42%</td><td class='num'>+10.62%</td><td class='num'>+13.40%</td><td class='num'>⚠43</td></tr><tr><td class='lbl'>mv0_top40</td><td class='num'>+63.92%</td><td class='num'>+10.29%</td><td class='num'>+13.11%</td><td class='num'>⚠47</td></tr></tbody></table>
+</div>
+
+<div class="card">
+<h2>市值加权集中度权衡（追加实验：cap 甜点区）</h2>
+<p class="sub" style="margin:0 0 10px">纯市值加权前 3 家集中 43.6%，加单票上限后既保留大盘价值暴露、又压掉集中度。</p>
+<table><thead><tr><th>变体</th><th style="text-align:right">总收益</th><th style="text-align:right">年化</th><th style="text-align:right">MDD</th><th style="text-align:right">top3集中度</th><th style="text-align:right">有效持仓</th></tr></thead>
+<tbody><tr><td class='lbl'>等权（锚点）</td><td class='num'>+67.01%</td><td class='num'>+10.70%</td><td class='num'>+16.67%</td><td class='num'>7.5%</td><td class='num'>40.0</td></tr><tr><td class='lbl'>市值开根号</td><td class='num'>+92.60%</td><td class='num'>+13.87%</td><td class='num'>+14.01%</td><td class='num'>22.3%</td><td class='num'>25.5</td></tr><tr><td class='lbl'>市值加权 cap5</td><td class='num'>+102.37%</td><td class='num'>+14.99%</td><td class='num'>+14.16%</td><td class='num'>15.0%</td><td class='num'>26.3</td></tr><tr class='best'><td class='lbl'>市值加权 cap8</td><td class='num'>+104.88%</td><td class='num'>+15.27%</td><td class='num'>+13.33%</td><td class='num'>24.0%</td><td class='num'>19.2</td></tr><tr class='best'><td class='lbl'>市值加权 cap10</td><td class='num'>+107.02%</td><td class='num'>+15.51%</td><td class='num'>+13.84%</td><td class='num'>29.1%</td><td class='num'>17.0</td></tr><tr><td class='lbl'>市值加权 cap15</td><td class='num'>+108.95%</td><td class='num'>+15.72%</td><td class='num'>+14.22%</td><td class='num'>38.1%</td><td class='num'>12.9</td></tr><tr><td class='lbl'>市值加权 无上限</td><td class='num'>+106.46%</td><td class='num'>+15.44%</td><td class='num'>+14.93%</td><td class='num'>43.6%</td><td class='num'>10.6</td></tr></tbody></table>
+<p class="sub" style="margin-top:8px"><b style="color:#b45309">结论：cap8~10 是甜点区</b> —— 收益 104.9%~107.0%（几乎无损于无上限的 106.5%），top3 集中度从 43.6% 降到 24%~29%，MDD 反而更低（13.3%~13.8%）。cap15 收益 108.95% 甚至反超无上限。</p>
+</div>
+
+<div class="card">
+<h2>分年度拆解（cap 甜点是否单点贡献？）</h2>
+<p class="sub" style="margin:0 0 10px">检验「市值加权 &gt; 等权」的超额是否由 2024 金融修复年单点贡献。</p>
+<table style="margin-bottom:16px"><thead><tr><th colspan="7" style="text-align:left;color:#b45309">年度收益矩阵（行=变体，列=年份）</th></tr></thead>
+<tbody><tr><td class='lbl'>变体 \ 年份</td><td class='num' style='color:var(--sub)'>2021</td><td class='num' style='color:var(--sub)'>2022</td><td class='num' style='color:var(--sub)'>2023</td><td class='num' style='color:var(--sub)'>2024</td><td class='num' style='color:var(--sub)'>2025</td><td class='num' style='color:var(--sub)'>2026</td></tr><tr><td class='lbl'>等权 g60（锚点）</td><td class='num neg'>-0.1%</td><td class='num pos'>+3.4%</td><td class='num pos'>+3.1%</td><td class='num pos'>+33.1%</td><td class='num pos'>+16.7%</td><td class='num pos'>+0.8%</td></tr><tr><td class='lbl'>市值加权 cap8</td><td class='num pos'>+1.9%</td><td class='num pos'>+5.2%</td><td class='num pos'>+10.7%</td><td class='num pos'>+35.6%</td><td class='num pos'>+21.8%</td><td class='num pos'>+4.5%</td></tr><tr><td class='lbl'>市值加权 cap10</td><td class='num pos'>+1.7%</td><td class='num pos'>+5.0%</td><td class='num pos'>+12.5%</td><td class='num pos'>+36.2%</td><td class='num pos'>+21.7%</td><td class='num pos'>+4.0%</td></tr><tr><td class='lbl'>市值加权 cap15</td><td class='num pos'>+1.3%</td><td class='num pos'>+4.9%</td><td class='num pos'>+16.0%</td><td class='num pos'>+36.3%</td><td class='num pos'>+21.4%</td><td class='num pos'>+2.4%</td></tr><tr><td class='lbl'>市值加权 无上限</td><td class='num pos'>+1.2%</td><td class='num pos'>+4.5%</td><td class='num pos'>+15.9%</td><td class='num pos'>+37.5%</td><td class='num pos'>+21.1%</td><td class='num pos'>+1.3%</td></tr><tr><td class='lbl' style='color:var(--sub)'>等权全A（基准）</td><td class='num pos'>+8.3%</td><td class='num neg'>-11.3%</td><td class='num pos'>+9.9%</td><td class='num pos'>+1.0%</td><td class='num pos'>+38.4%</td><td class='num neg'>-4.4%</td></tr></tbody></table>
+<table style="margin-bottom:16px"><thead><tr><th colspan="7" style="text-align:left;color:#b45309">年度超额矩阵（vs 等权 g60，单位 pp）</th></tr></thead>
+<tbody><tr><td class='lbl'>变体 \ 年份</td><td class='num' style='color:var(--sub)'>2021</td><td class='num' style='color:var(--sub)'>2022</td><td class='num' style='color:var(--sub)'>2023</td><td class='num' style='color:var(--sub)'>2024</td><td class='num' style='color:var(--sub)'>2025</td><td class='num' style='color:var(--sub)'>2026</td></tr><tr><td class='lbl'>市值加权 cap8</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.1pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.1pp</td><td class='num pos'>+0.0pp</td></tr><tr><td class='lbl'>市值加权 cap10</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.1pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td></tr><tr><td class='lbl'>市值加权 cap15</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.1pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td></tr><tr><td class='lbl'>市值加权 无上限</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.1pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td><td class='num pos'>+0.0pp</td></tr></tbody></table>
+<table><thead><tr><th colspan="7" style="text-align:left;color:#b45309">等权 g60 自身年度收益（暴露策略本身的单点依赖）</th></tr></thead>
+<tbody><tr><td class='lbl'>等权 g60</td><td class='num neg'>-0.1%</td><td class='num pos'>+3.4%</td><td class='num pos'>+3.1%</td><td class='num pos'>+33.1%</td><td class='num pos'>+16.7%</td><td class='num pos'>+0.8%</td></tr></tbody></table>
+<p class="sub" style="margin-top:8px"><b style="color:#0a7d4f">结论：cap 超额逐年稳定为正，不是 2024 单点。</b>cap8 六年的超额 +2.0/+1.8/+7.6/+2.6/+5.1/+3.6 pp 无一负值；超额最大的年份是 <b>2023（+7.6~12.9pp）</b> 和 <b>2025（+4.3~5.1pp）</b>，而 2024 反而是超额最小的年份（+2.6~4.4pp，因当年等权与市值加权普涨、差异收敛）。即「市值加权 &gt; 等权」是 mv≥100亿 池内系统性的大盘溢价，与金融修复年无关。</p>
+<p class="sub" style="margin-top:6px"><b style="color:#d92626">真正需警惕的是策略本身：</b>等权 g60 的收益高度依赖 2024（+33.1%）与 2025（+16.7%），2021~2023 三年合计仅 +6.4%。2024 恰是金融修复年，这印证了「底仓=低PE大盘价值（金融占 50%）」的 beta 集中——cap 增强逐年正贡献、可放心作为构建方式改进，但解决不了底层风格暴露的单点依赖，需靠分散行业或降低金融浓度对冲。</p>
+</div>
+
+<div class="card">
+<h2>⚠️ 诚实标注与边界</h2>
+<div class="warn">
+<h3>必须警惕的四点</h3>
+<ul>
+<li><b>市值加权的 +106.46% 是集中收益，非分散 alpha</b>：mvweight 前 3 家（中国平安 23% + 工商银行 19% + 建设银行 17%）累计 60%。它本质是「重仓几家超级大金融股」，不能当作可复制的策略超额。</li>
+<li><b>市值约束的负贡献是 2021-2026 regime 特定</b>：这五年小盘显著跑赢大盘。mv100 约束在样本外未必是负资产，且它有「避免微盘流动性风险/踩雷」的保护作用，回测未计入流动性成本。</li>
+<li><b>pe_desc / mv30 / mv0 变体存在丢股</b>（PE 降序 278 只-期、mv30/mv0 各 43/47 只-期）。方向性结论稳健，但精确数值偏保守，勿直接引用绝对数。</li>
+<li><b>「估值因子 IC≈0」与「PE 升序 alpha」并不矛盾</b>：申万合成估值因子是全市场月频、含微盘、被市值风格稀释；LX-core 的 PE 升序是「门控池内 + 单一 PE + 日频复权」的精确暴露，捕获的是金融价值股的 beta 而非估值的线性预测力。</li>
+</ul>
+</div>
+</div>
+
+<div class="sub" style="text-align:center">生成于 2026-09-01T11:06:55 · _bt_garp_decompose.py</div>
+</div></body></html>
