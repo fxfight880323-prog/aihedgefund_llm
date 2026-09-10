@@ -7,6 +7,10 @@
     python run.py backtest         # 权威回测集重跑（--only garp 可指定）
     python run.py all              # screen + backtest 全流程
     python run.py status           # 数据新鲜度体检
+    python run.py rag ingest [--theme 主题] [--pdf]   # 研报RAG采集入库
+    python run.py rag index        # 全量重建向量索引
+    python run.py rag query "问题" [--as-of YYYY-MM-DD]
+    python run.py rag report       # 投研跟踪文档(_rag_track_*.html)
     python run.py --list           # 预览所有步骤（不执行）
 
 可选参数:
@@ -45,19 +49,73 @@ def cmd_status():
     print("\n✅ 体检完成。日常命令：python run.py daily | screen | backtest | all")
 
 
+def cmd_rag(args):
+    """投研 RAG 子命令: ingest / index / query / report / stats。"""
+    from rag import config as rag_cfg
+    from rag import indexer
+    sub = args.rag_sub or "stats"
+    if sub == "ingest":
+        from rag import ingest
+        themes = None
+        if args.theme and args.theme != "all":
+            themes = [t.strip() for t in args.theme.split(",")]
+        ingest.run_ingest(themes=themes, with_pdf=args.pdf, max_pdf=args.max_pdf)
+    elif sub == "index":
+        conn = indexer._connect()
+        n = indexer.rebuild_index(conn)
+        conn.close()
+        print(f"✅ faiss 索引全量重建: {n} 向量")
+    elif sub == "query":
+        if not args.query_text:
+            print("用法: python run.py rag query 银行净息差 [--as-of 2026-08-26]")
+            return 1
+        from rag import query as rag_query
+        return rag_query.main(
+            [" ".join(args.query_text), "--as-of", args.as_of or "_",
+             "--top", str(args.top)] if args.as_of else
+            [" ".join(args.query_text), "--top", str(args.top)])
+    elif sub == "report":
+        from rag import report
+        report.run_report()
+    elif sub == "stats":
+        st = indexer.stats()
+        print(f"📚 投研知识库: {st['docs']} docs / {st['chunks']} chunks / "
+              f"{st['faiss_vectors']} 向量")
+        print(f"   主题: {', '.join(rag_cfg.THEMES)}")
+        print(f"   用法: python run.py rag ingest|index|query|report")
+    else:
+        print(f"未知 rag 子命令: {sub} (可选 ingest/index/query/report/stats)")
+        return 1
+    return 0
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):   # Windows GBK 控制台 → UTF-8 + 行缓冲（保证子进程输出顺序）
         sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
         sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
     ap = argparse.ArgumentParser(description="ai_fund_framework 统一数据管线")
     ap.add_argument("cmd", nargs="?", choices=["daily", "screen", "backtest", "all",
-                                               "status", "audit"],
+                                               "status", "audit", "rag"],
                     default=None, help="daily=净值跟踪 | screen=名单刷新 | "
-                    "backtest=权威回测 | all=全流程 | status=体检 | audit=一致性审计")
+                    "backtest=权威回测 | all=全流程 | status=体检 | audit=一致性审计 | "
+                    "rag=投研知识库(ingest/index/query/report)")
+    ap.add_argument("rag_sub", nargs="?", default=None,
+                    help="rag 子命令: ingest|index|query|report|stats")
+    ap.add_argument("query_text", nargs="*", default=None,
+                    help="rag query 的自然语言问题")
     ap.add_argument("--list", action="store_true", help="预览所有步骤（不执行）")
     ap.add_argument("--only", default=None, help="只跑指定步骤（子串匹配步骤名）")
     ap.add_argument("--continue-on-error", action="store_true")
+    ap.add_argument("--theme", default=None, help="rag ingest 主题(all 或逗号分隔)")
+    ap.add_argument("--pdf", action="store_true", help="rag ingest 拉取 csc PDF 全文")
+    ap.add_argument("--max-pdf", type=int, default=3, help="每次 ingest 的 PDF 上限")
+    ap.add_argument("--as-of", default=None, help="rag query 时点过滤 YYYY-MM-DD")
+    ap.add_argument("--top", type=int, default=8, help="rag query 返回条数")
     args = ap.parse_args()
+
+    if hasattr(sys.stdout, "reconfigure"):   # Windows GBK 控制台 → UTF-8 + 行缓冲（保证子进程输出顺序）
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
 
     print(f"解释器: {config.PY}\n工作目录: {config.ROOT}")
 
@@ -81,6 +139,9 @@ def main():
     if args.cmd == "status":
         cmd_status()
         return
+
+    if args.cmd == "rag":
+        return cmd_rag(args)
 
     steps: list = []
     if args.cmd in ("screen", "all"):

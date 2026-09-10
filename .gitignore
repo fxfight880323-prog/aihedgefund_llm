@@ -62,3 +62,9 @@ _gbm_batches/
 _bt_band_val/
 _bt_ew_daily/
 data/
+
+# RAG local store (95MB embedding model + sqlite/faiss index + raw pulls, all regenerable)
+rag/store/model/
+rag/store/rag.sqlite
+rag/store/faiss.index
+rag/store/raw/
