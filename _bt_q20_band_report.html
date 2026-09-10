@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>q20 + PB band 规避层 · 对照回测报告</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+         margin: 0; background: #f5f6f8; color: #1c2733; line-height: 1.55; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 24px; margin: 0 0 6px; }
+  .sub { color: #6b7683; font-size: 13px; margin-bottom: 20px; }
+  .concl { background: #fff; border-left: 5px solid #c0392b; padding: 18px 20px;
+           border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 20px; }
+  .concl h2 { margin: 0 0 10px; font-size: 18px; color: #c0392b; }
+  .concl p { margin: 6px 0; font-size: 14px; }
+  .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08);
+          padding: 20px; margin-bottom: 20px; }
+  .card h2 { font-size: 17px; margin: 0 0 14px; color: #1c2733; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid #e3e8ee; padding: 7px 9px; text-align: left; }
+  th { background: #f0f3f7; font-weight: 600; }
+  .r { text-align: right; font-variant-numeric: tabular-nums; }
+  .c { text-align: center; }
+  .up { color: #c0392b; font-weight: 700; }
+  .down { color: #1a7f37; font-weight: 700; }
+  .muted { color: #8895a3; font-size: 12px; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px;
+         background: #eef1f5; color: #4a5568; margin: 1px 2px; }
+  .tag.cycle { background: #fdebd0; color: #b9770e; }
+  .tag.fin { background: #e8f0fe; color: #2b6cb0; }
+  .tag.trap { background: #fadbd8; color: #c0392b; }
+  .grid { display: flex; gap: 20px; flex-wrap: wrap; }
+  .grid .card { flex: 1 1 460px; }
+  svg { display: block; margin: 0 auto; }
+  .foot { color: #8895a3; font-size: 12px; margin-top: 24px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>q20 管线 + PB band 规避层 · 对照回测</h1>
+  <div class="sub">方法：q20 排序（0.8×PE便宜度 + 0.2×质量）× 可选 mom60 gate × cap8 加权 × 可选 PB band 规避 |
+  区间 2021-08 ~ 2026-04（10 期）| 日频 + 复权 | 含成本 5bp+10bp | band 数据源 _bt_band_pb_pct.json（日频 5 年自身分位）</div>
+
+  <div class="concl">
+    <h2>结论：band 层在 40 只 Q20 口径上强正贡献（+11~16pp），建议实盘 Q20·质衡优选加 band 规避层</h2>
+    <p>① <b>40 只口径（= 实盘 Q20·质衡优选）</b>：PB&gt;90% 规避 → <b class="up">+11.4pp</b>（+118.5% → +129.9%），夏普 0.96→1.03；PB&gt;80% 规避 → <b class="up">+16.5pp</b>（→ +135.0%），夏普 1.05 且 MDD 反而从 15.6% 降到 <b class="up">14.5%</b>（全组最优）。</p>
+    <p>② <b>15 只口径（Pareto 最优 AD_top15）</b>：band 层<b>中性偏负</b>（-0.7pp ~ -5.0pp），因为 mom60 gate 已经过滤了"正在跌"的周期顶股，与 band 功能重叠。</p>
+    <p>③ 被 band 剔除的票 = <span class="tag cycle">周期高位</span>甘肃能源/电投能源/中原高速 + <span class="tag fin">金融高位</span>江苏银行/中国人保/渝农商行 + <span class="tag trap">PE陷阱</span>金科股份（PE 0.5 但 PB 分位 99.4%，地产暴雷前）。</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>top40 口径（实盘 Q20·质衡优选）</h2>
+      <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg"><text x="320.0" y="20" text-anchor="middle" font-size="14" font-weight="700" fill="#333">top40 口径 · 总收益（PB band 层增益）</text><line x1="208.0" y1="220.0" x2="432.0" y2="220.0" stroke="#999" stroke-width="1"/><rect x="218.0" y="82.6" width="52" height="137.4" rx="3" fill="#95a5a6"/><text x="244.0" y="76.6" text-anchor="middle" font-size="12" font-weight="700" fill="#333">+118.5%</text><text x="244.0" y="244.0" text-anchor="middle" font-size="10" fill="#555">A_top40</text><rect x="294.0" y="69.3" width="52" height="150.7" rx="3" fill="#e67e22"/><text x="320.0" y="63.3" text-anchor="middle" font-size="12" font-weight="700" fill="#333">+129.9%</text><text x="320.0" y="244.0" text-anchor="middle" font-size="10" fill="#555">A_top40_band90</text><rect x="370.0" y="63.5" width="52" height="156.5" rx="3" fill="#c0392b"/><text x="396.0" y="57.5" text-anchor="middle" font-size="12" font-weight="700" fill="#333">+135.0%</text><text x="396.0" y="244.0" text-anchor="middle" font-size="10" fill="#555">A_top40_band80</text></svg>
+      <table>
+        <tr><th>变体</th><th class='r'>总收益</th><th class='r'>年化</th><th class='r'>MDD</th>
+            <th class='r'>夏普</th><th class='r'>Calmar</th><th class='r'>超额EW</th></tr>
+        <tr><td>A_top40（锚点）</td><td class='r'>+118.5%</td><td class='r'>+16.7%</td>
+            <td class='r'>15.6%</td><td class='r'>0.96</td>
+            <td class='r'>1.08</td><td class='r'>+81.6pp</td></tr>
+        <tr><td>A_top40_band90（PB&gt;90%）</td><td class='r'><b class='up'>+129.9%</b></td><td class='r'>+17.9%</td>
+            <td class='r'>15.6%</td><td class='r'>1.03</td>
+            <td class='r'>1.15</td><td class='r'>+93.0pp</td></tr>
+        <tr><td>A_top40_band80（PB&gt;80%）</td><td class='r'><b class='up'>+135.0%</b></td><td class='r'>+18.4%</td>
+            <td class='r'><b class='up'>14.5%</b></td><td class='r'>1.05</td>
+            <td class='r'>1.27</td><td class='r'>+98.1pp</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>top15 口径（Pareto 最优 AD）</h2>
+      <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg"><text x="320.0" y="20" text-anchor="middle" font-size="14" font-weight="700" fill="#333">top15 口径 · 总收益（PB band 层）</text><line x1="208.0" y1="220.0" x2="432.0" y2="220.0" stroke="#999" stroke-width="1"/><rect x="218.0" y="63.5" width="52" height="156.5" rx="3" fill="#95a5a6"/><text x="244.0" y="57.5" text-anchor="middle" font-size="12" font-weight="700" fill="#333">+117.5%</text><text x="244.0" y="244.0" text-anchor="middle" font-size="10" fill="#555">AD_top15</text><rect x="294.0" y="64.4" width="52" height="155.6" rx="3" fill="#e67e22"/><text x="320.0" y="58.4" text-anchor="middle" font-size="12" font-weight="700" fill="#333">+116.8%</text><text x="320.0" y="244.0" text-anchor="middle" font-size="10" fill="#555">AD_top15_band90</text><rect x="370.0" y="70.1" width="52" height="149.9" rx="3" fill="#c0392b"/><text x="396.0" y="64.1" text-anchor="middle" font-size="12" font-weight="700" fill="#333">+112.5%</text><text x="396.0" y="244.0" text-anchor="middle" font-size="10" fill="#555">AD_top15_band80</text></svg>
+      <table>
+        <tr><th>变体</th><th class='r'>总收益</th><th class='r'>年化</th><th class='r'>MDD</th>
+            <th class='r'>夏普</th><th class='r'>Calmar</th><th class='r'>超额EW</th></tr>
+        <tr><td>AD_top15（锚点）</td><td class='r'>+117.5%</td><td class='r'>+16.6%</td>
+            <td class='r'>20.6%</td><td class='r'>1.00</td>
+            <td class='r'>0.81</td><td class='r'>+80.5pp</td></tr>
+        <tr><td>AD_top15_band90</td><td class='r'>+116.8%</td><td class='r'>+16.6%</td>
+            <td class='r'>17.9%</td><td class='r'>1.00</td>
+            <td class='r'>0.93</td><td class='r'>+79.9pp</td></tr>
+        <tr><td>AD_top15_band80</td><td class='r'>+112.5%</td><td class='r'>+16.1%</td>
+            <td class='r'>18.8%</td><td class='r'>0.97</td>
+            <td class='r'>0.86</td><td class='r'>+75.6pp</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>band 层每期剔除数量</h2>
+    <table>
+      <tr><th>变体</th><th>2021-08</th><th>2022-04</th><th>2022-08</th><th>2023-04</th><th>2023-08</th><th>2024-04</th><th>2024-08</th><th>2025-04</th><th>2025-08</th><th>2026-04</th><th class='r'>累计</th></tr>
+      <tr><td>A_top40_band90</td><td class='r'>19</td><td class='r'>1</td><td class='r'>8</td><td class='r'>15</td><td class='r'>12</td><td class='r'>20</td><td class='r'>10</td><td class='r'>6</td><td class='r'>20</td><td class='r'>10</td><td class='r'><b>121</b></td></tr><tr><td>A_top40_band80</td><td class='r'>31</td><td class='r'>12</td><td class='r'>17</td><td class='r'>29</td><td class='r'>20</td><td class='r'>34</td><td class='r'>18</td><td class='r'>14</td><td class='r'>36</td><td class='r'>22</td><td class='r'><b>233</b></td></tr><tr><td>AD_top15_band90</td><td class='r'>19</td><td class='r'>1</td><td class='r'>8</td><td class='r'>15</td><td class='r'>12</td><td class='r'>20</td><td class='r'>10</td><td class='r'>6</td><td class='r'>20</td><td class='r'>10</td><td class='r'><b>121</b></td></tr><tr><td>AD_top15_band80</td><td class='r'>31</td><td class='r'>12</td><td class='r'>17</td><td class='r'>29</td><td class='r'>20</td><td class='r'>34</td><td class='r'>18</td><td class='r'>14</td><td class='r'>36</td><td class='r'>22</td><td class='r'><b>233</b></td></tr>
+    </table>
+    <p class="muted">注：top40 口径每期池子约 200-370 只，band 剔除后仍有余量补齐 40 只（每期最终持仓均 40 只）；top15 口径 2021-08/2022-04 因 mom60 gate 历史不足 250 交易日而空仓（gate 固有属性，两变体同受影响）。</p>
+  </div>
+
+  <div class="card">
+    <h2>被 band90 从 top40 剔除的票（归因）</h2>
+    <p class="muted">这些票本来会被 q20「PE 便宜度」排进 top40，但 PB 自身 5 年分位 &gt;90%，属于"假便宜"（盈利塌陷/周期顶部导致 PE 失真极低）。</p>
+    <table>
+      <tr><th>代码</th><th>名称</th><th class='r'>PE</th><th class='r'>PB分位</th><th class='c'>出现期数</th><th>月份</th><th>归类</th></tr>
+      <tr><td>000791.SZ</td><td>甘肃能源</td><td class='r'>9.5</td><td class='r'>92.4%</td><td class='c'>2</td><td>25-04,25-08</td><td>周期高位</td></tr><tr><td>000552.SZ</td><td>甘肃能化</td><td class='r'>4.2</td><td class='r'>91.0%</td><td class='c'>1</td><td>23-04</td><td>其他</td></tr><tr><td>600938.SH</td><td>600938.SH</td><td class='r'>10.8</td><td class='r'>93.1%</td><td class='c'>1</td><td>24-04</td><td>其他</td></tr><tr><td>600919.SH</td><td>江苏银行</td><td class='r'>5.7</td><td class='r'>90.1%</td><td class='c'>1</td><td>25-04</td><td>金融高位</td></tr><tr><td>601717.SH</td><td>中创智领</td><td class='r'>8.5</td><td class='r'>96.4%</td><td class='c'>1</td><td>25-08</td><td>周期高位</td></tr><tr><td>601319.SH</td><td>中国人保</td><td class='r'>8.5</td><td class='r'>91.5%</td><td class='c'>1</td><td>25-08</td><td>其他</td></tr><tr><td>600020.SH</td><td>中原高速</td><td class='r'>10.8</td><td class='r'>92.3%</td><td class='c'>1</td><td>25-08</td><td>周期高位</td></tr><tr><td>000656.SZ</td><td>金科股份</td><td class='r'>0.5</td><td class='r'>99.4%</td><td class='c'>1</td><td>26-04</td><td>PE陷阱(地产暴雷前)</td></tr><tr><td>601077.SH</td><td>渝农商行</td><td class='r'>6.7</td><td class='r'>90.5%</td><td class='c'>1</td><td>26-04</td><td>其他</td></tr><tr><td>002128.SZ</td><td>电投能源</td><td class='r'>12.4</td><td class='r'>96.6%</td><td class='c'>1</td><td>26-04</td><td>周期高位</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>关键洞察：为什么 band 在 top40 强、在 top15 中性</h2>
+    <table>
+      <tr><th>维度</th><th>top40（纯 q20 排序）</th><th>top15（q20 + mom60 gate）</th></tr>
+      <tr><td>候选筛选</td><td>仅 PE 便宜度 + 质量</td><td>PE 便宜度 + 质量 + 60日趋势 gate</td></tr>
+      <tr><td>band 高位票暴露</td><td><b>高</b>——周期顶股 PE 失真极低，被排进前 40</td><td><b>低</b>——周期顶股通常已转跌，被 mom60 gate 提前过滤</td></tr>
+      <tr><td>band 层边际价值</td><td><b class='up'>+11~16pp（强正贡献）</b></td><td>-0.7~-5.0pp（中性偏负）</td></tr>
+      <tr><td>机制</td><td>band 精准剔除"PE 陷阱"（金科 PE 0.5/PB 99.4%）与周期顶</td><td>band 与 gate 功能重叠，且 15 只太集中，剔除后只能选次优票</td></tr>
+    </table>
+    <p class="muted">这与历史结论一致：LX-core 管线 band 层 +5.4pp（捕获能源/公用/交运周期高位股）；q20 管线 band 层增益更大（+11~16pp），因为 q20 的 PE 便宜度排序比 LX-core 的纯 PE 升序更容易纳入"盈利塌陷型 PE 陷阱"。</p>
+  </div>
+
+  <div class="card">
+    <h2>铁律对齐（docs/prompt_template_fund_framework.md）</h2>
+    <table>
+      <tr><th>#</th><th>铁律</th><th>本实验落实</th></tr>
+      <tr><td>1</td><td>真实数据</td><td>band 分位来自日频估值 parquet（非合成）</td></tr>
+      <tr><td>2</td><td>池子 = 万得全A PIT</td><td>L.PIT_DATES 10 期 PIT 成分</td></tr>
+      <tr><td>3/4</td><td>日频 + 复权</td><td>日频 bar，复权价（load_bars）</td></tr>
+      <tr><td>5/8</td><td>同口径基准 + 先对比</td><td>等权 PIT 基准 +36.9%，超额 75~98pp</td></tr>
+      <tr><td>6</td><td>零未来函数</td><td>band 窗口 [as_of-5y, as_of]，锚点 ≤ as_of 最近交易日</td></tr>
+      <tr><td>9</td><td>MDD 日频标准口径</td><td>日频全序列 (peak-trough)/peak</td></tr>
+      <tr><td>10</td><td>金融不剔除</td><td>回测管线含金融，band 只做规避层（金融高位股也被 band 捕获）</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>行动建议</h2>
+    <p>① <b>立即</b>：实盘 Q20·质衡优选（40 只）应在下次调仓日 <b>2027-04-30</b> 加 band 规避层（PB 自身 5 年分位 &gt;90% 剔除），预期超额 +11~16pp 且 MDD 不恶化。可选更严的 &gt;80% 阈值（+16.5pp / MDD 14.5%）。</p>
+    <p>② <b>不用改</b>：若未来切换到 AD_top15 集中版本，无需 band 层（mom60 gate 已覆盖该功能）。</p>
+    <p>③ <b>数据缺口</b>：q20 候选有 202 只票无日频 PB 历史（本实验按"不规避"保守处理，占最终持仓仅 5%）。若需 100% 覆盖，可用 juzi 补拉这 202 只的 5 年日频估值。</p>
+  </div>
+
+  <div class="foot">数据源：valuation 表 / _bt_band_pb_pct.json（日频 5 年自身分位）· 生成于 2026-09-08</div>
+</div>
+</body>
+</html>

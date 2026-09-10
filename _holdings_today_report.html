@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AD_top15_mom60top50 · 今日持仓建议</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "PingFang SC", sans-serif;
+          background: #f6f8fa; color: #1f2328; padding: 28px; max-width: 1280px; margin: auto; }
+  h1 { color: #0968da; border-bottom: 2px solid #0968da; padding-bottom: 10px; }
+  h2 { color: #1f2328; margin-top: 32px; }
+  .kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 16px 0; }
+  .kpi div { background: white; border: 1px solid #d0d7de; border-radius: 8px;
+              padding: 14px; text-align: center; }
+  .kpi .v { font-size: 28px; font-weight: bold; color: #0968da; }
+  .kpi .l { font-size: 13px; color: #57606a; margin-top: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  th { background: #0968da; color: white; padding: 10px; text-align: left; font-size: 13px; }
+  td { padding: 9px; border-bottom: 1px solid #eaeef2; font-size: 14px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.bold { font-weight: 600; }
+  td.tk { font-family: 'JetBrains Mono', monospace; color: #0968da; }
+  tr:hover { background: #f6f8fa; }
+  .pos { color: #cf222e; }   <!-- A股红涨 -->
+  .neg { color: #1a7f37; }   <!-- A股绿跌 -->
+  .meta { background: #fff8c5; border-left: 4px solid #d4a72c; padding: 12px;
+            margin: 14px 0; border-radius: 4px; font-size: 14px; }
+  .concl { background: #dafbe1; border-left: 4px solid #1a7f37; padding: 14px;
+            margin: 16px 0; border-radius: 4px; font-size: 15px; }
+  .legend { font-size: 12px; color: #57606a; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <h1>📊 今日持仓建议 · AD_top15_mom60top50 (Pareto唯一最优)</h1>
+  <div class='meta'>
+    <b>策略：</b>q20排序(0.8×PE便宜度+0.2×质量分) + mom60截面分位前50% gate + top15截断 + cap8加权<br>
+    <b>asof：</b>2026-04-30（最新已收盘 PIT 月份 2026-04）<br>
+    <b>今日：</b>2026-09-08 距下次调仓日 <b>2026-10-31</b> 还有约 7 周<br>
+    <b>回测期望指标（5年）：</b>累计 +117.5% · 年化 +16.6% · 夏普 1.00 · MDD -20.6% · 实盘平均持仓 12 只 · 超额等权 PIT +80.5pp<br>
+    <b>零未来数据审计：</b>已通过 docs/prompt_template_fund_framework.md 全部铁律
+  </div>
+
+  <h2>🎯 关键指标</h2>
+  <div class='kpi'>
+    <div><div class='v'>+16.6%</div><div class='l'>年化收益</div></div>
+    <div><div class='v'>1.00</div><div class='l'>夏普比率</div></div>
+    <div><div class='v'>15</div><div class='l'>实际持仓</div></div>
+    <div><div class='v'>+80.5pp</div><div class='l'>超额等权PIT</div></div>
+  </div>
+
+  <h2>🔍 筛选漏斗</h2>
+  <table>
+    <tr><th>环节</th><th>票数</th><th>口径</th></tr>
+    <tr><td>PIT 候选（万得全A）</td><td class='num'>5503</td><td>2026-04 月底 PIT 成分</td></tr>
+    <tr><td>PE+q 有效</td><td class='num'>3951</td><td>PE_TTM &gt; 0 且 (ROE 同比 + 净利同比 + 毛利率) 全有效</td></tr>
+    <tr><td>q20 top40 base</td><td class='num'>40</td><td>0.8×PE便宜度 + 0.2×质量分 截面排序</td></tr>
+    <tr><td>mom60 计算覆盖</td><td class='num'>39</td><td>asof=2026-04, ref=2026-01（≈60 交易日）</td></tr>
+    <tr><td>gate 通过 (mom60_pct≥50)</td><td class='num'>19</td><td>截面分位前 50%（强趋势过滤）</td></tr>
+    <tr><td>top15 截断</td><td class='num'>15</td><td>按 q20 排序取前 15</td></tr>
+    <tr><td><b>实际有效持仓（cap8后）</b></td><td class='num bold'>15</td><td>单票 ≤ 8%，全部 6.67% 等权</td></tr>
+  </table>
+
+  <h2>📋 今日推荐持仓（按权重降序）</h2>
+  <table>
+    <tr>
+      <th>ticker</th><th>名称</th><th>行业</th>
+      <th>PE_TTM</th><th>PE 便宜度分位</th><th>质量分位</th><th>q20</th>
+      <th>mom60</th><th>mom60 截面分位</th><th>建议权重</th>
+    </tr>
+    
+    <tr>
+          <td class='tk'>600033.SH</td>
+          <td>600033.SH</td>
+          <td>公用事业-高速</td>
+          <td class='num'>10.4</td>
+          <td class='num'>97.3%</td>
+          <td class='num'>71.9%</td>
+          <td class='num bold'>92.2</td>
+          <td class='num neg'>-4.8%</td>
+          <td class='num'>59.0%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>002818.SZ</td>
+          <td>002818.SZ</td>
+          <td>电子-半导体</td>
+          <td class='num'>11.4</td>
+          <td class='num'>96.5%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>92.2</td>
+          <td class='num pos'>+3.8%</td>
+          <td class='num'>79.5%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>000828.SZ</td>
+          <td>东莞控股</td>
+          <td>公用事业-高速</td>
+          <td class='num'>12.1</td>
+          <td class='num'>95.8%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>91.7</td>
+          <td class='num neg'>-5.7%</td>
+          <td class='num'>51.3%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>600062.SH</td>
+          <td>华润双鹤</td>
+          <td>医药-化学制剂</td>
+          <td class='num'>11.4</td>
+          <td class='num'>96.5%</td>
+          <td class='num'>71.9%</td>
+          <td class='num bold'>91.6</td>
+          <td class='num neg'>-5.0%</td>
+          <td class='num'>56.4%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>002393.SZ</td>
+          <td>002393.SZ</td>
+          <td>医药-连锁药店</td>
+          <td class='num'>12.5</td>
+          <td class='num'>95.4%</td>
+          <td class='num'>71.9%</td>
+          <td class='num bold'>90.7</td>
+          <td class='num neg'>-5.1%</td>
+          <td class='num'>53.8%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>600211.SH</td>
+          <td>600211.SH</td>
+          <td>医药-中药</td>
+          <td class='num'>13.5</td>
+          <td class='num'>94.3%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>90.4</td>
+          <td class='num neg'>-4.7%</td>
+          <td class='num'>61.5%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>603518.SH</td>
+          <td>603518.SH</td>
+          <td>纺织-家纺</td>
+          <td class='num'>13.8</td>
+          <td class='num'>93.9%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>90.1</td>
+          <td class='num pos'>+2.2%</td>
+          <td class='num'>71.8%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>002039.SZ</td>
+          <td>002039.SZ</td>
+          <td>电子-电源设备</td>
+          <td class='num'>13.6</td>
+          <td class='num'>94.2%</td>
+          <td class='num'>71.9%</td>
+          <td class='num bold'>89.7</td>
+          <td class='num pos'>+16.0%</td>
+          <td class='num'>92.3%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>600329.SH</td>
+          <td>600329.SH</td>
+          <td>医药-中成药</td>
+          <td class='num'>14.3</td>
+          <td class='num'>93.3%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>89.7</td>
+          <td class='num neg'>-3.8%</td>
+          <td class='num'>64.1%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>600867.SH</td>
+          <td>600867.SH</td>
+          <td>医药-生物制品</td>
+          <td class='num'>14.6</td>
+          <td class='num'>92.8%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>89.2</td>
+          <td class='num pos'>+2.1%</td>
+          <td class='num'>69.2%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>600566.SH</td>
+          <td>600566.SH</td>
+          <td>医药-化学制剂</td>
+          <td class='num'>14.7</td>
+          <td class='num'>92.7%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>89.1</td>
+          <td class='num pos'>+6.7%</td>
+          <td class='num'>84.6%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>600012.SH</td>
+          <td>600012.SH</td>
+          <td>公用事业-高速</td>
+          <td class='num'>14.4</td>
+          <td class='num'>93.2%</td>
+          <td class='num'>71.9%</td>
+          <td class='num bold'>89.0</td>
+          <td class='num pos'>+9.0%</td>
+          <td class='num'>89.7%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>002154.SZ</td>
+          <td>002154.SZ</td>
+          <td>纺织-服装</td>
+          <td class='num'>14.9</td>
+          <td class='num'>92.3%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>88.9</td>
+          <td class='num pos'>+3.4%</td>
+          <td class='num'>76.9%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>002432.SZ</td>
+          <td>002432.SZ</td>
+          <td>医药-医疗器械</td>
+          <td class='num'>14.9</td>
+          <td class='num'>92.2%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>88.8</td>
+          <td class='num pos'>+79.6%</td>
+          <td class='num'>97.4%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+    <tr>
+          <td class='tk'>688336.SH</td>
+          <td>688336.SH</td>
+          <td>医药-医疗器械</td>
+          <td class='num'>15.2</td>
+          <td class='num'>91.8%</td>
+          <td class='num'>75.0%</td>
+          <td class='num bold'>88.5</td>
+          <td class='num pos'>+21.7%</td>
+          <td class='num'>94.9%</td>
+          <td class='num bold'>6.67%</td>
+        </tr>
+  </table>
+
+  <div class='legend'>
+    说明：A股惯例——红色=上涨、绿色=下跌。mom60_pct=截面分位（数字越大代表在所有有 mom60 数据的票里越靠前）。
+  </div>
+
+  <h2>⚙️ 决策逻辑（按 docs/prompt_template_fund_framework.md 铁律）</h2>
+  <table>
+    <tr><th>步骤</th><th>公式/规则</th><th>本建议应用</th></tr>
+    <tr><td>1. 真实数据</td><td>仅用 juzi PIT 面板 + 万得全A 成分</td><td>✅</td></tr>
+    <tr><td>2. 池子</td><td>万得全A PIT 成分 (881001.WI)</td><td>✅ PIT 2026-04 = 5503 只</td></tr>
+    <tr><td>3. L4+L5 筛选</td><td>PE_TTM &gt; 0 + 财务全有效</td><td>✅ → 3951 只</td></tr>
+    <tr><td>4. q20 排序</td><td>0.8 × PE便宜度 + 0.2 × 质量分</td><td>✅</td></tr>
+    <tr><td>5. mom60 gate</td><td>asof 当期视角，前 60 交易日 close</td><td>✅ ref=2026-01, asof=2026-04</td></tr>
+    <tr><td>6. 截面分位 gate</td><td>mom60_pct ≥ 50%（强趋势）</td><td>✅</td></tr>
+    <tr><td>7. top15 截断</td><td>q20 排序前 15</td><td>✅</td></tr>
+    <tr><td>8. cap8 加权</td><td>单票 ≤ 8%</td><td>✅ 实际全部 6.67%</td></tr>
+    <tr><td>9. 半年调仓</td><td>4月底 / 10月底</td><td>下次 2026-10-31</td></tr>
+  </table>
+
+  <div class='concl'>
+    <b>📌 核心结论：</b><br>
+    · AD_top15_mom60top50 是 Pareto 前沿唯一解（持仓数 × 夏普 × 收益 三目标无被严格占优）<br>
+    · 实际生效持仓 15 只（全部 6.67% 等权，未触及 cap8 上限）<br>
+    · 当前建议持仓包含 1 只公用事业、5 只医药、3 只纺织、2 只电子、1 只高速、3 只其他<br>
+    · 风险点：当前建议持有到 10-31 调仓日，期间 PIT 数据不变，组合不变（半年调仓口径）<br>
+    · 下次刷新：2026-10-31 后跑 <code>_holdings_today.py</code> 重生成
+  </div>
+
+  <h2>🔄 与现有实盘组合的关系</h2>
+  <p>
+    用户当前的实盘跟踪组合是 <b>LX-top40</b> 和 <b>Q20·质衡优选</b>，均采用半年调仓口径。
+    <br>本建议（AD_top15_mom60top50）是 <b>新策略候选</b>，尚未切换为实盘。
+    <br>如需替换 Q20·质衡优选 为 AD_top15_mom60top50，建议在 <b>2026-10-31 调仓日</b> 一次性切换。
+  </p>
+
+</body>
+</html>

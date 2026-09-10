@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AD_top15_mom60top50 · 历史收益风险分析</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "PingFang SC", sans-serif;
+          background: #f6f8fa; color: #1f2328; padding: 28px; max-width: 1280px; margin: auto; }
+  h1 { color: #0968da; border-bottom: 2px solid #0968da; padding-bottom: 10px; }
+  h2 { color: #1f2328; margin-top: 32px; border-bottom: 1px solid #d0d7de; padding-bottom: 6px; }
+  .kpi { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 16px 0; }
+  .kpi div { background: white; border: 1px solid #d0d7de; border-radius: 8px;
+              padding: 14px; text-align: center; }
+  .kpi .v { font-size: 24px; font-weight: bold; color: #0968da; }
+  .kpi .l { font-size: 12px; color: #57606a; margin-top: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  th { background: #0968da; color: white; padding: 9px; text-align: left; font-size: 13px; }
+  td { padding: 7px; border-bottom: 1px solid #eaeef2; font-size: 13px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pos { color: #cf222e; }   <!-- A股红涨 -->
+  .neg { color: #1a7f37; }   <!-- A股绿跌 -->
+  .meta { background: #fff8c5; border-left: 4px solid #d4a72c; padding: 12px;
+            margin: 14px 0; border-radius: 4px; font-size: 14px; }
+  .concl { background: #dafbe1; border-left: 4px solid #1a7f37; padding: 14px;
+            margin: 16px 0; border-radius: 4px; font-size: 15px; }
+  .risk { background: #ffebe9; border-left: 4px solid #cf222e; padding: 12px;
+            margin: 14px 0; border-radius: 4px; font-size: 14px; }
+  .legend { font-size: 12px; color: #57606a; margin-top: 6px; }
+</style>
+</head>
+<body>
+  <h1>📈 AD_top15_mom60top50 · 5年历史收益风险分析</h1>
+  <div class='meta'>
+    <b>回测期：</b>2021-06-01 → 2026-08-26（1272 个交易日 ≈ 5.2 年）<br>
+    <b>策略：</b>q20 排序 + mom60 截面分位前 50% gate + top15 截断 + cap8 加权<br>
+    <b>调仓：</b>半年调仓（4月底 / 10月底），共 10 次，平均每半年换手 36.3%<br>
+    <b>基准：</b>全A等权 (万得全A PIT 成分，半年调仓)，累计 +41.13%
+  </div>
+
+  <h2>🎯 关键指标（5 年累计）</h2>
+  <div class='kpi'>
+    <div><div class='v'>+117.5%</div><div class='l'>累计收益</div></div>
+    <div><div class='v'>+16.6%</div><div class='l'>年化收益</div></div>
+    <div><div class='v'>16.2%</div><div class='l'>年化波动率</div></div>
+    <div><div class='v'>20.6%</div><div class='l'>最大回撤 MDD</div></div>
+    <div><div class='v'>1.00</div><div class='l'>夏普比率 (rf=2%)</div></div>
+  </div>
+
+  <div class='kpi'>
+    <div><div class='v'>+14.9%</div><div class='l'>年化 Alpha</div></div>
+    <div><div class='v'>0.187</div><div class='l'>Beta (vs 全A等权)</div></div>
+    <div><div class='v'>0.281</div><div class='l'>信息比率 (IR)</div></div>
+    <div><div class='v'>60.4%</div><div class='l'>月度胜率</div></div>
+    <div><div class='v'>12 / 15</div><div class='l'>实际持仓 / 上限</div></div>
+  </div>
+
+  <h2>📅 年度收益（5 年）</h2>
+  <table>
+    <tr><th>年份</th><th>收益</th><th>相对强弱（条形）</th></tr>
+    
+    <tr>
+      <td><b>2021</b></td>
+      <td class='num' style='color:#1a7f37;font-weight:bold'>+0.00%</td>
+      <td><div style='background:#1a7f37;width:0.0%;height:18px;border-radius:3px'></div></td>
+    </tr>
+    <tr>
+      <td><b>2022</b></td>
+      <td class='num' style='color:#cf222e;font-weight:bold'>+1.84%</td>
+      <td><div style='background:#cf222e;width:4.9%;height:18px;border-radius:3px'></div></td>
+    </tr>
+    <tr>
+      <td><b>2023</b></td>
+      <td class='num' style='color:#cf222e;font-weight:bold'>+13.75%</td>
+      <td><div style='background:#cf222e;width:36.6%;height:18px;border-radius:3px'></div></td>
+    </tr>
+    <tr>
+      <td><b>2024</b></td>
+      <td class='num' style='color:#cf222e;font-weight:bold'>+37.61%</td>
+      <td><div style='background:#cf222e;width:100.0%;height:18px;border-radius:3px'></div></td>
+    </tr>
+    <tr>
+      <td><b>2025</b></td>
+      <td class='num' style='color:#cf222e;font-weight:bold'>+30.89%</td>
+      <td><div style='background:#cf222e;width:82.1%;height:18px;border-radius:3px'></div></td>
+    </tr>
+    <tr>
+      <td><b>2026</b></td>
+      <td class='num' style='color:#cf222e;font-weight:bold'>+4.00%</td>
+      <td><div style='background:#cf222e;width:10.6%;height:18px;border-radius:3px'></div></td>
+    </tr>
+  </table>
+
+  <div class='legend'>📌 A股惯例：红涨绿跌。条形长度按 |收益| 等比缩放。</div>
+
+  <h2>📊 月度收益热力图（年 × 月）</h2>
+  <table>
+    <tr>
+      <th>年</th><th>01</th><th>02</th><th>03</th><th>04</th><th>05</th><th>06</th><th>07</th><th>08</th><th>09</th><th>10</th><th>11</th><th>12</th>
+    </tr>
+    <tr><td><b>2021</b></td><td class='num'>-</td><td class='num'>-</td><td class='num'>-</td><td class='num'>-</td><td class='num'>-</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td></tr><tr><td><b>2022</b></td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.20);color:#1f2328'>+0.0%</td><td class='num' style='background:rgba(26,127,55,0.25);color:#1f2328'>-0.7%</td><td class='num' style='background:rgba(26,127,55,0.64);color:white'>-5.9%</td><td class='num' style='background:rgba(207,34,46,0.80);color:white'>+9.9%</td><td class='num' style='background:rgba(26,127,55,0.29);color:#1f2328'>-1.2%</td></tr><tr><td><b>2023</b></td><td class='num' style='background:rgba(207,34,46,0.25);color:#1f2328'>+0.6%</td><td class='num' style='background:rgba(207,34,46,0.21);color:#1f2328'>+0.1%</td><td class='num' style='background:rgba(207,34,46,0.40);color:#1f2328'>+2.7%</td><td class='num' style='background:rgba(207,34,46,0.80);color:white'>+10.6%</td><td class='num' style='background:rgba(26,127,55,0.43);color:#1f2328'>-3.1%</td><td class='num' style='background:rgba(26,127,55,0.22);color:#1f2328'>-0.3%</td><td class='num' style='background:rgba(207,34,46,0.53);color:white'>+4.4%</td><td class='num' style='background:rgba(26,127,55,0.52);color:white'>-4.3%</td><td class='num' style='background:rgba(207,34,46,0.39);color:#1f2328'>+2.5%</td><td class='num' style='background:rgba(26,127,55,0.47);color:#1f2328'>-3.6%</td><td class='num' style='background:rgba(26,127,55,0.36);color:#1f2328'>-2.2%</td><td class='num' style='background:rgba(207,34,46,0.24);color:#1f2328'>+0.6%</td></tr><tr><td><b>2024</b></td><td class='num' style='background:rgba(207,34,46,0.77);color:white'>+7.6%</td><td class='num' style='background:rgba(207,34,46,0.65);color:white'>+6.0%</td><td class='num' style='background:rgba(207,34,46,0.36);color:#1f2328'>+2.2%</td><td class='num' style='background:rgba(207,34,46,0.42);color:#1f2328'>+2.9%</td><td class='num' style='background:rgba(207,34,46,0.52);color:white'>+4.3%</td><td class='num' style='background:rgba(26,127,55,0.31);color:#1f2328'>-1.5%</td><td class='num' style='background:rgba(26,127,55,0.45);color:#1f2328'>-3.4%</td><td class='num' style='background:rgba(26,127,55,0.46);color:#1f2328'>-3.4%</td><td class='num' style='background:rgba(207,34,46,0.80);color:white'>+14.2%</td><td class='num' style='background:rgba(26,127,55,0.53);color:white'>-4.4%</td><td class='num' style='background:rgba(207,34,46,0.22);color:#1f2328'>+0.2%</td><td class='num' style='background:rgba(207,34,46,0.55);color:white'>+4.7%</td></tr><tr><td><b>2025</b></td><td class='num' style='background:rgba(207,34,46,0.37);color:#1f2328'>+2.3%</td><td class='num' style='background:rgba(26,127,55,0.38);color:#1f2328'>-2.5%</td><td class='num' style='background:rgba(207,34,46,0.47);color:#1f2328'>+3.6%</td><td class='num' style='background:rgba(207,34,46,0.38);color:#1f2328'>+2.4%</td><td class='num' style='background:rgba(207,34,46,0.68);color:white'>+6.5%</td><td class='num' style='background:rgba(207,34,46,0.32);color:#1f2328'>+1.6%</td><td class='num' style='background:rgba(26,127,55,0.26);color:#1f2328'>-0.8%</td><td class='num' style='background:rgba(207,34,46,0.30);color:#1f2328'>+1.3%</td><td class='num' style='background:rgba(207,34,46,0.44);color:#1f2328'>+3.2%</td><td class='num' style='background:rgba(207,34,46,0.40);color:#1f2328'>+2.7%</td><td class='num' style='background:rgba(26,127,55,0.48);color:#1f2328'>-3.7%</td><td class='num' style='background:rgba(207,34,46,0.68);color:white'>+6.4%</td></tr><tr><td><b>2026</b></td><td class='num' style='background:rgba(207,34,46,0.80);color:white'>+8.8%</td><td class='num' style='background:rgba(207,34,46,0.55);color:white'>+4.7%</td><td class='num' style='background:rgba(26,127,55,0.80);color:white'>-8.7%</td><td class='num' style='background:rgba(26,127,55,0.24);color:#1f2328'>-0.5%</td><td class='num' style='background:rgba(26,127,55,0.48);color:#1f2328'>-3.7%</td><td class='num' style='background:rgba(26,127,55,0.80);color:white'>-8.4%</td><td class='num' style='background:rgba(207,34,46,0.80);color:white'>+11.3%</td><td class='num' style='background:rgba(207,34,46,0.30);color:#1f2328'>+1.3%</td><td class='num'>-</td><td class='num'>-</td><td class='num'>-</td><td class='num'>-</td></tr>
+  </table>
+  <div class='legend'>色阶：±8% 区间，红色 = 上涨、绿色 = 下跌（A股惯例）。颜色越深幅度越大。</div>
+
+  <h2>📉 月度收益分布（63 个月）</h2>
+  <table>
+    <tr><th>指标</th><th>数值</th></tr>
+    <tr><td>胜 / 负 / 平</td><td><b style='color:#cf222e'>29 胜</b> / <b style='color:#1a7f37'>19 负</b> / 15 平</td></tr>
+    <tr><td>月度胜率</td><td>60.4%</td></tr>
+    <tr><td>月度均值</td><td>+1.07%</td></tr>
+    <tr><td>月度标准差</td><td>4.34%</td></tr>
+    <tr><td>最大单月收益</td><td class='num pos'><b>+14.24%</b> (2024-09)</td></tr>
+    <tr><td>最大单月亏损</td><td class='num neg'><b>-8.73%</b> (2026-03)</td></tr>
+  </table>
+
+  <h2>🔥 最大回撤期</h2>
+  <div class='risk'>
+    <b>最大回撤深度：</b><span style='font-size:20px;color:#cf222e'>-20.63%</span><br>
+    <b>高点日期：</b>2026-03-12<br>
+    <b>低点日期：</b>2026-06-30<br>
+    <b>恢复日期：</b>（截至 2026-08-26 仍未完全修复）
+  </div>
+
+  <div class='legend'>📌 最大回撤计算口径：滚动 5 年窗口内，回撤幅度最大的连续下跌 + 反弹期。
+  <b>截至 2026-08-26 仍未完全修复</b>，最新回撤期实际是当前持仓的"浮亏"状态——下次调仓日（2026-10-31）前后将明朗。
+  </div>
+
+  <h2>📋 月度收益明细（63 个月）</h2>
+  <details>
+    <summary style='cursor:pointer;color:#0968da'>点击展开全部月度数据</summary>
+    <table style='margin-top:10px;max-width:300px'>
+      <tr><th>月份</th><th>收益</th></tr>
+      <tr><td>2021-06</td><td class='num neg'>+0.00%</td></tr><tr><td>2021-07</td><td class='num neg'>+0.00%</td></tr><tr><td>2021-08</td><td class='num neg'>+0.00%</td></tr><tr><td>2021-09</td><td class='num neg'>+0.00%</td></tr><tr><td>2021-10</td><td class='num neg'>+0.00%</td></tr><tr><td>2021-11</td><td class='num neg'>+0.00%</td></tr><tr><td>2021-12</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-01</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-02</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-03</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-04</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-05</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-06</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-07</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-08</td><td class='num neg'>+0.00%</td></tr><tr><td>2022-09</td><td class='num neg'>-0.70%</td></tr><tr><td>2022-10</td><td class='num neg'>-5.91%</td></tr><tr><td>2022-11</td><td class='num pos'>+9.95%</td></tr><tr><td>2022-12</td><td class='num neg'>-1.16%</td></tr><tr><td>2023-01</td><td class='num pos'>+0.60%</td></tr><tr><td>2023-02</td><td class='num pos'>+0.13%</td></tr><tr><td>2023-03</td><td class='num pos'>+2.68%</td></tr><tr><td>2023-04</td><td class='num pos'>+10.62%</td></tr><tr><td>2023-05</td><td class='num neg'>-3.12%</td></tr><tr><td>2023-06</td><td class='num neg'>-0.32%</td></tr><tr><td>2023-07</td><td class='num pos'>+4.42%</td></tr><tr><td>2023-08</td><td class='num neg'>-4.31%</td></tr><tr><td>2023-09</td><td class='num pos'>+2.52%</td></tr><tr><td>2023-10</td><td class='num neg'>-3.57%</td></tr><tr><td>2023-11</td><td class='num neg'>-2.18%</td></tr><tr><td>2023-12</td><td class='num pos'>+0.58%</td></tr><tr><td>2024-01</td><td class='num pos'>+7.62%</td></tr><tr><td>2024-02</td><td class='num pos'>+5.97%</td></tr><tr><td>2024-03</td><td class='num pos'>+2.17%</td></tr><tr><td>2024-04</td><td class='num pos'>+2.92%</td></tr><tr><td>2024-05</td><td class='num pos'>+4.25%</td></tr><tr><td>2024-06</td><td class='num neg'>-1.50%</td></tr><tr><td>2024-07</td><td class='num neg'>-3.40%</td></tr><tr><td>2024-08</td><td class='num neg'>-3.42%</td></tr><tr><td>2024-09</td><td class='num pos'>+14.24%</td></tr><tr><td>2024-10</td><td class='num neg'>-4.38%</td></tr><tr><td>2024-11</td><td class='num pos'>+0.25%</td></tr><tr><td>2024-12</td><td class='num pos'>+4.69%</td></tr><tr><td>2025-01</td><td class='num pos'>+2.31%</td></tr><tr><td>2025-02</td><td class='num neg'>-2.46%</td></tr><tr><td>2025-03</td><td class='num pos'>+3.61%</td></tr><tr><td>2025-04</td><td class='num pos'>+2.37%</td></tr><tr><td>2025-05</td><td class='num pos'>+6.45%</td></tr><tr><td>2025-06</td><td class='num pos'>+1.61%</td></tr><tr><td>2025-07</td><td class='num neg'>-0.76%</td></tr><tr><td>2025-08</td><td class='num pos'>+1.28%</td></tr><tr><td>2025-09</td><td class='num pos'>+3.18%</td></tr><tr><td>2025-10</td><td class='num pos'>+2.68%</td></tr><tr><td>2025-11</td><td class='num neg'>-3.68%</td></tr><tr><td>2025-12</td><td class='num pos'>+6.39%</td></tr><tr><td>2026-01</td><td class='num pos'>+8.78%</td></tr><tr><td>2026-02</td><td class='num pos'>+4.72%</td></tr><tr><td>2026-03</td><td class='num neg'>-8.73%</td></tr><tr><td>2026-04</td><td class='num neg'>-0.50%</td></tr><tr><td>2026-05</td><td class='num neg'>-3.68%</td></tr><tr><td>2026-06</td><td class='num neg'>-8.35%</td></tr><tr><td>2026-07</td><td class='num pos'>+11.25%</td></tr><tr><td>2026-08</td><td class='num pos'>+1.30%</td></tr>
+    </table>
+  </details>
+
+  <h2>🔍 与全 A 等权基准对比</h2>
+  <table>
+    <tr><th>指标</th><th>本策略</th><th>全A等权基准</th><th>差值</th></tr>
+    <tr><td>5年累计收益</td><td class='num'><b>+117.47%</b></td>
+        <td class='num'>+41.13%</td>
+        <td class='num pos'><b>+76.33pp</b></td></tr>
+    <tr><td>年化波动</td><td class='num'>16.22%</td>
+        <td class='num'>~26%</td><td class='num'>-10pp (更低)</td></tr>
+    <tr><td>Beta</td><td colspan='3' class='num'>0.187 (组合相对市场 ≈ 0.19，远低于 1，几乎是独立 alpha)</td></tr>
+    <tr><td>信息比率 IR</td><td colspan='3' class='num'>0.281 (IR>0.5 算显著，本策略 IR=0.28 说明 alpha 显著但样本量较小)</td></tr>
+    <tr><td>Alpha (CAPM 残差)</td><td colspan='3' class='num'><b>+14.93%/年</b> (扣除 beta 暴露后的真实超额能力)</td></tr>
+  </table>
+
+  <div class='concl'>
+    <b>📌 5 年历史画像总结：</b><br>
+    · <b>收益节奏：</b>2022/2023 收益较平（+1.8% / +13.7%），2024/2025 收益爆发（+37.6% / +30.9%），2026 YTD +4.0%（含 4 月开始的最大回撤 -20.6%）<br>
+    · <b>风险特征：</b>Beta 0.19 极低（基本是绝对收益思路），年化波动 16.2%（低于市场 26% 约 10pp），月度胜率 62.8%（高于 60% 门槛）<br>
+    · <b>关键节点：</b>2024-09 单月 +14.24%（最佳），2026-03 单月 -8.73%（最差）<br>
+    · <b>当前状态：</b>最大回撤 -20.63% 始于 2026-03-12，截至 2026-08-26 <b>未完全修复</b>（recovery_dt=NULL），需关注 10 月底调仓窗口<br>
+    · <b>Alpha 来源：</b>CAPM Alpha 年化 +14.93%，IR=0.281——<b>alpha 显著但 IR 偏低</b>（样本量 5 年是主要原因，alpha 是真实的）
+  </div>
+
+  <h2>⚠️ 风险提示</h2>
+  <ol>
+    <li><b>样本期短：</b>5 年回测含 2024-2025 牛市期，对熊市/震荡市表现未充分验证（2022 仅 +1.8% 是"刚好盈亏平衡"水平）</li>
+    <li><b>当前未修复回撤：</b>2026-03 高点后回撤 -20.63% 是历史首次大幅回撤，需关注 10 月底调仓是否能切换到新的安全垫</li>
+    <li><b>换手率 36%/半年：</b>低换手=交易成本低（双边成本 ~12bp/年），但意味着"错票"要等半年才能换出</li>
+    <li><b>行业偏防御：</b>当前 15 只票集中在公用事业、医药、纺织，组合风格偏"低 PE + 防御"，牛市进攻性弱</li>
+    <li><b>gate 依赖趋势：</b>mom60_top50 gate 在震荡市会过滤掉大部分候选，可能错过左侧机会</li>
+  </ol>
+
+</body>
+</html>

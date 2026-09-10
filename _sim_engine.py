@@ -42,6 +42,11 @@ FEE = 0.0015                      # 单边 15bp（佣金5bp + 冲击10bp，与�
 BM_CODE = "sh000985"              # 中证全指（价格指数）
 BM_NAME = "中证全指"
 
+# 直连 opener：腾讯行情为国内接口，无需代理。
+# 2026-09-04 修复：urllib 默认跟随 Windows 系统代理（127.0.0.1:7890），
+# 代理未运行时全部请求 WinError 10061（连续 4 天卡净值更新）。
+_DIRECT = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
 
 def tx_code(code: str) -> str:
     """'002170.SZ' -> 'sz002170'"""
@@ -72,7 +77,7 @@ def fetch_quotes(tcodes, retries=3):
         for attempt in range(retries):
             try:
                 req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-                raw = urllib.request.urlopen(req, timeout=20).read().decode("gbk", errors="replace")
+                raw = _DIRECT.open(req, timeout=20).read().decode("gbk", errors="replace")
                 break
             except Exception:
                 if attempt == retries - 1:

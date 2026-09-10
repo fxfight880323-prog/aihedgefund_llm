@@ -6,7 +6,8 @@
          pe_pct  = 100 − 池内PE百分位（PE 越低越高）
          q_score = (gpm_pct + roe_pct + cet_pct) / 3  池内百分位均值
          q20     = 0.8*pe_pct + 0.2*q_score  → top40
-band: juzi 5年日频估值 → PB/PE 自身历史分位（规避>90% / 确认双低<30%）
+band: juzi 5年日频估值 → PB/PE 自身历史分位（规避>WARN_PB 默认90 / 确认双低<30%）
+      阈值可 --warn-pb 覆盖：80 更严（回测 +16.5pp / MDD14.5%，样本内），90 稳健（+11.4pp）
 替补: 规避股按 q20 排名顺位递补（band 规避层回测正贡献）
 输出: _bt_q20_kfin.json / _bt_q20_kfin.html
 """
@@ -26,7 +27,7 @@ OUT_HTML = BASE + "_bt_q20_kfin.html"
 
 MAX_HOLDINGS = 40
 BENCH_DEPTH = 30          # q20 替补深度（排名 41~70）
-WARN_PB = 90
+WARN_PB = 90              # band 规避阈值（PB 5年分位>WARN_PB 剔除），可 --warn-pb 覆盖
 SAFE_PCT = 30
 
 sys.path.insert(0, BASE)
@@ -55,6 +56,14 @@ def pct_rank(values, v):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser(description="q20 名单管线（含 band 规避层）")
+    ap.add_argument("--warn-pb", type=int, default=90,
+                    help="PB 5年分位规避阈值（默认90；可选更严80，回测 +16.5pp/MDD14.5%%）")
+    args = ap.parse_args()
+    global WARN_PB
+    WARN_PB = args.warn_pb
+
     d = json.load(open(SRC, encoding="utf-8"))
     as_of = d["as_of"]
     rows = d["all"]                       # 221 只 core-pass（PE 升序）
@@ -171,6 +180,7 @@ def main():
     out = {
         "as_of": as_of,
         "pool_n": len(rows),
+        "warn_pb": WARN_PB,
         "pool_desc": "万得全A PIT 含金融 core-pass（mv≥100亿 / PE>0 / L4 / L5-garp）",
         "fac_asof": FAC_ASOF + "(最后健康日,前向填充)",
         "cons_asof": CONS_ASOF,
@@ -289,7 +299,7 @@ tr.add td{{background:#e8f5e9}} tr.drop td{{background:#fce4ec}}
 <div class="kpi"><b>40</b><span>q20 top40 等权 2.5%</span></div>
 <div class="kpi"><b style="color:#7c3aed">{m['n_bank']}</b><span>最终建议·银行</span></div>
 <div class="kpi"><b style="color:#7c3aed">{m['n_nonbk']}</b><span>最终建议·非银</span></div>
-<div class="kpi"><b style="color:#c0392b">{m['n_avoid_q20']}</b><span>规避剔除（PB分位&gt;90%）</span></div>
+<div class="kpi"><b style="color:#c0392b">{m['n_avoid_q20']}</b><span>规避剔除（PB分位&gt;{WARN_PB}%）</span></div>
 <div class="kpi"><b style="color:#16a34a">{m['n_confirm_final']}</b><span>双低确认标记</span></div>
 </div>
 
@@ -301,7 +311,7 @@ tr.add td{{background:#e8f5e9}} tr.drop td{{background:#fce4ec}}
 · 回测验证（剔金融口径 core_finex，2021-08~2026-04 日频复权）：q20 相对纯PE基线
 <b>+3.40pp</b>、回撤持平，为质量放松的唯一正贡献用法；<b>含金融口径下增量未单独回测</b>，
 本名单为 q20 排序层在核心管线（core +55.55% / MDD -19.13%）上的落地展示。<br>
-· band 规避层（PB 5年分位 &gt; 90% 剔除，回测 finex +29.45%→+34.48%）：红底=规避，绿底=PE&amp;PB 双低确认。
+· band 规避层（PB 5年分位 &gt; {WARN_PB}% 剔除，回测 finex +29.45%→+34.48%）：红底=规避，绿底=PE&amp;PB 双低确认。
 </div>
 
 <h2>① q20 top40 · 8月调仓建议（等权 2.5%）</h2>
@@ -313,7 +323,7 @@ tr.add td{{background:#e8f5e9}} tr.drop td{{background:#fce4ec}}
 </table>
 
 <h2>② 最终调仓名单（q20 剔除规避标记 → q20 替补池顺位递补）</h2>
-<p class="sub">规避标记股 = PB 处于自身 5 年 90% 分位以上（横截面便宜但自身历史高位），建议降仓或递补。
+<p class="sub">规避标记股 = PB 处于自身 5 年 {WARN_PB}% 分位以上（横截面便宜但自身历史高位），建议降仓或递补。
 银行 {m['n_bank']} + 非银 {m['n_nonbk']} + 非金融 {40-m['n_bank']-m['n_nonbk']}。</p>
 <table>
 <tr><th>#</th><th>名称</th><th>代码</th><th>现价</th><th>市值(亿)</th>

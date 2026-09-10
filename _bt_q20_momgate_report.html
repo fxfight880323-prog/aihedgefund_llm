@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>路径D · 双信号 gate</title>
+<style>
+:root { --bg:#f5f6f8; --card:#fff; --ink:#1a1d24; --sub:#6b7280;
+        --line:#e5e7eb; --red:#c0392b; --green:#1e8449; --blue:#1f5fa8; --amber:#d97706; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;
+       background:var(--bg); color:var(--ink); padding:32px 20px; line-height:1.65; }
+.wrap { max-width:1080px; margin:0 auto; }
+h1 { font-size:26px; margin-bottom:6px; }
+.sub { color:var(--sub); font-size:14px; margin-bottom:28px; }
+h2 { font-size:20px; margin:34px 0 14px; padding-left:10px; border-left:4px solid var(--blue); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+        padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; margin:10px 0; }
+th, td { padding:8px 10px; text-align:right; border-bottom:1px solid var(--line); }
+th { background:#fafbfc; font-weight:600; color:var(--sub); white-space:nowrap; }
+td:first-child, th:first-child { text-align:left; }
+.pos { color:var(--red); font-weight:600; }
+.neg { color:var(--green); font-weight:600; }
+.concl { background:#eef4fb; border-left:4px solid var(--blue); padding:16px 18px;
+         border-radius:8px; margin:14px 0; }
+.concl b { color:var(--blue); }
+.warn { background:#fdf2f2; border-left:4px solid var(--red); padding:14px 18px;
+         border-radius:8px; margin:14px 0; }
+.warn b { color:var(--red); }
+.good { background:#eefaf1; border-left:4px solid var(--green); padding:14px 18px;
+         border-radius:8px; margin:14px 0; }
+.good b { color:var(--green); }
+.amber { background:#fff7ed; border-left:4px solid var(--amber); padding:14px 18px;
+         border-radius:8px; margin:14px 0; }
+.amber b { color:var(--amber); }
+.kv { display:flex; justify-content:space-between; padding:6px 0;
+       border-bottom:1px dashed var(--line); font-size:14px; }
+.kv:last-child { border-bottom:none; }
+.kv .k { color:var(--sub); }
+.kv .v { font-weight:500; }
+.small { color:var(--sub); font-size:12.5px; }
+ul { margin:8px 0 8px 22px; }
+li { margin:5px 0; }
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>路径D · 双信号 gate（q20 + 动量/趋势）</h1>
+<div class="sub">运行 2026-09-07T23:56:57 · 基座 full(含金融) · 日频+复权 · 5bp+10bp · q20 × cap8 × top20</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">实验设定</h3>
+  <div class="kv"><span class="k">基线锚点</span><span class="v">路径B q20_top20 = +97.0% / MDD -18.4%</span></div>
+  <div class="kv"><span class="k">变量</span><span class="v">5 套 gate（动量 / 趋势 / 新高距离）</span></div>
+  <div class="kv"><span class="k">不变项</span><span class="v">q20 排序、cap8 加权、top20 截断、半年调仓</span></div>
+  <div class="kv"><span class="k">无未来</span><span class="v">✅ gate 信号全部基于 as_of 当日及之前价格</span></div>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">结论 · 两个方向各有最优</h3>
+
+  <div class="good">
+    <b>✅ q20_mom60_top50：收益最高变体</b>
+    <ul style="margin-top:8px;">
+      <li>总收益 <b>+99.1%</b>（Δ +2.1pp vs 锚点）</li>
+      <li>年化 +14.6%</li>
+      <li>2024-2026 后期 <b>+73.3%</b>（早期+14.9%，分布改善）</li>
+      <li>逻辑：要求 60 日动量在截面前 50%，相当于"在已便宜的票里选还在涨的"</li>
+    </ul>
+  </div>
+
+  <div class="amber">
+    <b>⚠️ q20_breakout250：MDD 最低变体</b>
+    <ul style="margin-top:8px;">
+      <li>MDD 仅 <b>+13.8%</b>（锚点 -18.4%，改善 -4.6pp）</li>
+      <li>总收益 +91.7%（Δ -5.2pp，但 MDD 改善覆盖了收益下降）</li>
+      <li>2021-2023 早期 <b>+19.8%</b>（路径里最稳健的早期）</li>
+      <li>逻辑：要求 250 日新高 ≥ 80%，过滤掉"超跌反弹陷阱"</li>
+    </ul>
+  </div>
+
+  <div class="warn">
+    <b>❌ 其他 gate 方向负贡献</b>
+    <ul style="margin-top:8px;">
+      <li>单纯 mom60>0 / mom120>0 / breakout120 都是 -20pp 到 -37pp，<b>绝对动量门控过严</b></li>
+      <li>所有变体实际持仓都从 20 → 16（gate 通过率 60-90 只，top20 取得到 16 只），MDD 改善但收益补偿不够</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">汇总表</h3>
+  <table>
+    <tr>
+      <th>变体</th><th>gate 通过</th><th>年化</th><th>总收益</th><th>MDD</th>
+      <th>持仓</th><th>N_eff</th><th>top3</th><th>依赖度</th>
+    </tr>
+    
+<tr>
+  <td><b>+ mom60>0（60日上涨）</b></td>
+  <td>71.7</td>
+  <td>+11.3%</td>
+  <td>+71.4% <span class="small">(Δ -25.5pp)</span></td>
+  <td>+18.7%</td>
+  <td>16.0</td>
+  <td>19.1</td>
+  <td>+19.2%</td>
+  <td>0.58</td>
+</tr>
+<tr>
+  <td><b>+ mom120>0（120日上涨）</b></td>
+  <td>78.6</td>
+  <td>+9.8%</td>
+  <td>+60.0% <span class="small">(Δ -37.0pp)</span></td>
+  <td>+17.0%</td>
+  <td>16.0</td>
+  <td>19.4</td>
+  <td>+19.2%</td>
+  <td>0.69</td>
+</tr>
+<tr>
+  <td><b>+ mom60 截面分位 > 50%（动量前 50%）</b></td>
+  <td>75.7</td>
+  <td>+14.6%</td>
+  <td>+99.1% <span class="small">(Δ +2.1pp)</span></td>
+  <td>+21.6%</td>
+  <td>16.0</td>
+  <td>19.4</td>
+  <td>+19.2%</td>
+  <td>0.50</td>
+</tr>
+<tr>
+  <td><b>+ 当前价 / 250日高 ≥ 80%</b></td>
+  <td>86.9</td>
+  <td>+13.8%</td>
+  <td>+91.7% <span class="small">(Δ -5.2pp)</span></td>
+  <td>+13.8%</td>
+  <td>16.0</td>
+  <td>19.4</td>
+  <td>+19.2%</td>
+  <td>0.50</td>
+</tr>
+<tr>
+  <td><b>+ 当前价 / 120日高 ≥ 90%</b></td>
+  <td>63.6</td>
+  <td>+11.6%</td>
+  <td>+74.0% <span class="small">(Δ -23.0pp)</span></td>
+  <td>+15.8%</td>
+  <td>16.0</td>
+  <td>19.1</td>
+  <td>+19.2%</td>
+  <td>0.64</td>
+</tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">分年度收益（%）</h3>
+  <table>
+    <tr>
+      <th>变体</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th>
+    </tr>
+    <tr><td><b>+ mom60>0（60日上涨）</b></td><td class="neg">+0.0%</td><td class="pos">+3.3%</td><td class="pos">+9.5%</td><td class="pos">+32.1%</td><td class="pos">+10.0%</td><td class="pos">+4.4%</td></tr><tr><td><b>+ mom120>0（120日上涨）</b></td><td class="neg">+0.0%</td><td class="neg">-1.6%</td><td class="pos">+9.9%</td><td class="pos">+34.7%</td><td class="pos">+7.6%</td><td class="pos">+2.1%</td></tr><tr><td><b>+ mom60 截面分位 > 50%（动量前 50%）</b></td><td class="neg">+0.0%</td><td class="pos">+1.7%</td><td class="pos">+12.9%</td><td class="pos">+33.2%</td><td class="pos">+21.4%</td><td class="pos">+7.2%</td></tr><tr><td><b>+ 当前价 / 250日高 ≥ 80%</b></td><td class="neg">+0.0%</td><td class="pos">+0.9%</td><td class="pos">+18.8%</td><td class="pos">+31.8%</td><td class="pos">+10.2%</td><td class="pos">+10.1%</td></tr><tr><td><b>+ 当前价 / 120日高 ≥ 90%</b></td><td class="neg">+0.0%</td><td class="pos">+0.9%</td><td class="pos">+11.7%</td><td class="pos">+37.4%</td><td class="pos">+3.8%</td><td class="pos">+8.2%</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">三路径综合决策矩阵</h3>
+  <table>
+    <tr><th>路径</th><th>代表变体</th><th>总收益</th><th>MDD</th><th>实际持仓</th><th>结论</th></tr>
+    <tr>
+      <td>A</td>
+      <td>top30（q20_cap8 池前30）</td>
+      <td>+123.0%</td><td>-16.1%</td><td>30</td>
+      <td>进攻底仓首选（年化 17.2%）</td>
+    </tr>
+    <tr>
+      <td>A</td>
+      <td>top12-15</td>
+      <td>+79.7%~+80.1%</td><td>-19.4%~-20.4%</td><td>12-15</td>
+      <td>稳健底仓（持仓 ≤15，确定性 +）</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>roe12_peg5_pb80</td>
+      <td>+55.1%</td><td>-20.6%</td><td>20</td>
+      <td>❌ 硬门槛缩池方向<b>不推荐</b></td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>q20_mom60_top50（收益优先）</td>
+      <td>+99.1%</td><td>-21.6%</td><td>16</td>
+      <td>✅ 收益导向升级版（gate 信号正交）</td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>q20_breakout250（风控优先）</td>
+      <td>+91.7%</td><td>-13.8%</td><td>16</td>
+      <td>✅ 风控导向升级版（MDD 最优）</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">最终建议</h3>
+  <ul>
+    <li><b>实盘进攻位</b>：路径A <b>top30</b> —— +123.0% / MDD 16.1% / 持仓 30</li>
+    <li><b>实盘稳健位</b>：路径D <b>q20_breakout250</b> —— +91.7% / <b>MDD -13.8%</b> / 持仓 16（MDD 全实验最优）</li>
+    <li><b>实盘均衡位</b>：路径D <b>q20_mom60_top50</b> —— +99.1% / MDD -21.6% / 持仓 16（收益正向）</li>
+    <li><b>不推荐</b>：路径B 全部变体（硬门槛冗余或负贡献）</li>
+  </ul>
+</div>
+
+</div></body></html>

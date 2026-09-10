@@ -1,0 +1,184 @@
+# -*- coding: utf-8 -*-
+"""路径B · 硬门槛缩池 → 报告。"""
+import json
+
+D = json.load(open("_bt_q20_hardfilter_results.json", encoding="utf-8"))
+R = D["results"]
+SPE = D["variants"]
+POOL = D["pool_sizes"]
+ANCHOR = D["meta"]["anchor_q20_top20"]
+
+VARIANTS = ["q20_top20", "roe12", "peg5", "roe12_peg5", "roe12_peg5_pb80", "roe15_peg5"]
+LABELS = {
+    "q20_top20": "锚点（L4+L5）",
+    "roe12": "+ ROE ≥ 12%",
+    "peg5": "+ PEG ≤ 0.5",
+    "roe12_peg5": "+ ROE≥12% AND PEG≤0.5",
+    "roe12_peg5_pb80": "+ ROE≥12% AND PEG≤0.5 AND PB分位≤80%",
+    "roe15_peg5": "+ ROE ≥ 15% AND PEG ≤ 0.5",
+}
+
+
+def pct(x): return f"{x*100:+.1f}%"
+
+
+def html():
+    rows = ""
+    for name in VARIANTS:
+        r = R[name]
+        rows += f"""
+<tr>
+  <td><b>{LABELS[name]}</b></td>
+  <td>{r['pool_avg']:.1f}</td>
+  <td>{pct(r['ann'])}</td>
+  <td>{pct(r['total'])}</td>
+  <td>{pct(r['mdd'])}</td>
+  <td>{r['avg_holdings']:.1f}</td>
+  <td>{r['neff']:.1f}</td>
+  <td>{pct(r['top3'])}</td>
+  <td>{r['dep']:.2f}</td>
+</tr>"""
+
+    # 分年度
+    years = ["2021", "2022", "2023", "2024", "2025", "2026"]
+    yearly_rows = ""
+    for name in VARIANTS:
+        yl = R[name]["yearly"]
+        cells = "".join(
+            f'<td class="{"pos" if yl.get(y,0)>0 else "neg"}">{pct(yl.get(y,0))}</td>'
+            for y in years)
+        yearly_rows += f"<tr><td><b>{LABELS[name]}</b></td>{cells}</tr>"
+
+    # 池大小变化
+    pool_chart_rows = ""
+    for name in VARIANTS:
+        sizes = list(POOL[name].values())
+        avg = sum(sizes) / len(sizes)
+        mn = min(sizes)
+        mx = max(sizes)
+        zero_count = sum(1 for s in sizes if s == 0)
+        pool_chart_rows += f"""
+<tr>
+  <td><b>{LABELS[name]}</b></td>
+  <td>{avg:.1f}</td>
+  <td>{mn}</td>
+  <td>{mx}</td>
+  <td>{zero_count}</td>
+</tr>"""
+
+    html_doc = f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>路径B · 硬门槛缩池</title>
+<style>
+:root {{ --bg:#f5f6f8; --card:#fff; --ink:#1a1d24; --sub:#6b7280;
+        --line:#e5e7eb; --red:#c0392b; --green:#1e8449; --blue:#1f5fa8; --amber:#d97706; }}
+* {{ box-sizing:border-box; margin:0; padding:0; }}
+body {{ font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;
+       background:var(--bg); color:var(--ink); padding:32px 20px; line-height:1.65; }}
+.wrap {{ max-width:1080px; margin:0 auto; }}
+h1 {{ font-size:26px; margin-bottom:6px; }}
+.sub {{ color:var(--sub); font-size:14px; margin-bottom:28px; }}
+h2 {{ font-size:20px; margin:34px 0 14px; padding-left:10px; border-left:4px solid var(--blue); }}
+.card {{ background:var(--card); border:1px solid var(--line); border-radius:12px;
+        padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); }}
+table {{ border-collapse:collapse; width:100%; font-size:13.5px; margin:10px 0; }}
+th, td {{ padding:8px 10px; text-align:right; border-bottom:1px solid var(--line); }}
+th {{ background:#fafbfc; font-weight:600; color:var(--sub); white-space:nowrap; }}
+td:first-child, th:first-child {{ text-align:left; }}
+.pos {{ color:var(--red); font-weight:600; }}
+.neg {{ color:var(--green); font-weight:600; }}
+.concl {{ background:#eef4fb; border-left:4px solid var(--blue); padding:16px 18px;
+         border-radius:8px; margin:14px 0; }}
+.concl b {{ color:var(--blue); }}
+.warn {{ background:#fdf2f2; border-left:4px solid var(--red); padding:14px 18px;
+         border-radius:8px; margin:14px 0; }}
+.warn b {{ color:var(--red); }}
+.good {{ background:#eefaf1; border-left:4px solid var(--green); padding:14px 18px;
+         border-radius:8px; margin:14px 0; }}
+.good b {{ color:var(--green); }}
+.kv {{ display:flex; justify-content:space-between; padding:6px 0;
+       border-bottom:1px dashed var(--line); font-size:14px; }}
+.kv:last-child {{ border-bottom:none; }}
+.kv .k {{ color:var(--sub); }}
+.kv .v {{ font-weight:500; }}
+.small {{ color:var(--sub); font-size:12.5px; }}
+ul {{ margin:8px 0 8px 22px; }}
+li {{ margin:5px 0; }}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>路径B · 硬门槛缩池</h1>
+<div class="sub">运行 {D['meta']['run_at']} · 基座 full(含金融) · 日频+复权 · 5bp+10bp · q20 排序 × cap8 × top20</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">实验设定</h3>
+  <div class="kv"><span class="k">基线锚点</span><span class="v">q20_top20 = 路径A 第20名结果 = +97.0% / MDD -18.4%</span></div>
+  <div class="kv"><span class="k">变量</span><span class="v">6 套硬门槛叠加（L4+L5 之上）</span></div>
+  <div class="kv"><span class="k">不变项</span><span class="v">q20 排序、cap8 加权、top20 截断、半年调仓</span></div>
+  <div class="kv"><span class="k">锚点对齐</span><span class="v">本次 q20_top20 = {pct(R['q20_top20']['total'])} vs 路径A = {pct(ANCHOR)} (差 {(R['q20_top20']['total']-ANCHOR)*100:+.2f}pp)</span></div>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">结论 · 硬门槛缩池方向<b style="color:var(--red);">走不通</b></h3>
+  <div class="warn">
+    <b>❌ 所有硬门槛都反向</b> —— 不是"门槛越严越好"，而是<b>"L4+L5 之后剩下的股票本身就已够优质"</b>。
+    <ul style="margin-top:8px;">
+      <li><b>ROE ≥ 12% 完全冗余</b>：候选池 294 → 294，剔除 0 只 —— 池内全部 ROE≥12%</li>
+      <li><b>PEG ≤ 0.5 缩池过猛</b>：294 → 92，但收益 -23.3pp（+97% → +73.7%）</li>
+      <li><b>+ PB 分位 ≤ 80%</b>：继续缩到 81 只，收益再损 -18.6pp</li>
+      <li><b>最严组合 roe15_peg5</b>：等同 peg5（15% 比 12% 没多剔）</li>
+    </ul>
+  </div>
+  <div class="concl">
+    <b>📌 关键洞察：</b>要"更少持仓"必须从<b>信号源头</b>改 —— 不在 L4+L5 之后叠硬门槛（那是"在优质池里砍掉一部分优质票"），
+    而是要<b>引入正交信号</b>（路径D 的双信号 gate）。
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">候选池大小变化</h3>
+  <table>
+    <tr><th>硬门槛</th><th>均值</th><th>最小</th><th>最大</th><th>0 出现次数</th></tr>
+    {pool_chart_rows}
+  </table>
+  <div class="small" style="margin-top:8px;">每期 PIT 调仓时点上的候选数；0 出现=该期无任何股票通过门槛（应避免）</div>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">回测结果汇总</h3>
+  <table>
+    <tr>
+      <th>变体</th><th>池均</th><th>年化</th><th>总收益</th><th>MDD</th>
+      <th>持仓</th><th>N_eff</th><th>top3</th><th>依赖度</th>
+    </tr>
+    {rows}
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">分年度收益（%）</h3>
+  <table>
+    <tr>
+      <th>硬门槛</th>{''.join(f'<th>{y}</th>' for y in years)}
+    </tr>
+    {yearly_rows}
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-bottom:10px;">方向修正</h3>
+  <ul>
+    <li><b>路径B 否定方向</b>：在 L4+L5 上叠 ROE/PEG/PB 分位硬门槛都是<b>负贡献或冗余</b></li>
+    <li><b>下一步路径D</b>：不在"已有候选池"上做减法，而是引入<b>正交的第二信号</b>（动量/趋势/事件 gate），筛选出"价值 + 动量"双确认的票</li>
+    <li><b>保留路径A top20</b>（+97.0% / MDD -18.4%）作为基线参照</li>
+  </ul>
+</div>
+
+</div></body></html>"""
+    open("_bt_q20_hardfilter_report.html", "w", encoding="utf-8").write(html_doc)
+    print("→ _bt_q20_hardfilter_report.html")
+
+
+if __name__ == "__main__":
+    html()

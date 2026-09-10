@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Semantica 适配度评估 — ai_fund_framework</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --panel: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --line: #e5e7eb;
+    --line-strong: #d1d5db;
+    --ok: #16a34a;
+    --ok-bg: #dcfce7;
+    --bad: #dc2626;
+    --bad-bg: #fee2e2;
+    --warn: #d97706;
+    --warn-bg: #fef3c7;
+    --neutral: #6b7280;
+    --neutral-bg: #f3f4f6;
+    --accent: #2563eb;
+    --accent-bg: #dbeafe;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "Microsoft YaHei", -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    padding: 32px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 26px;
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 19px;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent);
+  }
+  h3 {
+    font-size: 15px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    color: var(--ink-soft);
+  }
+  .sub { color: var(--ink-soft); font-size: 13px; margin-bottom: 24px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13.5px;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--neutral-bg);
+    font-weight: 600;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  tr:last-child td { border-bottom: 0; }
+  td code { font-family: "Fira Code", Consolas, monospace; font-size: 12.5px; background: var(--neutral-bg); padding: 1px 5px; border-radius: 3px; }
+  .ok   { color: var(--ok);   background: var(--ok-bg);   padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+  .bad  { color: var(--bad);  background: var(--bad-bg);  padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+  .warn { color: var(--warn); background: var(--warn-bg); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+  .quote {
+    background: var(--neutral-bg);
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-family: "Fira Code", Consolas, monospace;
+    font-size: 12.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-radius: 0 4px 4px 0;
+  }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  ul li, ol li { margin: 4px 0; }
+  .callout {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+  .callout.warn  { background: var(--warn-bg);  border-color: var(--warn); }
+  .callout.bad   { background: var(--bad-bg);   border-color: var(--bad); }
+  .callout.ok    { background: var(--ok-bg);    border-color: var(--ok); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .small { font-size: 12px; color: var(--ink-soft); }
+  .stat {
+    display: inline-block;
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 0 4px 4px 0;
+    font-size: 13px;
+  }
+  .stat b { color: var(--accent); }
+  hr { border: 0; border-top: 1px dashed var(--line-strong); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<h1>Semantica 适配度评估 — ai_fund_framework</h1>
+<p class="sub">2026-09-04 · 实测驱动 · 中文金融 quant workspace</p>
+
+<div class="callout">
+  <b>核心结论:</b> Semantica <span class="bad">不适合</span>这个 workspace。
+  它的设计目标是<strong>英文 GraphRAG</strong>,normalize 三模块对中文金融文本几乎<strong>零支持</strong>。
+  只有 <code>HTMLParser</code> 真能用;真要做"组织",推荐<strong>更轻量的轻量栈</strong>(markitdown + bge-m3 + ChromaDB)。
+</div>
+
+<h2>1. 评估背景</h2>
+<div class="panel">
+  <p><strong>目标:</strong>判定 Semantica(<code>pip install semantica</code> 0.6.7)能否用于组织 <code>ai_fund_framework</code> 这个 A 股量化研究工作空间。</p>
+  <p><strong>现状:</strong>650 个根目录文件,~400 个 <code>_*.py</code>、~30 个 <code>_*_report.html</code>、若干巨型 JSON dump(35MB/73MB)、一个 SQLite(<code>data/a_share_market.db</code>)。
+    知识层在 Obsidian vault(<code>D:\Fortune\量化研究\</code>)里已成体系。</p>
+  <p><strong>试点方法:</strong> 7 项实测(<code>_semantica_pilot.py</code>),覆盖 parse/normalize 的中文金融场景。</p>
+</div>
+
+<h2>2. 实测结果(7 项)</h2>
+
+<table>
+  <tr><th style="width: 28%;">模块 / 测试</th><th style="width: 10%;">结果</th><th>实测现象</th></tr>
+
+  <tr>
+    <td><code>DocumentParser</code><br><span class="small">解析 <code>docs/投资认知框架.md</code></span></td>
+    <td><span class="bad">失败</span></td>
+    <td><code>ValidationError: Unsupported document format: unknown</code> — <strong>Semantica 不支持 .md</strong>,而 markdown 是研究笔记主力格式</td>
+  </tr>
+
+  <tr>
+    <td><code>HTMLParser</code><br><span class="small">解析 <code>_bt_garp_audit_report.html</code> 30K</span></td>
+    <td><span class="ok">优秀</span></td>
+    <td>30K → <strong>8848 chars</strong>;回测结论句完整保留;延迟 <strong>62ms</strong>;meta 含 title/description/keywords
+      <div class="quote">列指被审计的两份历史报告(_bt_garp_report.html / _bt_garp_ceiling_report.html)的合规状态;『修复后』列指本审计复跑管线的状态。
+§2 三项违规详情与影响量化 V1违反 铁律10金融剔除贯穿回测管线 问题:原 garp 采纳实验与增速上限实验的全部变体都构建在 excl_fin...</div>
+    </td>
+  </tr>
+
+  <tr>
+    <td><code>TextNormalizer</code><br><span class="small">中英文混合清洗</span></td>
+    <td><span class="warn">部分</span></td>
+    <td>大小写+空格+标点能清洗;<strong>中文繁简不归一</strong>(平安銀行 没动);
+      "PE_TTM" → "pe_ttm" 可,但金融量化术语不该强制小写</td>
+  </tr>
+
+  <tr>
+    <td><code>EntityNormalizer</code><br><span class="small">平安银行 5 种变体</span></td>
+    <td><span class="bad">不可用</span></td>
+    <td><strong>三变体一字不动</strong>,只是个英文小写化器,无中文金融字典
+      <div class="quote">"平安银行" → "平安银行"
+"000001.SZ" → "000001.sz"
+"PAYH" → "Payh"
+"平安银行股份有限公司" → "平安银行股份有限公司"
+"平安銀行" → "平安銀行"  (繁简未归一)</div>
+      <strong>这是最大盲点</strong>——实体统一本应是 Semantica 对这个 workspace 最高单点价值的模块,现在直接报废
+    </td>
+  </tr>
+
+  <tr>
+    <td><code>DateNormalizer</code><br><span class="small">6 种日期格式</span></td>
+    <td><span class="bad">有 bug</span></td>
+    <td>ISO/英文格式 ✅;中文/不完整有 bug:
+      <div class="quote">"2024-01-15" → 2024-01-15T00:00:00+00:00  ✅
+"2024/01/15" → 2024-01-15T00:00:00+00:00  ✅
+"2024.01.15" → 2024-01-15T00:00:00+00:00  ✅
+"15-Jan-2024" → 2024-01-15T00:00:00+00:00  ✅
+"2024年1月15日" → <strong style="color:var(--bad)">2026-09-04T19:04:31.188901+00:00</strong>  ❌ 错认为"今天"
+"2024-01" → <strong style="color:var(--bad)">2024-01-04T00:00:00+00:00</strong>  ❌ 错误补充日</div>
+      <strong>会把错误日期传到 KG 节点</strong>,破坏时序一致性
+    </td>
+  </tr>
+
+  <tr>
+    <td><code>NumberNormalizer</code><br><span class="small">7 种数字格式</span></td>
+    <td><span class="bad">漏中文</span></td>
+    <td>"1,000" / "¥100" / "50%" / "3.14e2" ✅;<strong>"1.5亿" 和 "1,000.00元" 全部 Unable to parse</strong>
+      <div class="quote">"1.5亿" → ❌ Unable to parse number: 1.5亿
+"1.5M" → 1500000.0  (英文M能,中文亿不能)
+"¥100" → 100
+"1,000.00元" → ❌ Unable to parse number: 1,000.00元</div>
+      <strong>回测报告里"市值 1.5 亿、成交 1.2 万元"这类全部归一失败</strong>
+    </td>
+  </tr>
+
+  <tr>
+    <td>模块发现<br><span class="small">11 个子模块</span></td>
+    <td><span class="ok">全部在</span></td>
+    <td><code>parse</code> / <code>normalize</code> / <code>ingest</code> / <code>semantic_extract</code> / <code>embeddings</code> / <code>vector_store</code> / <code>kg</code> / <code>ontology</code> / <code>reasoning</code> / <code>pipeline</code> / <code>core</code> — 装机全到位</td>
+  </tr>
+</table>
+
+<h2>3. 真实痛点 × Semantica 适配度</h2>
+
+<div class="panel">
+<table>
+  <tr><th>痛点</th><th>对应 Semantica</th><th>适配度</th><th>备选</th></tr>
+  <tr><td>找不到"哪个回测用了 garp 门控"</td><td>parse + embeddings + vector_store</td><td><span class="warn">HTMLParser 可用;中文 embedding 待测</span></td><td>markitdown + bge-m3 + ChromaDB</td></tr>
+  <tr><td>同实体多命名(平安银行 / 000001.SZ / PAYH)</td><td>EntityNormalizer</td><td><span class="bad">不可用,需自写字典</span></td><td>entity_map.json(几十行)</td></tr>
+  <tr><td>回测报告里"1.5 亿市值" 归一</td><td>NumberNormalizer</td><td><span class="bad">不支持中文单位</span></td><td>cn_num_parser 正则一行</td></tr>
+  <tr><td>"2024 年 1 月 15 日" 归一</td><td>DateNormalizer</td><td><span class="bad">有 bug</span></td><td>jionlp / 自写 regex</td></tr>
+  <tr><td>策略↔回测↔结论时序追溯</td><td>kg + reasoning</td><td><span class="warn">模块在,中文 RE 弱</span></td><td>SQLite 时序表 + MD wiki link</td></tr>
+</table>
+</div>
+
+<h2>4. 工作空间已有什么、缺什么</h2>
+
+<div class="grid2">
+  <div class="callout ok">
+    <b>✅ 已覆盖(80%)</b><br>
+    • pipeline/<code>run.py</code> 统一编排 — 完美<br>
+    • <code>data/a_share_market.db</code> SQLite 集中存储 — PIT 完备<br>
+    • 30 个 HTML 回测报告 — 内容在、视觉好<br>
+    • <code>docs/投资认知框架.md</code> + 23 篇 Obsidian 笔记 — 知识主线<br>
+    • <code>_sim_*</code> 模拟组合 + 自动化任务 — 落地
+  </div>
+  <div class="callout warn">
+    <b>⚠️ 真实盲区(20%)</b><br>
+    • <strong>跨报告找结论</strong>:30 个 HTML 没有索引,翻 5 个 tab 才能拼"q20 用过什么参数"<br>
+    • <strong>实体名跨文件</strong>:同股票 4 个名字散落不同 JSON,手 dict 不完整<br>
+    • <strong>旧结论 vs 新结论冲突</strong>:garp +67.01% 与旧 +34.57% 并存,没有 conflict 标记<br>
+    • <strong>笔记↔代码双向链接</strong>:Obsidian 的 wikilink 没自动连到 _bt_*.py<br>
+    • <strong>没装</strong>:EntityNormalizer 中文;NumberNormalizer 中文;DateNormalizer 中文
+  </div>
+</div>
+
+<h2>5. 三条下一步路径</h2>
+
+<div class="grid3">
+  <div class="panel">
+    <h3>路径 A — 改用轻量栈(推荐)</h3>
+    <p><span class="stat">栈</span> <code>markitdown</code> + <code>bge-m3</code>(本地) + <code>ChromaDB</code> / <code>sqlite-vec</code></p>
+    <p><span class="stat">工程量</span> ~3 天</p>
+    <p><span class="stat">优势</span> 中文友好、零对 Semantica 中文坑、依赖轻量(无 torch)、查询延迟低</p>
+    <p><span class="stat">解决</span> 痛点 1(跨报告找结论)100% + 痛点 2(实体名)80%</p>
+  </div>
+  <div class="panel">
+    <h3>路径 B — 引 Semantica,自写中文层</h3>
+    <p><span class="stat">栈</span> Semantica HTMLParser / KG + 自写 entity/dict/num cn 层</p>
+    <p><span class="stat">工程量</span> ~5-7 天</p>
+    <p><span class="stat">优势</span> 在 Semantica 的 KG / pipeline / core 框架上搭,后续有 reasoning 潜力</p>
+    <p><span class="stat">劣势</span> 自写量 > Semantica 现成价值,等于把 normalize 重写</p>
+  </div>
+  <div class="panel">
+    <h3>路径 C — 只用 Semantica 的"骨架"</h3>
+    <p><span class="stat">栈</span> 只用 <code>pipeline</code> + <code>core</code> 的 DAG 编排能力</p>
+    <p><span class="stat">工程量</span> 1-2 天集成</p>
+    <p><span class="stat">适用</span> 把 <code>run.py</code> 迁到 Semantica pipeline 框架</p>
+    <p><span class="stat">边际价值</span> <code>run.py</code> 的 5 个 step 已经能跑,DAG 化收益有限</p>
+  </div>
+</div>
+
+<h2>6. 关键技术决策</h2>
+
+<div class="panel">
+  <h3>如果走路径 A,关键参数:</h3>
+  <table>
+    <tr><th>组件</th><th>选型</th><th>理由</th></tr>
+    <tr><td>文档→markdown</td><td><code>markitdown</code></td><td>Microsoft 出品、HTML/CSV/PDF 全支持、中文友好</td></tr>
+    <tr><td>embedding 模型</td><td><code>bge-m3</code> 或 <code>bge-large-zh-v1.5</code></td><td>中文 SOTA、本地 0.6-1.3GB、可离线</td></tr>
+    <tr><td>向量库</td><td><code>ChromaDB</code>(嵌入式)或 <code>sqlite-vec</code>(嵌入 SQLite)</td><td>不引入 Neo4j 这种独立服务,落盘随项目走</td></tr>
+    <tr><td>实体对齐</td><td>自维护 <code>_entity_map.json</code>(A 股核心 ~200 只)</td><td>Semantica EntityNormalizer 不可用,自己 1 天写完</td></tr>
+    <tr><td>中文数字归一</td><td><code>jionlp</code> 或 1 个 regex</td><td>补 Semantica NumberNormalizer 的坑</td></tr>
+    <tr><td>旧 vs 新结论冲突</td><td>报告 YAML frontmatter 标 <code>effective_from</code> / <code>supersedes</code></td><td>Semantica conflicts 模块是工程级 overkill</td></tr>
+  </table>
+</div>
+
+<h2>7. 立即可执行项</h2>
+
+<ol>
+  <li><strong>先跑路径 A 的 1 天最小试点</strong>(不动现有 pipeline):<br>
+    <code>markitdown _bt_garp_audit_report.html &gt; test.md</code> → <code>bge-m3</code> 跑 embedding → ChromaDB 入库 → 3 个查询 demo。</li>
+  <li><strong>对路径 B 是否进行公正评估</strong>:<br>
+    Semantica 真要看 <code>semantic_extract</code> 中文 NER/RE 表现(本试点没测)。如果 <code>"申万行业轮动"</code> 这种中文术语抽得出来,再考虑。</li>
+  <li><strong>先归档文件</strong>:<br>
+    当前 650 个根目录文件要先 <code>mkdir -p scripts/ reports/ data/raw/ data/processed/</code> 拆开,这跟 Semantica 无关。</li>
+</ol>
+
+<hr>
+<p class="small">报告生成时间:2026-09-04 18:20 · 试点脚本:<code>_semantica_pilot.py</code> · 原始日志:<code>_semantica_pilot_log.json</code> · Semantica 版本:<code>0.6.7</code></p>
+
+</body>
+</html>

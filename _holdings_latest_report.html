@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>最新持仓 · 修正口径 + 2026-08</title>
+<style>
+:root { --bg:#f8fafc; --card:#fff; --ink:#0f172a; --sub:#64748b; --line:#e2e8f0;
+  --red:#dc2626; --amber:#d97706; --green:#16a34a; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+.wrap { max-width:920px; margin:0 auto; padding:28px 20px 60px; }
+h1 { font-size:21px; margin:0 0 4px; }
+.sub { color:var(--sub); font-size:13px; margin-bottom:18px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:20px 22px; margin-bottom:18px; }
+.card h2 { font-size:15px; margin:0 0 12px; }
+.alert { background:#fef2f2; border:1px solid #fecaca; border-radius:12px;
+  padding:18px 20px; margin-bottom:18px; }
+.alert h2 { color:var(--red); font-size:15px; margin:0 0 10px; }
+.alert li { font-size:13px; line-height:1.8; color:#7f1d1d; }
+.ok { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px;
+  padding:16px 20px; margin-bottom:18px; }
+.ok h2 { color:var(--green); font-size:15px; margin:0 0 8px; }
+table { width:100%; border-collapse:collapse; font-size:12.5px; }
+th,td { padding:7px 8px; text-align:center; border-bottom:1px solid var(--line); }
+th { background:#f1f5f9; color:#334155; font-weight:600; }
+.mono { font-family:ui-monospace,Consolas,monospace; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+.kpi { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+.kpi .k { font-size:11px; color:var(--sub); }
+.kpi .v { font-size:20px; font-weight:700; margin-top:4px; }
+.tag { display:inline-block; background:#eff6ff; color:#1d4ed8; border-radius:6px;
+  padding:1px 8px; font-size:11px; margin-right:6px; }
+p { font-size:13px; line-height:1.8; }
+</style></head><body><div class="wrap">
+
+<h1>最新持仓建议 · AD_top15_mom60top50（修正版）</h1>
+<div class="sub">asof = 2026-08-31（最新已收盘月度 PIT）· 严格复用回测框架 screen_q20 口径</div>
+
+<div class="alert"><h2>⚠️ 之前那份持仓推荐有误，已修正</h2>
+<ul>
+  <li><b>口径不一致</b>：旧脚本把 q20 的质量分写成了 <code>(npyoy + roes + gpm)/3</code> 原始值相加，
+      而回测框架是 <code>(gpm_pct + con_roe_pct + cetop_pct)/3</code> 的截面分位；且漏掉了
+      市值≥100亿、PE≤25或股息≥2%、PEG≤1、预期增速≤60% 这 5 道门槛。
+      结果把「银行股」错误地排除了，选出了医药/公用事业。</li>
+  <li><b>数据不是最新</b>：旧脚本读的是只到 2026-04 的 JSON 快照，而数据库已有 2026-08
+      （5529 只成分 + 估值/因子/预期面板全部齐）。</li>
+</ul>
+</div>
+
+<div class="ok"><h2>✅ 修正后：15 只几乎全是低 PE 银行/保险</h2>
+<p>这才是「纯估值策略」真实会选出的持仓——PE 5~7 的银行股是 PE 便宜度分位最高的票，
+与之前收益归因结论（估值修复贡献 85%）完全自洽。</p></div>
+
+<div class="kpis">
+  <div class="kpi"><div class="k">PIT 成分（2026-08）</div><div class="v">5529</div></div>
+  <div class="kpi"><div class="k">screen_q20 后 base pool</div><div class="v">222</div></div>
+  <div class="kpi"><div class="k">动量 gate 后</div><div class="v">83</div></div>
+  <div class="kpi"><div class="k">最终持仓</div><div class="v">15</div></div>
+</div>
+
+<div class="card"><h2>推荐持仓（cap8 加权 · 按权重降序）</h2>
+<table><thead><tr>
+  <th>代码</th><th>名称</th><th>行业</th><th>PE</th><th>市值(亿)</th>
+  <th>PE便宜度%</th><th>q20分</th><th>动量60日</th><th>动量分位</th><th>权重</th>
+</tr></thead><tbody><tr>
+      <td class="mono">601601.SH</td><td>中国太保</td><td>保险</td>
+      <td class="mono">5.4</td>
+      <td class="mono">2902</td>
+      <td class="mono">97.7</td>
+      <td class="mono">89.6</td>
+      <td class="mono">+0.1%</td>
+      <td class="mono">65%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601838.SH</td><td>成都银行</td><td>银行</td>
+      <td class="mono">5.9</td>
+      <td class="mono">788</td>
+      <td class="mono">97.3</td>
+      <td class="mono">87.9</td>
+      <td class="mono">+6.7%</td>
+      <td class="mono">81%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601169.SH</td><td>北京银行</td><td>银行</td>
+      <td class="mono">5.2</td>
+      <td class="mono">1070</td>
+      <td class="mono">99.1</td>
+      <td class="mono">86.1</td>
+      <td class="mono">+7.5%</td>
+      <td class="mono">84%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">600919.SH</td><td>江苏银行</td><td>银行</td>
+      <td class="mono">6.1</td>
+      <td class="mono">2221</td>
+      <td class="mono">96.4</td>
+      <td class="mono">86.0</td>
+      <td class="mono">+9.7%</td>
+      <td class="mono">88%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">600926.SH</td><td>杭州银行</td><td>银行</td>
+      <td class="mono">6.2</td>
+      <td class="mono">1219</td>
+      <td class="mono">95.5</td>
+      <td class="mono">85.7</td>
+      <td class="mono">+6.8%</td>
+      <td class="mono">83%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601009.SH</td><td>南京银行</td><td>银行</td>
+      <td class="mono">6.5</td>
+      <td class="mono">1474</td>
+      <td class="mono">94.6</td>
+      <td class="mono">84.6</td>
+      <td class="mono">+11.3%</td>
+      <td class="mono">91%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601077.SH</td><td>渝农商行</td><td>银行</td>
+      <td class="mono">6.1</td>
+      <td class="mono">775</td>
+      <td class="mono">95.9</td>
+      <td class="mono">84.5</td>
+      <td class="mono">+7.9%</td>
+      <td class="mono">85%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601318.SH</td><td>中国平安</td><td>保险</td>
+      <td class="mono">7.1</td>
+      <td class="mono">9441</td>
+      <td class="mono">92.3</td>
+      <td class="mono">84.2</td>
+      <td class="mono">+6.1%</td>
+      <td class="mono">80%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601319.SH</td><td>中国人保</td><td>保险</td>
+      <td class="mono">7.2</td>
+      <td class="mono">3060</td>
+      <td class="mono">91.9</td>
+      <td class="mono">83.9</td>
+      <td class="mono">+4.9%</td>
+      <td class="mono">77%</td>
+      <td class="mono">8.00%</td></tr><tr>
+      <td class="mono">601117.SH</td><td>中国化学</td><td>建筑</td>
+      <td class="mono">7.0</td>
+      <td class="mono">459</td>
+      <td class="mono">93.2</td>
+      <td class="mono">82.7</td>
+      <td class="mono">-1.5%</td>
+      <td class="mono">60%</td>
+      <td class="mono">7.67%</td></tr><tr>
+      <td class="mono">601665.SH</td><td>齐鲁银行</td><td>银行</td>
+      <td class="mono">6.8</td>
+      <td class="mono">402</td>
+      <td class="mono">94.1</td>
+      <td class="mono">84.8</td>
+      <td class="mono">+10.3%</td>
+      <td class="mono">89%</td>
+      <td class="mono">6.73%</td></tr><tr>
+      <td class="mono">002948.SZ</td><td>青岛银行</td><td>银行</td>
+      <td class="mono">6.4</td>
+      <td class="mono">348</td>
+      <td class="mono">95.0</td>
+      <td class="mono">85.1</td>
+      <td class="mono">+10.8%</td>
+      <td class="mono">90%</td>
+      <td class="mono">5.82%</td></tr><tr>
+      <td class="mono">601128.SH</td><td>常熟银行</td><td>银行</td>
+      <td class="mono">5.3</td>
+      <td class="mono">228</td>
+      <td class="mono">98.6</td>
+      <td class="mono">82.9</td>
+      <td class="mono">-0.4%</td>
+      <td class="mono">63%</td>
+      <td class="mono">3.82%</td></tr><tr>
+      <td class="mono">000612.SZ</td><td>焦作万方</td><td>有色</td>
+      <td class="mono">9.1</td>
+      <td class="mono">129</td>
+      <td class="mono">89.2</td>
+      <td class="mono">84.4</td>
+      <td class="mono">-3.9%</td>
+      <td class="mono">52%</td>
+      <td class="mono">2.17%</td></tr><tr>
+      <td class="mono">002839.SZ</td><td>张家港行</td><td>银行</td>
+      <td class="mono">5.3</td>
+      <td class="mono">107</td>
+      <td class="mono">98.2</td>
+      <td class="mono">86.2</td>
+      <td class="mono">+3.8%</td>
+      <td class="mono">76%</td>
+      <td class="mono">1.78%</td></tr></tbody></table>
+<p style="color:var(--sub);margin-top:10px">行业构成：银行 10 只 · 保险 3 只 · 其他 2 只。
+cap8 上限 8%，大盘股（中国平安/太保/人保/江苏银行）触发上限，小盘银行股自然降到 2%~7%。</p></div>
+
+<div class="card"><h2>验证：口径才是根因（不是时点）</h2>
+<p>用<b>严格口径</b>回看 2026-04 那期，选出的同样是 15 只银行股（长沙银行/成都银行/江苏银行/杭州银行…）。
+所以旧推荐选成医药/公用事业，是<b>口径写错</b>导致的，不是数据时点问题。修正口径后，
+无论 2026-04 还是 2026-08，选出的都是低 PE 银行股。</p>
+<table><thead><tr><th>旧推荐（错误口径 2026-04）</th><th>严格口径 2026-04</th><th>严格口径 2026-08（本次）</th></tr></thead>
+<tbody><tr>
+  <td style="text-align:left">公用事业 600033<br>半导体 002818<br>公用事业 000828<br>医药 600062…</td>
+  <td style="text-align:left">长沙银行<br>成都银行<br>江苏银行<br>杭州银行…</td>
+  <td style="text-align:left">中国太保<br>成都银行<br>张家港行<br>北京银行…</td>
+</tr></tbody></table></div>
+
+<div class="card"><h2>操作提示</h2>
+<p>
+<span class="tag">1</span>下次调仓日 <b>2026-10-31</b>，届时重新跑 <code>_holdings_latest.py</code> 生成新截面持仓。<br>
+<span class="tag">2</span>这 15 只银行/保险股是「纯估值」的必然结果——若要真 GARP，仍需从成长因子定义上改，而不是调权重（见权重扫描报告）。<br>
+<span class="tag">3</span>银行股集中度高（13/15 金融），历史结论「金融剔除 = 负贡献」说明这恰是策略 alpha 来源，但单行业集中是实盘需注意的风险。
+</p></div>
+
+</div></body></html>

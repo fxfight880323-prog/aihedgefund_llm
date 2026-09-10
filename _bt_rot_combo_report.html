@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申万行业轮动因子 · 卫星仓组合层验证报告</title>
+<style>
+  :root{--bg:#0f1115;--card:#181b22;--card2:#1f232c;--line:#2a2f3a;
+        --txt:#e6e9ef;--sub:#9aa3b2;--red:#e5484d;--green:#30a46c;
+        --amber:#f5a623;--blue:#3b82f6;--purple:#8b5cf6;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+       line-height:1.7;padding:32px 20px}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:24px;font-weight:700;margin-bottom:6px}
+  h2{font-size:18px;font-weight:600;margin:32px 0 14px;padding-left:10px;border-left:4px solid var(--blue)}
+  h3{font-size:15px;font-weight:600;margin:20px 0 10px;color:#cdd4e0}
+  .sub{color:var(--sub);font-size:13px;margin-bottom:24px}
+  .badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;margin-right:8px}
+  .badge.red{background:rgba(229,72,77,.15);color:var(--red)}
+  .badge.green{background:rgba(48,164,108,.15);color:var(--green)}
+  .badge.amber{background:rgba(245,166,35,.15);color:var(--amber)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+  .grid{display:grid;gap:14px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:720px){.g4{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+  .kpi{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+  .kpi .v{font-size:26px;font-weight:700;font-family:"SF Mono",Consolas,monospace}
+  .kpi .l{font-size:12px;color:var(--sub);margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:600;background:var(--card2)}
+  td:first-child,th:first-child{text-align:left}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .up{color:var(--red)}.down{color:var(--green)}.mut{color:var(--sub)}
+  .note{background:rgba(245,166,35,.08);border-left:3px solid var(--amber);padding:12px 16px;border-radius:6px;font-size:13px;margin:14px 0}
+  .warn{background:rgba(229,72,77,.08);border-left:3px solid var(--red);padding:12px 16px;border-radius:6px;font-size:13px;margin:14px 0}
+  .ok{background:rgba(48,164,108,.08);border-left:3px solid var(--green);padding:12px 16px;border-radius:6px;font-size:13px;margin:14px 0}
+  .mono{font-family:"SF Mono",Consolas,monospace;font-size:12px}
+  ul,ol{padding-left:22px;margin:8px 0}
+  li{margin:6px 0}
+  .chart{width:100%;height:auto;margin:10px 0}
+  .pill{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;background:var(--card2);border:1px solid var(--line);margin:1px}
+  .fin-tag{background:rgba(245,166,35,.2);color:var(--amber);border-radius:3px;font-size:11px;padding:1px 5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>申万行业轮动因子 · 卫星仓组合层验证</h1>
+  <div class="sub">
+    结论报告 · 日频+复权口径 · 半年调仓（PIT_DATES 10期：2021-08 ~ 2026-04） · 含成本 5bp+10bp
+    <br><span class="badge amber">⚠ 静态行业映射，历史有轻微前视（已获确认接受）</span>
+  </div>
+
+  <!-- 一句话结论 -->
+  <div class="card">
+    <h3>一句话结论</h3>
+    <p style="font-size:15px">
+      行业轮动卫星仓作为「正交收益源」叠加到价值底仓，<b style="color:var(--red)">在半年调仓口径下并未兑现</b>——
+      卫星仓单独回测 <span class="mono">+31.5% / MDD 21.9% / 依赖度 1.02</span>（弱于底仓 +98.7%），
+      且组合合成后收益随卫星仓权重增加<b>单调下降</b>（98.7% → 65.1%），仅在 80/20 时 MDD 微降 0.5pp。
+      <b>根因：行业轮动因子的「前6看好行业」在历史时点反复漂移到金融行业（银行/非银），
+      使卫星仓在多个调仓期退化成了「另一个金融价值仓」，与底仓失去正交性。</b>
+    </p>
+  </div>
+
+  <!-- 单策略对比 -->
+  <h2>一、单策略回测对比</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3>底仓 q20_cap8（价值 beta）</h3>
+      <div class="grid g4">
+        <div class="kpi"><div class="v" style="color:var(--red)">+98.7%</div><div class="l">总收益</div></div>
+        <div class="kpi"><div class="v">14.6%</div><div class="l">年化</div></div>
+        <div class="kpi"><div class="v">16.2%</div><div class="l">MDD</div></div>
+        <div class="kpi"><div class="v">0.46</div><div class="l">依赖度</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>卫星仓（行业轮动 alpha）</h3>
+      <div class="grid g4">
+        <div class="kpi"><div class="v" style="color:var(--red)">+31.5%</div><div class="l">总收益</div></div>
+        <div class="kpi"><div class="v">5.6%</div><div class="l">年化</div></div>
+        <div class="kpi"><div class="v" style="color:var(--amber)">21.9%</div><div class="l">MDD</div></div>
+        <div class="kpi"><div class="v" style="color:var(--red)">1.02</div><div class="l">依赖度</div></div>
+      </div>
+      <div class="note" style="margin-bottom:0">
+        卫星仓依赖度 <b>1.02</b> &gt; 1，意味着「去掉最好年（2025）后累计收益为负」——
+        收益几乎全靠 2025 单一年份（+32.4%），其余年份合计为负。
+      </div>
+    </div>
+  </div>
+
+  <!-- 分年度：卫星仓 -->
+  <h2>二、卫星仓分年度收益（暴露单点依赖）</h2>
+  <div class="card">
+    <table>
+      <tr><th>年份</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr>
+        <td>卫星仓</td>
+        <td class="down">-0.5%</td>
+        <td class="up">+8.1%</td>
+        <td class="down">-5.7%</td>
+        <td class="up">+10.3%</td>
+        <td class="up" style="font-weight:700">+32.4%</td>
+        <td class="down">-11.2%</td>
+      </tr>
+      <tr>
+        <td>底仓 q20_cap8</td>
+        <td class="up">+3.0%</td>
+        <td class="up">+12.9%</td>
+        <td class="up">+7.5%</td>
+        <td class="up">+29.9%</td>
+        <td class="up">+22.0%</td>
+        <td class="mut">+0.4%</td>
+      </tr>
+    </table>
+    <div class="warn">
+      卫星仓 6 年中仅 2022/2024/2025 三年为正，且 2025（+32.4%）一柱擎天。
+      2026 年上半年 -11.2%，是「行业轮动」在样本内最近期的明显回吐。
+    </div>
+  </div>
+
+  <!-- 组合合成 -->
+  <h2>三、底仓+卫星仓 组合合成（权重扫描）</h2>
+  <div class="card">
+    <table>
+      <tr><th>底仓/卫星仓</th><th>总收益</th><th>年化</th><th>MDD</th><th>依赖度</th><th>判断</th></tr>
+      <tr><td>100 / 0</td><td class="up">+98.7%</td><td>14.6%</td><td>16.2%</td><td>0.46</td><td class="mut">基准</td></tr>
+      <tr><td>90 / 10</td><td class="up">+92.0%</td><td>13.8%</td><td>15.8%</td><td>0.46</td><td class="down">收益-6.7pp</td></tr>
+      <tr><td>80 / 20</td><td class="up">+85.3%</td><td>13.0%</td><td class="up" style="color:var(--green)">15.7%</td><td>0.46</td><td class="mut">MDD 最低</td></tr>
+      <tr><td>70 / 30</td><td class="up">+78.6%</td><td>12.2%</td><td>16.0%</td><td>0.45</td><td class="down">收益-20.1pp</td></tr>
+      <tr><td>50 / 50</td><td class="up">+65.1%</td><td>10.4%</td><td>17.0%</td><td class="up" style="color:var(--red)">0.53</td><td class="down">收益-33.6pp 依赖度恶化</td></tr>
+    </table>
+    <div class="note">
+      <b>正交源假设的三项检验全部未兑现</b>：①提收益 → 单调下降；②降回撤 → 仅 80/20 微降 0.5pp，
+      50/50 反而恶化到 17.0%；③降依赖度 → 50/50 反而升到 0.53。卫星仓在此口径下是「稀释器」而非「增强器」。
+    </div>
+  </div>
+
+  <!-- 组合分年度 -->
+  <h2>四、组合分年度收益矩阵</h2>
+  <div class="card">
+    <table>
+      <tr><th>配置</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>100/0</td><td>+3.0%</td><td>+12.9%</td><td>+7.5%</td><td>+29.9%</td><td>+22.0%</td><td>+0.4%</td></tr>
+      <tr><td>90/10</td><td>+2.7%</td><td>+12.4%</td><td>+6.2%</td><td>+28.3%</td><td>+22.7%</td><td>-0.5%</td></tr>
+      <tr><td>80/20</td><td>+2.3%</td><td>+12.0%</td><td>+5.0%</td><td>+26.6%</td><td>+23.5%</td><td>-1.5%</td></tr>
+      <tr><td>70/30</td><td>+2.0%</td><td>+11.5%</td><td>+3.7%</td><td>+24.8%</td><td>+24.3%</td><td>-2.4%</td></tr>
+      <tr><td>50/50</td><td>+1.3%</td><td>+10.5%</td><td>+1.1%</td><td>+21.1%</td><td>+26.2%</td><td>-4.6%</td></tr>
+    </table>
+    <div class="note" style="margin-bottom:0">
+      卫星仓唯一正贡献是 <b>2025</b>（+22.0% → +26.2%），但代价是 <b>2026 明显拖累</b>（+0.4% → -4.6%）
+      以及 2021-2024 各年的持续稀释。净效果为负。
+    </div>
+  </div>
+
+  <!-- 根因诊断 -->
+  <h2>五、根因：行业轮动「前6行业」历史漂移，卫星仓失去正交性</h2>
+  <div class="card">
+    <p style="font-size:14px">诊断各调仓月末「前6看好行业」对应的真实行业（用成分股名称反推），发现关键问题：</p>
+    <table>
+      <tr><th>调仓月</th><th>前6行业是否含金融</th><th>金融股数</th><th>说明</th></tr>
+      <tr><td>2021-08</td><td class="fin-tag">含银行</td><td>32只</td><td>银行（+0.7687）进前6</td></tr>
+      <tr><td>2022-04</td><td>不含</td><td>0</td><td>纯制造/周期</td></tr>
+      <tr><td>2022-08</td><td class="fin-tag">含银行</td><td>31只</td><td>银行（+0.7574）进前6</td></tr>
+      <tr><td>2023-04</td><td>不含</td><td>0</td><td>纯周期/化工</td></tr>
+      <tr><td>2023-08</td><td class="fin-tag">含银行</td><td>31只</td><td>银行（+0.9811，含招商银行）进前6</td></tr>
+      <tr><td>2024-04</td><td>不含</td><td>0</td><td>家电/机械</td></tr>
+      <tr><td>2024-08</td><td>不含</td><td>0</td><td>煤炭/家电</td></tr>
+      <tr><td>2025-04</td><td>不含</td><td>0</td><td>机械/家电/汽车</td></tr>
+      <tr><td>2025-08</td><td class="fin-tag">含非银</td><td>15只</td><td>非银/多元金融（+1.0271）进前6</td></tr>
+      <tr><td>2026-04</td><td>不含</td><td>0</td><td>有色/电子/医药</td></tr>
+    </table>
+    <div class="warn">
+      <b>核心洞察</b>：行业轮动因子是「基本面+技术面+资金面等权合成」，当银行/非银在 2021、2022、2023、2025
+      的某些时点同时满足三类信号共振时，它们会被推入「前6看好行业」。
+      此时卫星仓选出的股票（银行/券商）与底仓的低PE大盘价值股<b>高度重叠</b>，
+      卫星仓名义上的「正交 alpha」在持仓层变成了「重复的金融 beta」，正交性被破坏。
+      <br><br>
+      这解释了为何卫星仓依赖度高达 1.02（收益全靠 2025 银行+制造普涨年），
+      以及为何组合合成后收益单调下降——<b>你在用两个几乎相同的金融价值仓做「分散」</b>。
+    </div>
+  </div>
+
+  <!-- 诚实边界 -->
+  <h2>六、诚实边界与三重解释</h2>
+  <div class="card">
+    <ol style="font-size:14px">
+      <li><b>口径损失月频优势</b>：行业轮动因子原生是月频信号（申万 T2 多空 +12.6%/年），
+        本回测为与底仓同口径强行改为<b>半年调仓</b>，损失了月频择时的核心 alpha。
+        申万的 +12.6%/年 是在月频多空口径下测得的，半年持有会显著衰减。</li>
+      <li><b>静态行业映射的前视偏差</b>：all_a 口径用「全A 静态行业归属」回看历史，
+        个股行业归属用了当前值（轻微前视）。这会让历史卫星仓的行业归类「看起来更准」，
+        实际实盘（用 PIT 行业归属）会更差——<b>即真实结果可能比 +31.5% 更弱</b>。</li>
+      <li><b>full 基座下的叠加价值有限</b>：卫星仓在 core-pass（mv≥100亿+PE>0+garp门控）池内选股，
+        这个池子本身已被低PE价值筛选「清洗」过，行业轮动因子在里面能发挥的横截面区分度
+        远小于全市场（all_a 全样本）。</li>
+    </ol>
+  </div>
+
+  <!-- 结论与建议 -->
+  <h2>七、结论与建议</h2>
+  <div class="card">
+    <div class="ok">
+      <b>诚实结论</b>：在半年调仓 + full 基座口径下，「行业轮动卫星仓」作为正交收益源
+      <b>未通过组合层验证</b>。它既没有提升收益、也没有显著降低回撤，反而在多数年份稀释底仓表现。
+      当前时点（2026-08-31）卫星仓显示的「金融 0/35、与底仓完美正交」是一个<b>时点快照的巧合</b>，
+      不代表历史一贯如此。
+    </div>
+    <h3 style="margin-top:16px">三条可选路径（供决策）</h3>
+    <ol style="font-size:14px">
+      <li><b>放弃卫星仓，维持纯价值底仓</b>：q20_cap8 已是最优组合（+98.7%/MDD 16.2%/依赖度 0.46），
+        行业轮动因子在这个框架内没有叠加价值。</li>
+      <li><b>改月频口径重测</b>：若要真正检验行业轮动 alpha，应按其原生月频调仓
+        （而非半年），代价是与底仓口径不一致、无法干净合成，只能作为独立组合对比。</li>
+      <li><b>加「金融剔除」约束</b>：既然根因是前6行业漂移到金融，可在卫星仓选股时强制剔除金融行业，
+        保持真正的「制造业/科技 alpha」纯净性——但这需要重新评估剔金融后卫星仓本身的收益。</li>
+    </ol>
+    <div class="note" style="margin-bottom:0">
+      注：本报告卫星仓为「申万行业轮动因子」的<b>行业选择层</b>落地，个股层靠 q20 排序补齐质量。
+      申万官方「行业轮动」因子本身是 T2 级（多空 +12.6%/年、|ρ|&lt;0.03 唯一独立），
+      但「因子独立」≠「落到 full 基座持仓上仍独立」，这是本验证揭示的关键 gap。
+    </div>
+  </div>
+
+  <div class="sub" style="margin-top:24px;border-top:1px solid var(--line);padding-top:16px">
+    数据源：申万金工 MCP（get_factor_value）· juzi PIT 估值/成分/一致预期 · 腾讯日频复权价 ·
+    westock data_profile 行业交叉验证<br>
+    脚本：_bt_rot_combo.py（组合回测）· _diag_rot_industry.py（行业漂移诊断）· 结果 _bt_rot_combo_results.json
+  </div>
+</div>
+</body>
+</html>
