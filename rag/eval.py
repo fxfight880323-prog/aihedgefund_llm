@@ -55,8 +55,18 @@ EVAL_SET: list[tuple[str, str]] = [
     ("盐津铺子电商和大单品", "盐津铺子"),
 ]
 
-MODES = ["vector", "bm25", "hybrid"]
+MODES = ["vector", "vector+rr", "hybrid", "bm25"]
 TOP_K = 5
+
+
+def _search(query: str, mode: str) -> list[dict]:
+    """按模式检索: vector+rr = 纯向量召回 + bge-reranker 精排。"""
+    kwargs: dict = {"top_k": TOP_K}
+    if mode == "vector+rr":
+        kwargs.update({"mode": "vector", "rerank": True})
+    else:
+        kwargs.update({"mode": mode, "rerank": False})
+    return indexer.search(query, **kwargs)
 
 
 def _hit_rank(results: list[dict], expect: str) -> int:
@@ -68,17 +78,16 @@ def _hit_rank(results: list[dict], expect: str) -> int:
 
 
 def run_eval() -> dict:
-    table: dict[str, dict] = {m: {"hits": 0, "mrr": 0.0, "ranks": []} for m in MODES}
+    table: dict[str, dict] = {m: {"hits": 0, "mrr": 0.0} for m in MODES}
     for query, expect in EVAL_SET:
         line = f"Q: {query[:22]:<24} →"
         for mode in MODES:
-            rows = indexer.search(query, top_k=TOP_K, mode=mode)
+            rows = _search(query, mode)
             rank = _hit_rank(rows, expect)
-            table[mode]["ranks"].append(rank)
             if rank:
                 table[mode]["hits"] += 1
                 table[mode]["mrr"] += 1.0 / rank
-            line += f"  {mode}={'#'+str(rank) if rank else '✗':<8}"
+            line += f"  {mode}={'#'+str(rank) if rank else '✗':<10}"
         print(line)
     n = len(EVAL_SET)
     print("\n" + "=" * 70)

@@ -68,3 +68,4 @@ rag/store/model/
 rag/store/rag.sqlite
 rag/store/faiss.index
 rag/store/raw/
+rag/store/reranker/

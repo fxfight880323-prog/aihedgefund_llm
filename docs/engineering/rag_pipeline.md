@@ -64,10 +64,28 @@ python run.py rag report                                   # 投研跟踪文档 
 > 实证修正 RAG-Knowledge 的"hybrid 默认更优"：该结论多来自英文+专用分词器场景。
 > 3 个 vector miss 均为真实边界：①「多维度择时体系」——报告内容碎片(隐波斜率/衍生品持仓)与标题型查询的语义 gap；②「跨境配置欧日市场」——返回《日股择时框架》属合理次优；③「基金仓位结构」同类。标题型查询是 hybrid 的价值场景（bm25 对②命中）。
 
+## v3 增量（2026-09-10 傍晚）：全文库 + rerank 精排
+
+1. **全部深度报告 PDF 回填完成**：28/29 篇成功（1 篇服务端 30s 超时，下期 automation 补），
+   库 1349→**5879 向量**（33 篇深度报告全文，单篇 77-474 chunks）。
+2. **语料扩容的精度稀释**：5879 向量后 vector hit@5 从 92%→82%（top5 竞争稀释，全文 chunk 挤掉 snippet 答案）。
+3. **解法：bge-reranker-base 交叉编码器精排**（`rag/store/reranker/`，1.1GB，gitignore）——
+   向量召回 top24-32 → reranker 精排 → top_k。`search(rerank=True)` 默认开启，模型缺失自动跳过。
+
+| 模式 | hit@5 | MRR |
+|---|---|---|
+| **vector+rerank（默认）** | **35/39 (90%)** | **0.853** |
+| vector 纯召回 | 32/39 (82%) | 0.770 |
+| hybrid | 31/39 (79%) | 0.722 |
+| bm25 | 8/39 (21%) | 0.188 |
+
+CLI: `python run.py rag query "..." [--mode vector|hybrid|bm25] [--no-rerank]`
+
 ## 已知边界
 
 - csc 每次 search API ~10s（服务端耗时），全量 ingest ~11 分钟属正常，前台跑注意 Bash 超时
 - csc PDF 回填的旧向量成死键（检索时自动跳过），回填后 `rag index` 全量重建清理
 - juzi 语义检索天然排除日报/周报（include_routine=False），回溯历史时注意
 - westock connector 无法脚本直连，预留 manual 导入接口
-- 评估集 12 题偏小，后续随真实使用扩充（目标 50+ 题再定默认模式）
+- 评估集 39 题（持仓个股/行业综述/金工方法论/宏观），后续随真实使用扩充
+- rerank 在 CPU 上每次查询 ~1-3s（24-32 候选），批量场景可 --no-rerank

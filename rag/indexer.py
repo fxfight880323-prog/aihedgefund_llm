@@ -70,6 +70,26 @@ def get_model():
     return _MODEL
 
 
+_RERANKER = None
+
+
+def get_reranker():
+    """加载 bge-reranker-base(交叉编码器, 进程内缓存)。模型不存在返回 None。"""
+    global _RERANKER
+    if _RERANKER is not None:
+        return _RERANKER
+    path = os.path.join(config.STORE_DIR, "reranker")
+    if not os.path.exists(path):
+        return None
+    try:
+        from sentence_transformers import CrossEncoder
+        _RERANKER = CrossEncoder(path, max_length=512)
+        return _RERANKER
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠️ reranker 加载失败(忽略, 退回纯向量): {e}")
+        return None
+
+
 def embed(texts: list[str]) -> np.ndarray:
     model = get_model()
     vecs = model.encode(texts, normalize_embeddings=True,
@@ -197,13 +217,14 @@ def search(query: str, *, as_of: str | None = None, source: str | None = None,
            industry: str | None = None, report_type: str | None = None,
            tickers: list[str] | None = None, top_k: int = 8,
            recall_mult: int = 8, mode: str = "vector",
-           rrf_k: int = 60) -> list[dict]:
+           rrf_k: int = 60, rerank: bool = True) -> list[dict]:
     """时点语义检索。
 
     as_of: 'YYYY-MM-DD', 只返回 publish_date <= as_of 的 chunk(防未来数据)。
-    mode:  'vector' 纯语义(默认, eval 实证最优 hit@5=100%/MRR=0.933)
+    mode:  'vector' 纯语义(默认, eval 实证最优)
            | 'hybrid' 向量+BM25 加权 RRF(2.5:1, 字面精确命中兜底)
            | 'bm25' 纯关键词。
+    rerank: True 时用 bge-reranker-base 对候选精排(模型缺省则自动跳过)。
     """
     import faiss
 
@@ -254,7 +275,8 @@ def search(query: str, *, as_of: str | None = None, source: str | None = None,
     if not cand:
         conn.close()
         return []
-    out: list[dict] = []
+    # 预取行 + 元数据过滤(精排需要文本, 先过滤再精排省算力)
+    pre: list[dict] = []
     for chunk_id, score in cand:
         r = conn.execute("SELECT * FROM chunks WHERE chunk_id=?", (chunk_id,)).fetchone()
         if r is None:
@@ -269,10 +291,30 @@ def search(query: str, *, as_of: str | None = None, source: str | None = None,
             continue
         if tickers and not any(t in (r["tickers"] or "") for t in tickers):
             continue
-        out.append({**dict(r), "score": score})
-        if len(out) >= top_k:
+        pre.append({**dict(r), "_recall_score": score})
+        if len(pre) >= max(top_k * 4, 24):
             break
     conn.close()
+
+    # ---- 交叉编码器精排(bge-reranker-base, 语料扩容后 top5 竞争稀释的解法) ----
+    reranker = get_reranker() if rerank else None
+    if reranker is not None and len(pre) > 1:
+        try:
+            pairs = [(query, (p["chunk_text"] or "")[:1200]) for p in pre]
+            rr_scores = reranker.predict(pairs, show_progress_bar=False)
+            for p, s in zip(pre, rr_scores):
+                p["score"] = round(float(s), 4)  # rerank 分(有符号 logit, 越大越相关)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠️ rerank 失败(退回召回序): {e}")
+            for p in pre:
+                p["score"] = p.pop("_recall_score")
+    else:
+        for p in pre:
+            p["score"] = p.pop("_recall_score")
+    pre.sort(key=lambda p: -p["score"])
+    out = [dict(p, score=p["score"]) for p in pre[:top_k]]
+    for p in out:
+        p.pop("_recall_score", None)
     return out
 
 

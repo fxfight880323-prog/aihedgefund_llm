@@ -23,6 +23,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--top", type=int, default=8)
     ap.add_argument("--mode", default="vector", choices=["hybrid", "vector", "bm25"],
                     help="检索模式: vector 纯语义(默认) | hybrid 向量+BM25 融合 | bm25 纯关键词")
+    ap.add_argument("--no-rerank", action="store_true",
+                    help="关闭 bge-reranker 精排(默认开启, 模型缺失自动跳过)")
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     a = ap.parse_args(argv)
 
@@ -30,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
         a.query, as_of=a.as_of, source=a.source, industry=a.industry,
         report_type=a.report_type,
         tickers=[t.strip() for t in a.tickers.split(",")] if a.tickers else None,
-        top_k=a.top, mode=a.mode)
+        top_k=a.top, mode=a.mode, rerank=not a.no_rerank)
 
     if a.json:
         print(json.dumps(results, ensure_ascii=False, indent=1))
