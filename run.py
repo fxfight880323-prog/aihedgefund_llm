@@ -79,6 +79,9 @@ def cmd_rag(args):
     elif sub == "backfill":
         from rag import ingest
         ingest.run_backfill(limit=args.limit)
+    elif sub == "holdings":
+        from rag import holdings
+        holdings.run_holdings(as_of=args.as_of)
     elif sub == "report":
         from rag import report
         report.run_report()
