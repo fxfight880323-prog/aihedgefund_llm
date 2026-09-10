@@ -21,6 +21,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--report-type", default=None, help="研报类型(深度/动态/简评/金工...)")
     ap.add_argument("--tickers", default=None, help="股票代码过滤, 逗号分隔")
     ap.add_argument("--top", type=int, default=8)
+    ap.add_argument("--mode", default="vector", choices=["hybrid", "vector", "bm25"],
+                    help="检索模式: vector 纯语义(默认) | hybrid 向量+BM25 融合 | bm25 纯关键词")
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     a = ap.parse_args(argv)
 
@@ -28,7 +30,7 @@ def main(argv: list[str] | None = None) -> int:
         a.query, as_of=a.as_of, source=a.source, industry=a.industry,
         report_type=a.report_type,
         tickers=[t.strip() for t in a.tickers.split(",")] if a.tickers else None,
-        top_k=a.top)
+        top_k=a.top, mode=a.mode)
 
     if a.json:
         print(json.dumps(results, ensure_ascii=False, indent=1))
@@ -36,7 +38,8 @@ def main(argv: list[str] | None = None) -> int:
     if not results:
         print("无结果(检查是否已 ingest/index)")
         return 1
-    print(f"🔍 query='{a.query}'" + (f" as_of={a.as_of}" if a.as_of else "") +
+    print(f"🔍 query='{a.query}' mode={a.mode}" +
+          (f" as_of={a.as_of}" if a.as_of else "") +
           f" → {len(results)} 条\n" + "-" * 88)
     for i, r in enumerate(results, 1):
         meta = f"{r['institution'] or '?'} · {r['publish_date'] or '?'} · {r['report_type'] or '?'}"

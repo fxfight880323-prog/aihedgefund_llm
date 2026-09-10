@@ -47,6 +47,7 @@ class McpClient:
         self.timeout = timeout
         self._headers = dict(cfg[server_name].get("headers", {}))
         self._session = requests.Session()
+        self._ready = False
         if server_name == "csc-mcp":
             self._session.mount("https://", _LegacySSLAdapter())
 
@@ -73,15 +74,22 @@ class McpClient:
                     continue
         return None
 
-    def _initialize(self) -> str | None:
+    def _initialize(self) -> bool:
+        """发送 initialize(会话首次)。返回是否成功。"""
         for pv in _PROTOCOLS:
             resp = self._post({
                 "jsonrpc": "2.0", "id": 1, "method": "initialize",
                 "params": {"protocolVersion": pv, "capabilities": {},
                            "clientInfo": {"name": "ai-fund-rag", "version": "0.1"}}})
             if resp and "result" in resp:
-                sid = resp.get("_session_id")  # reserved; sid 通常经 header 返回
-                return pv
+                try:
+                    self._session.post(self.url, headers=self._headers,
+                                       json={"jsonrpc": "2.0", "method": "notifications/initialized"},
+                                       timeout=15)
+                except Exception:
+                    pass
+                self._ready = True
+                return True
         raise RuntimeError(f"[{self.name}] initialize failed on all protocol versions")
 
     # ---------- 公共 API ----------
@@ -101,7 +109,8 @@ class McpClient:
         last_err = None
         for attempt in range(retries + 1):
             try:
-                self._initialize()
+                if not self._ready:
+                    self._initialize()
                 resp = self._post({"jsonrpc": "2.0", "id": 3, "method": "tools/call",
                                    "params": {"name": tool, "arguments": arguments}})
                 if resp is None:
@@ -121,6 +130,7 @@ class McpClient:
                     return raw
             except Exception as e:  # noqa: BLE001
                 last_err = e
+                self._ready = False  # 会话可能失效, 下轮重新 initialize
                 time.sleep(1.5 * (attempt + 1))
         raise RuntimeError(f"[{self.name}] call_tool({tool}) failed after retries: {last_err}")
 

@@ -8,8 +8,10 @@
     python run.py all              # screen + backtest 全流程
     python run.py status           # 数据新鲜度体检
     python run.py rag ingest [--theme 主题] [--pdf]   # 研报RAG采集入库
+    python run.py rag backfill [--limit 5]  # 深度报告PDF全文回填
     python run.py rag index        # 全量重建向量索引
-    python run.py rag query "问题" [--as-of YYYY-MM-DD]
+    python run.py rag query "问题" [--as-of YYYY-MM-DD] [--mode vector|hybrid|bm25]
+    python run.py rag eval         # 检索质量评估(hit@5/MRR)
     python run.py rag report       # 投研跟踪文档(_rag_track_*.html)
     python run.py --list           # 预览所有步骤（不执行）
 
@@ -67,22 +69,28 @@ def cmd_rag(args):
         print(f"✅ faiss 索引全量重建: {n} 向量")
     elif sub == "query":
         if not args.query_text:
-            print("用法: python run.py rag query 银行净息差 [--as-of 2026-08-26]")
+            print("用法: python run.py rag query 银行净息差 [--as-of 2026-08-26] [--mode hybrid]")
             return 1
         from rag import query as rag_query
-        return rag_query.main(
-            [" ".join(args.query_text), "--as-of", args.as_of or "_",
-             "--top", str(args.top)] if args.as_of else
-            [" ".join(args.query_text), "--top", str(args.top)])
+        fwd = [" ".join(args.query_text), "--top", str(args.top), "--mode", args.mode]
+        if args.as_of:
+            fwd += ["--as-of", args.as_of]
+        return rag_query.main(fwd)
+    elif sub == "backfill":
+        from rag import ingest
+        ingest.run_backfill(limit=args.limit)
     elif sub == "report":
         from rag import report
         report.run_report()
+    elif sub == "eval":
+        from rag import eval as rag_eval
+        rag_eval.run_eval()
     elif sub == "stats":
         st = indexer.stats()
         print(f"📚 投研知识库: {st['docs']} docs / {st['chunks']} chunks / "
               f"{st['faiss_vectors']} 向量")
         print(f"   主题: {', '.join(rag_cfg.THEMES)}")
-        print(f"   用法: python run.py rag ingest|index|query|report")
+        print(f"   用法: python run.py rag ingest|backfill|index|query|eval|report")
     else:
         print(f"未知 rag 子命令: {sub} (可选 ingest/index/query/report/stats)")
         return 1
@@ -111,6 +119,9 @@ def main():
     ap.add_argument("--max-pdf", type=int, default=3, help="每次 ingest 的 PDF 上限")
     ap.add_argument("--as-of", default=None, help="rag query 时点过滤 YYYY-MM-DD")
     ap.add_argument("--top", type=int, default=8, help="rag query 返回条数")
+    ap.add_argument("--mode", default="vector", choices=["hybrid", "vector", "bm25"],
+                    help="rag query 检索模式")
+    ap.add_argument("--limit", type=int, default=5, help="rag backfill 的 PDF 篇数上限")
     args = ap.parse_args()
 
     if hasattr(sys.stdout, "reconfigure"):   # Windows GBK 控制台 → UTF-8 + 行缓冲（保证子进程输出顺序）

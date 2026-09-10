@@ -140,42 +140,98 @@ def ingest_csc(themes: list[str], with_pdf: bool = False,
     return list(docs.values())
 
 
-def _fetch_csc_pdfs(cli: McpClient, docs: dict, max_pdf: int) -> None:
-    """对深度报告拉 PDF 全文(大文件, 限流拉取)。pymupdf 提取后重新切块。"""
+def _fetch_pdf_chunks(cli: McpClient, doc_id: str, form_id: str,
+                      title: str, industry: str, publish_date: str) -> tuple[str, list[str]]:
+    """拉单篇 csc PDF → 本地保存 → pymupdf 提全文 → 重切块。返回 (pdf_path, chunks)。"""
+    import base64
+
     import fitz  # pymupdf
 
+    meta = cli.call_tool("csc-isai-lmznty-research-mcp_tools_research_get_report_pdf", {
+        "doc_id": doc_id, "form_id": form_id})
+    if not isinstance(meta, dict) or meta.get("status") != "ok":
+        raise RuntimeError(f"get_report_pdf not ok: {meta}")
+    tid, total = meta["transfer_id"], int(meta["total_chunks"])
+    b64 = []
+    for ci in range(total):
+        part = cli.call_tool(
+            "csc-isai-lmznty-research-mcp_tools_research_get_report_pdf_chunk",
+            {"transfer_id": tid, "chunk_index": ci})
+        if not isinstance(part, dict) or part.get("status") != "ok":
+            raise RuntimeError(f"chunk {ci} failed")
+        b64.append(part["file_base64"])
+        if part.get("is_last_chunk"):
+            break
+    pdf_bytes = base64.b64decode("".join(b64))
+    os.makedirs(config.RAW_DIR, exist_ok=True)
+    raw_path = os.path.join(config.RAW_DIR, f"csc_{doc_id}.pdf")
+    open(raw_path, "wb").write(pdf_bytes)
+    with fitz.open(raw_path) as doc_pdf:
+        full = "\n\n".join(p.get_text() for p in doc_pdf)
+    chunks = chunker.chunk_text(
+        full, title=title or "", institution="中信建投",
+        industry=industry or "", publish_date=str(publish_date or ""))
+    if not chunks:
+        raise RuntimeError("PDF 提取文本为空(可能是扫描版)")
+    return raw_path, chunks
+
+
+def _fetch_csc_pdfs(cli: McpClient, docs: dict, max_pdf: int) -> None:
+    """对新采集的深度报告拉 PDF 全文(ingest --pdf 路径)。"""
     picked = [d for d in docs.values()
               if d.get("report_type") == "深度" and d.get("form_id")][:max_pdf]
     for i, d in enumerate(picked):
         try:
             print(f"  📄 PDF {i+1}/{len(picked)}: {d['title'][:40]}")
-            meta = cli.call_tool("csc-isai-lmznty-research-mcp_tools_research_get_report_pdf", {
-                "doc_id": d["doc_id"], "form_id": d["form_id"]})
-            if not isinstance(meta, dict) or meta.get("status") != "ok":
-                continue
-            tid, total = meta["transfer_id"], int(meta["total_chunks"])
-            b64 = []
-            for ci in range(total):
-                part = cli.call_tool(
-                    "csc-isai-lmznty-research-mcp_tools_research_get_report_pdf_chunk",
-                    {"transfer_id": tid, "chunk_index": ci})
-                if not isinstance(part, dict) or part.get("status") != "ok":
-                    raise RuntimeError(f"chunk {ci} failed")
-                b64.append(part["file_base64"])
-                if part.get("is_last_chunk"):
-                    break
-            pdf_bytes = base64.b64decode("".join(b64))
-            raw_path = os.path.join(config.RAW_DIR, f"csc_{d['doc_id']}.pdf")
-            os.makedirs(config.RAW_DIR, exist_ok=True)
-            open(raw_path, "wb").write(pdf_bytes)
-            with fitz.open(raw_path) as doc_pdf:
-                full = "\n\n".join(p.get_text() for p in doc_pdf)
-            d["chunks"] = chunker.chunk_text(
-                full, title=d["title"] or "", institution="中信建投",
-                industry=d.get("industry") or "", publish_date=str(d.get("publish_date") or ""))
-            d["pdf_path"] = raw_path
+            path, chunks = _fetch_pdf_chunks(
+                cli, d["doc_id"], d["form_id"], d["title"],
+                d.get("industry") or "", d.get("publish_date"))
+            d["chunks"], d["pdf_path"] = chunks, path
         except Exception as e:  # noqa: BLE001
             print(f"  ⚠️ PDF failed ({d['doc_id']}): {e}")
+
+
+# ---------------- PDF 回填(存量库) ----------------
+def run_backfill(limit: int = 5, only_pdf: bool = False) -> dict:
+    """对库内已有 csc 深度报告回填 PDF 全文。
+
+    需要先跑过一次 ingest(补齐 form_id)。回填后建议 `python run.py rag index` 清死向量。
+    """
+    cli = McpClient("csc-mcp")
+    conn = indexer._connect()
+    rows = conn.execute(
+        "SELECT doc_id, form_id, title, industry, publish_date, pdf_path FROM docs "
+        "WHERE source='csc' AND report_type='深度' AND form_id IS NOT NULL "
+        "AND (pdf_path IS NULL OR pdf_path='') ORDER BY publish_date DESC LIMIT ?",
+        (limit,)).fetchall()
+    print(f"📄 PDF 回填: {len(rows)} 篇深度报告待回填")
+    ok, failed = 0, 0
+    for i, r in enumerate(rows):
+        try:
+            print(f"  [{i+1}/{len(rows)}] {r['title'][:44]} ({r['publish_date']})")
+            path, chunks = _fetch_pdf_chunks(
+                cli, r["doc_id"], r["form_id"], r["title"],
+                r["industry"] or "", r["publish_date"])
+            n = indexer.replace_doc_chunks(conn, "csc", r["doc_id"], chunks, pdf_path=path)
+            ok += 1
+            print(f"    ✅ {len(chunks)} chunks (原 snippet 替换为全文)")
+        except Exception as e:  # noqa: BLE001
+            failed += 1
+            print(f"    ⚠️ failed: {e}")
+    conn.close()
+    if ok:
+        n = _rebuild_after_backfill()
+        print(f"✅ 回填完成: 成功 {ok} / 失败 {failed}; 索引重建 {n} 向量")
+    else:
+        print(f"回填结束: 成功 0 / 失败 {failed}")
+    return {"ok": ok, "failed": failed}
+
+
+def _rebuild_after_backfill() -> int:
+    conn = indexer._connect()
+    n = indexer.rebuild_index(conn)
+    conn.close()
+    return n
 
 
 # ---------------- 总入口 ----------------

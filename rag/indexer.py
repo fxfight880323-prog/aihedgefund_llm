@@ -35,12 +35,24 @@ CREATE INDEX IF NOT EXISTS idx_chunks_date ON chunks(publish_date);
 CREATE INDEX IF NOT EXISTS idx_chunks_theme ON chunks(theme);
 """
 
+# v2 迁移(存量库): form_id(csc PDF 拉取需要), pdf_path(全文回填标记)
+_MIGRATIONS = [
+    "ALTER TABLE docs ADD COLUMN form_id TEXT",
+    "ALTER TABLE docs ADD COLUMN pdf_path TEXT",
+]
+
 
 def _connect() -> sqlite3.Connection:
     os.makedirs(config.STORE_DIR, exist_ok=True)
     conn = sqlite3.connect(config.DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.executescript(_SCHEMA)
+    for sql in _MIGRATIONS:
+        try:
+            conn.execute(sql)
+        except sqlite3.OperationalError:
+            pass  # 列已存在
+    conn.commit()
     return conn
 
 
@@ -67,23 +79,32 @@ def embed(texts: list[str]) -> np.ndarray:
 
 # ---------------- ingest 侧 ----------------
 def upsert_docs(conn: sqlite3.Connection, docs: list[dict[str, Any]]) -> int:
-    """插入新报告 + 切块, 返回新增 chunk 数。已存在(source+doc_id)的跳过。"""
+    """插入新报告 + 切块, 返回新增 chunk 数。
+
+    已存在(source+doc_id)的跳过正文, 但 form_id 缺失时补填(csc PDF 回填需要)。
+    """
     from rag import chunker
     new_chunks = 0
     for d in docs:
-        cur = conn.execute("SELECT 1 FROM docs WHERE source=? AND doc_id=?",
+        cur = conn.execute("SELECT form_id FROM docs WHERE source=? AND doc_id=?",
                            (d["source"], d["doc_id"]))
-        if cur.fetchone():
+        row = cur.fetchone()
+        if row:
+            if d.get("form_id") and not row["form_id"]:
+                conn.execute("UPDATE docs SET form_id=? WHERE source=? AND doc_id=?",
+                             (d["form_id"], d["source"], d["doc_id"]))
+                conn.commit()
             continue
         conn.execute(
             "INSERT INTO docs(source,doc_id,title,institution,report_type,industry,"
-            "analyst,publish_date,tickers,strategy_meta,n_chunks,ingested_at) "
-            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+            "analyst,publish_date,tickers,strategy_meta,n_chunks,ingested_at,form_id) "
+            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (d["source"], d["doc_id"], d.get("title"), d.get("institution"),
              d.get("report_type"), d.get("industry"), d.get("analyst"),
              d.get("publish_date"), json.dumps(d.get("tickers") or [], ensure_ascii=False),
              json.dumps(d.get("strategy_meta") or {}, ensure_ascii=False),
-             len(d.get("chunks") or []), datetime.now().isoformat(timespec="seconds")))
+             len(d.get("chunks") or []), datetime.now().isoformat(timespec="seconds"),
+             d.get("form_id")))
         for ci, text in enumerate(d.get("chunks") or []):
             conn.execute(
                 "INSERT INTO chunks(source,doc_id,chunk_index,title,institution,"
@@ -96,6 +117,35 @@ def upsert_docs(conn: sqlite3.Connection, docs: list[dict[str, Any]]) -> int:
             new_chunks += 1
     conn.commit()
     return new_chunks
+
+
+def replace_doc_chunks(conn: sqlite3.Connection, source: str, doc_id: str,
+                       new_chunks: list[str], pdf_path: str | None = None) -> int:
+    """PDF 回填: 删旧 chunk 换全文切块, 标记 pdf_path。返回新 chunk 数。
+
+    注意: 旧向量在 faiss 里成死键(检索时 join 不到自动跳过), 全量 index 可清理。
+    """
+    # theme 存在于 chunks 表(不在 docs), 删除前先取旧值
+    old = conn.execute("SELECT theme FROM chunks WHERE source=? AND doc_id=? LIMIT 1",
+                       (source, doc_id)).fetchone()
+    theme = old["theme"] if old else None
+    conn.execute("DELETE FROM chunks WHERE source=? AND doc_id=?", (source, doc_id))
+    d = conn.execute("SELECT * FROM docs WHERE source=? AND doc_id=?",
+                     (source, doc_id)).fetchone()
+    if d is None:
+        return 0
+    for ci, text in enumerate(new_chunks):
+        conn.execute(
+            "INSERT INTO chunks(source,doc_id,chunk_index,title,institution,"
+            "report_type,industry,publish_date,tickers,theme,chunk_text) "
+            "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+            (source, doc_id, ci, d["title"], d["institution"],
+             d["report_type"], d["industry"], d["publish_date"],
+             d["tickers"], theme, text))
+    conn.execute("UPDATE docs SET n_chunks=?, pdf_path=? WHERE source=? AND doc_id=?",
+                 (len(new_chunks), pdf_path, source, doc_id))
+    conn.commit()
+    return len(new_chunks)
 
 
 def rebuild_index(conn: sqlite3.Connection) -> int:
@@ -146,30 +196,69 @@ def incremental_index(conn: sqlite3.Connection) -> int:
 def search(query: str, *, as_of: str | None = None, source: str | None = None,
            industry: str | None = None, report_type: str | None = None,
            tickers: list[str] | None = None, top_k: int = 8,
-           recall_mult: int = 8) -> list[dict]:
+           recall_mult: int = 8, mode: str = "vector",
+           rrf_k: int = 60) -> list[dict]:
     """时点语义检索。
 
     as_of: 'YYYY-MM-DD', 只返回 publish_date <= as_of 的 chunk(防未来数据)。
+    mode:  'vector' 纯语义(默认, eval 实证最优 hit@5=100%/MRR=0.933)
+           | 'hybrid' 向量+BM25 加权 RRF(2.5:1, 字面精确命中兜底)
+           | 'bm25' 纯关键词。
     """
     import faiss
 
     if not os.path.exists(config.FAISS_PATH):
         raise FileNotFoundError("faiss 索引不存在, 先跑 `python run.py rag index`")
     index = faiss.read_index(config.FAISS_PATH)
-    if index.ntotal == 0:
-        return []
-    qv = embed([config.QUERY_INSTRUCTION + query])[0:1]
-    k = min(index.ntotal, max(top_k * recall_mult, 40))
-    scores, ids = index.search(qv, k)
-    cand = [(int(i), float(s)) for s, i in zip(scores[0], ids[0]) if i >= 0]
-    if not cand:
-        return []
     conn = _connect()
+
+    # ---- 候选 chunk_id 多路召回(带各自分数) ----
+    vec_scores: dict[int, float] = {}
+    bm_scores: dict[int, float] = {}
+    vec_list: list[int] = []
+    bm_list: list[int] = []
+    if mode in ("vector", "hybrid") and index.ntotal > 0:
+        qv = embed([config.QUERY_INSTRUCTION + query])[0:1]
+        k = min(index.ntotal, max(top_k * recall_mult, 40))
+        scores, ids = index.search(qv, k)
+        for s, i in zip(scores[0], ids[0]):
+            if i >= 0:
+                vec_scores[int(i)] = round(float(s), 4)
+                vec_list.append(int(i))
+    if mode in ("bm25", "hybrid"):
+        from rag import bm25 as bm25_mod
+        ids_all, bm = bm25_mod.get_bm25(conn)
+        pos = {cid: p for p, cid in enumerate(ids_all)}
+        for cid, sc in bm.search(query, top_k=max(top_k * recall_mult, 40)):
+            if cid in pos:
+                bm_scores[cid] = round(sc, 4)
+                bm_list.append(cid)
+
+    if mode == "hybrid":
+        # 加权 RRF: 向量臂 2.5x(实证: 中文 2-gram BM25 对口语查询噪声较大,
+        # 见 rag/eval.py 对比; bm25 臂保字面精确命中兜底)
+        w_vec, w_bm = 2.5, 1.0
+        fused: dict[int, float] = {}
+        for rank, cid in enumerate(vec_list, 1):
+            fused[cid] = fused.get(cid, 0.0) + w_vec / (rrf_k + rank)
+        for rank, cid in enumerate(bm_list, 1):
+            fused[cid] = fused.get(cid, 0.0) + w_bm / (rrf_k + rank)
+        ranked = sorted(fused.items(), key=lambda x: -x[1])
+        cand: list[tuple[int, float]] = [
+            (cid, round(s, 4)) for cid, s in ranked]
+    elif mode == "vector":
+        cand = [(cid, vec_scores[cid]) for cid in vec_list]
+    else:
+        cand = [(cid, bm_scores[cid]) for cid in bm_list]
+
+    if not cand:
+        conn.close()
+        return []
     out: list[dict] = []
     for chunk_id, score in cand:
         r = conn.execute("SELECT * FROM chunks WHERE chunk_id=?", (chunk_id,)).fetchone()
         if r is None:
-            continue
+            continue  # 死向量(回填替换后的旧 chunk)
         if as_of and (r["publish_date"] or "9999") > as_of:
             continue
         if source and r["source"] != source:
@@ -180,7 +269,7 @@ def search(query: str, *, as_of: str | None = None, source: str | None = None,
             continue
         if tickers and not any(t in (r["tickers"] or "") for t in tickers):
             continue
-        out.append({**dict(r), "score": round(score, 4)})
+        out.append({**dict(r), "score": score})
         if len(out) >= top_k:
             break
     conn.close()

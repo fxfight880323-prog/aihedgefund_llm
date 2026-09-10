@@ -38,14 +38,36 @@ MCP 研报源 ──ingest──▶ raw JSON ──chunker──▶ chunks ─�
 ## 使用
 
 ```bash
-python run.py rag ingest [--theme all|q20_holdings|...]   # 采集入库（幂等去重）
+python run.py rag ingest [--theme all|q20_holdings|...]   # 采集入库（幂等去重, 全量~11分钟）
+python run.py rag backfill [--limit 5]                    # 深度报告 PDF 全文回填（snippet→全文）
 python run.py rag index                                    # 全量重建索引
-python run.py rag query "银行净息差" [--as-of 2026-08-26]  # 时点语义检索
-python run.py rag report                                   # 生成投研跟踪文档 _rag_track_<date>.html
+python run.py rag query "银行净息差" [--as-of 2026-08-26] [--mode vector|hybrid|bm25]
+python run.py rag eval                                     # 检索质量评估(hit@5/MRR)
+python run.py rag report                                   # 投研跟踪文档 _rag_track_<date>.html
 ```
+
+## v2 增量（2026-09-10 下午）
+
+1. **PDF 全文回填**（`rag backfill`）：库内 csc 深度报告 snippet → PDF 全文。
+   5 篇验证：608 个全文 chunks（单篇 79-174），库 747→1349 向量。
+   首批全文：美元流动性 9 月配置 / 银行业中报综述 / 保险+证券 26H1 综述 / 朗姿股份。
+2. **混合检索**（`rag/bm25.py`）：中文 2-gram BM25（零依赖）+ 加权 RRF（向量:BM25 = 2.5:1）。
+   `--mode hybrid` 用于字面精确命中（代码/数字/报告名）兜底。
+3. **评估集**（`rag/eval.py`，12 题标注）：
+
+| 模式 | hit@5 | MRR | 结论 |
+|---|---|---|---|
+| **vector（默认）** | **12/12 (100%)** | **0.933** | bge-small-zh 语义检索本场景最优 |
+| hybrid | 11/12 (92%) | 0.729 | 中文 2-gram BM25 对口语查询有噪声，加权 RRF 后仍略逊 |
+| bm25 | 8/12 (67%) | 0.625 | 口语查询("怎么样")稀释关键词权重 |
+
+> 实证修正 RAG-Knowledge 的"hybrid 默认更优"：该结论多来自英文+专用分词器场景；
+> 本库中文口语查询下纯向量最优，hybrid 仅在需要字面命中（如"1Q26 净息差 1.51%"精确数字）时用。
 
 ## 已知边界
 
-- csc PDF 全文拉取按需（大文件），v1 默认 ingest 元数据+snippet，`--pdf` 开全文
+- csc 每次 search API ~10s（服务端耗时），全量 ingest ~11 分钟属正常，前台跑注意 Bash 超时
+- csc PDF 回填的旧向量成死键（检索时自动跳过），回填后 `rag index` 全量重建清理
 - juzi 语义检索天然排除日报/周报（include_routine=False），回溯历史时注意
-- 检索质量评估（RAG-Knowledge §evaluation）v1 靠人工 spot check，v2 加 hit@k 标注集
+- westock connector 无法脚本直连，预留 manual 导入接口
+- 评估集 12 题偏小，后续随真实使用扩充（目标 50+ 题再定默认模式）
