@@ -37,7 +37,12 @@ def _sentiment(text: str) -> tuple[int, int]:
 
 
 def _evidence(name: str, as_of: str | None, top_k: int = 4) -> dict:
-    """单股检索: 观点 + 风险两路, 汇总为证据卡。"""
+    """单股检索: 观点 + 风险两路, 汇总为证据卡。
+
+    个股证据门槛: chunk(标题或正文)必须包含股票名 —— 审计实证(2026-09-10):
+    缺个股研报时检索会退化为语义相近的错误关联(博禄风险段/保险敏感性表),
+    rerank 分 0.13-0.58 vs 真个股 0.53-0.99; 宁可"无证据"不要"假情绪"。
+    """
     rows = []
     for q in (f"{name} 研报观点", f"{name} 风险 估值"):
         try:
@@ -45,6 +50,9 @@ def _evidence(name: str, as_of: str | None, top_k: int = 4) -> dict:
                                        tickers=None))
         except Exception as e:  # noqa: BLE001
             print(f"  ⚠️ search {name}: {e}")
+    # 个股相关性门槛: 标题或正文含股票名
+    rows = [r for r in rows
+            if name in (r.get("title") or "") or name in (r.get("chunk_text") or "")]
     # 按报告去重(每报告至多2块), 最新优先
     seen: dict[str, int] = {}
     picked: list[dict] = []

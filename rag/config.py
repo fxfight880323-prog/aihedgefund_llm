@@ -53,7 +53,17 @@ THEMES: dict[str, dict] = {
                     "煤炭 火电 盈利持续性", "券商股 波动风险"],
         "note": "band80 规避的 PB 高位「假便宜」证据",
     },
+    "manager_views": {
+        "queries": ["银行 红利 价值 后市观点", "红利低波 策略 拥挤", "价值风格 展望 仓位",
+                    "银行股 净息差 风险", "低估值 策略 配置", "周期 资源股 观点",
+                    "保险 券商 非银 观点", "中小盘 微盘 风格切换"],
+        "note": "基金经理访谈纪要(juzi manager 库, 内外双库)",
+    },
 }
+
+# juzi 经理访谈采集参数
+MANAGER_TOP_K = 8
+MANAGER_DAYS_BACK = 540  # 访谈回溯窗(自然日)
 
 # juzi 采集参数
 JUZI_TOP_K = 10        # 每个检索词取多少 chunk

@@ -234,6 +234,47 @@ def _rebuild_after_backfill() -> int:
     return n
 
 
+# ---------------- juzi 经理访谈纪要 ----------------
+def ingest_managers(themes: list[str]) -> list[dict]:
+    """juzi manager 库: 基金经理访谈纪要(内外双库)按主题语义搜索入库。"""
+    cli = McpClient("juzi-mcp")
+    docs: dict[tuple, dict] = {}
+    for theme in themes:
+        if theme != "manager_views":
+            continue
+        for q in config.THEMES[theme]["queries"]:
+            try:
+                res = cli.call_tool("manager_search_manager_chunks", {
+                    "query": q, "top_k": config.MANAGER_TOP_K,
+                    "date_from": _lookback(config.MANAGER_DAYS_BACK),
+                    "date_to": _today(), "sort": "recent"})
+            except Exception as e:  # noqa: BLE001
+                print(f"  ⚠️ manager query '{q}' failed: {e}")
+                continue
+            payload = res.get("data", res) if isinstance(res, dict) else {}
+            for r in (payload or {}).get("results", payload or {}).get("chunks", []):
+                doc_id = str(r.get("doc_id"))
+                key = ("juzi_mgr", f"{r.get('source', 'external')}_{doc_id}")
+                if key in docs:
+                    t = r.get("chunk_text", "")
+                    if t and t not in docs[key]["chunks"]:
+                        docs[key]["chunks"].append(t)
+                    continue
+                mgr = r.get("manager_name") or "基金经理"
+                docs[key] = {
+                    "source": "juzi_mgr", "doc_id": doc_id,
+                    "title": f"{mgr} 访谈纪要（{r.get('fund_company') or ''}）",
+                    "institution": r.get("fund_company") or "基金经理访谈",
+                    "report_type": "访谈纪要",
+                    "industry": None, "analyst": mgr,
+                    "publish_date": r.get("interview_date"),
+                    "tickers": [], "theme": theme,
+                    "strategy_meta": {"source": r.get("source"), "doc_type": r.get("doc_type")},
+                    "chunks": [r.get("chunk_text", "")],
+                }
+    return list(docs.values())
+
+
 # ---------------- 总入口 ----------------
 def run_ingest(themes: list[str] | None = None, with_pdf: bool = False,
                max_pdf: int = 3) -> dict:
@@ -255,6 +296,12 @@ def run_ingest(themes: list[str] | None = None, with_pdf: bool = False,
         print(f"  csc : {len(docs)-n0} 篇报告")
     except Exception as e:  # noqa: BLE001
         print(f"  ⚠️ csc 整体失败: {e}")
+    try:
+        n0 = len(docs)
+        docs.extend(ingest_managers(themes))
+        print(f"  juzi 经理访谈: {len(docs)-n0} 篇")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ⚠️ juzi 经理访谈失败: {e}")
     # 持久化 raw
     os.makedirs(config.RAW_DIR, exist_ok=True)
     raw_path = os.path.join(config.RAW_DIR, f"ingest_{_today()}.json")
