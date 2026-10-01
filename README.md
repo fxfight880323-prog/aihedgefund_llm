@@ -1,6 +1,28 @@
-# ai_fund_framework 统一数据管线
+# aihedgefund_llm — A股量化研究主仓
 
-把已验证的策略筛选、回测、模拟组合跟踪**固定为可重复运行的代码**。以后更新数据
+个人量化研究统一仓库：多策略研发、回测、模拟组合跟踪与基金持仓证据系统。
+三大系统共用一套数据口径铁律（见文末），全部结论可由代码复现。
+
+## 仓库地图
+
+| 模块 | 内容 | 状态 |
+|---|---|---|
+| `run.py` + `pipeline/` | ai_fund_framework 统一数据管线（筛选/回测/模拟组合/审计） | ✅ 每日自动运行 |
+| `a_share_financing_backtest/` | A股融资市场世界观回测（双Regime，V1→V3） | 🆕 2026-10 |
+| `rag/` | 基金持仓×研报 RAG 证据系统（混合检索+rerank） | ✅ v4 |
+| `src/` | 核心框架库（backtest/core/data/risk/signals/portfolio...） | ✅ |
+| `examples/` | 策略示例（CScore/F-Score/growth_loop/BSADF/rotation...） | ✅ |
+| `tests/` | 单元测试（engine/growth_loop/rotation/serenity_gate/signals） | ✅ |
+| `docs/` | 架构文档（ALPHA_LAYERS / STRATEGIES / research_log） | ✅ |
+| `alpha_ledger/` | alpha账本记录 | ✅ |
+| `dsh/` | 仪表盘与工具（cordis-fund） | ✅ |
+| 根目录 `_*.py`（231个） | 已验证的策略/筛选/回测脚本（**不移动**——自动化任务引用绝对路径） | ✅ |
+
+---
+
+# 系统一：ai_fund_framework 统一数据管线
+
+把已验证的策略筛选、回测、模拟组合跟踪**固定为可重复运行的代码**。更新数据
 只跑 `run.py` 一个入口，不再手工改脚本日期、不再依赖会话里临时拼装。
 
 ## 快速上手
@@ -77,10 +99,66 @@ pipeline/
 - 每日净值：LX automation-1787723540036 / Q20 automation-1787816093790（工作日 15:35）
 - 调仓：LX 1787723732694/1787723732711、Q20 1787816093812/1787816093831（2027 年生效）
 
-## 数据源与口径铁律（勿违背）
+---
+
+# 系统二：A股融资市场逻辑回测（a_share_financing_backtest/）
+
+基于"A股是融资市场"世界观的双Regime行业轮动策略，2016-01 ~ 2026-03，三轮迭代。
+详见 [`a_share_financing_backtest/README.md`](a_share_financing_backtest/README.md)。
+
+**Regime 1 — 产业扶持**（不看盈利不看估值）：产业政策+流动性+国家队三条件共振买成长行业；
+卖出=盈利成熟（增速减缓/ROE峰值回落）或国家队卖出清盘。
+
+**Regime 2 — 消费吃药**：居民杠杆率年增量≥2pct → 买白酒/消费/医药；跌破阈值（平台期）→ 清仓。
+
+| 版本 | 标的 | 总收益 | 夏普 | 最大回撤 |
+|---|---|---|---|---|
+| V1 严格（单Regime） | 申万一级行业 | +26.8% | 0.28 | -27.0% |
+| V2 双Regime+大基金 | 申万一级行业 | +116.7% | 0.58 | -33.2% |
+| **V3 双Regime+大基金** | **中证主题指数** | **+201.5%** | **0.64** | -39.7% |
+| 沪深300基准 | — | +25.6% | — | -45.6% |
+
+关键结论：①消费吃药=居民加杠杆的镜像（白酒2016-04→2022-04 **+402%**）；②条件优先级消融——流动性
+条件冗余、政策/国家队价值在锁定底部买点、杠杆双Regime是最强增强；③同信号下主题指数=高beta放大器
+（收益+85pct、回撤同步放大）。
+
+---
+
+# 系统三：基金持仓×研报 RAG 证据系统（rag/）
+
+调仓决策的证据支撑：基金持仓数据 + 研报全文库（5879向量）混合检索（BM25+向量）+ bge-reranker
+精排，输出 Q20 持仓×研报证据报告。含评估集（39题）与个股相关性门槛过滤。
+入口：`rag/query.py` / `rag/report.py`；文档见 `docs/`。
+
+---
+
+# 核心框架（src/ + examples/ + tests/）
+
+```
+src/
+  backtest/   回测引擎    core/       基础组件    data/       数据层
+  execution/  执行模拟    portfolio/  组合构建    research/   研究流程
+  risk/       风险管理    signals/    信号系统    workflow/   工作流    utils/     工具集
+examples/     策略示例：CScore / F-Score / growth_loop / BSADF泡沫检测 / rotation / serenity
+tests/        单元测试覆盖引擎与信号逻辑
+docs/         ALPHA_LAYERS.md / STRATEGIES.md / prompt_template_fund_framework.md / research_log/
+```
+
+---
+
+# 数据源与口径铁律（勿违背）
 
 - 池子 = 万得全A(881001.WI) PIT 成分，禁止手工精选；结论先对"等权全A"基准
 - 回测一律**日频 + 复权**；半年调仓策略基准 = "半年调仓等权全A"
 - 质量层只能排序微调（q20 +3.40pp），gm 硬过滤已证伪禁止引入
 - garp 权威口径 = 全池 g60（+67.01%），旧 +34.57% 禁止引用
 - HF 因子健康判定：gpm top5 头部 >50 才健康（2026-08-20 起污染），fetch 自动回退
+- 回测四项铁律：数据对齐 / 无未来数据（披露日对齐+T+1） / 样本外验证 / 逻辑可溯源
+- 多源交叉检验后才入库（如：沪深300双源偏差<0.0001%、LPR双源一致、事件表对照官方公告）
+
+# 更新日志
+
+- **2026-10-01** 新增 `a_share_financing_backtest/`：融资市场世界观双Regime回测（V1→V3，82文件）
+- **2026-09-10** rag v4：Q20持仓×研报证据报告 + 经理访谈纪要入库 + 个股相关性门槛
+- **2026-09-10** rag v2/v3：PDF全文回填+混合检索+评估集；全文库5879向量+bge-reranker
+- 历史迭代见 `docs/research_log/`
